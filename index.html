@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · Encuentra puntos de reciclaje</title>
+  <meta name="description" content="EcoMaps: localiza puntos de reciclaje cercanos, aprende a separar tus residuos y contribuye al ODS 12.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+      </a>
+
+      <nav class="nav">
+        <a href="index.html" class="nav__link nav__link--active">Inicio</a>
+        <a href="mapa.html" class="nav__link">Mapa</a>
+        <a href="guia.html" class="nav__link">Guía de reciclaje</a>
+        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
+      </nav>
+
+      <div class="header__actions">
+        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO + BUSCADOR ===== -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <span class="badge">♻ ODS 12 · Consumo responsable</span>
+          <h1 class="hero__title">Reciclar es más fácil <span class="text-accent">cuando sabes dónde.</span></h1>
+          <p class="hero__text">Encuentra puntos de reciclaje, descubre cómo separar tus residuos y contribuye a un consumo más responsable.</p>
+
+          <!-- Buscador de residuos -->
+          <form class="search-bar" action="mapa.html" method="get">
+            <label for="buscar-residuo" class="visually-hidden">¿Qué quieres reciclar?</label>
+            <span class="search-bar__icon">🔍</span>
+            <input
+              type="search"
+              id="buscar-residuo"
+              name="residuo"
+              class="search-bar__input"
+              placeholder="¿Qué quieres reciclar? (plástico, vidrio, papel...)"
+              autocomplete="off"
+            >
+            <button type="submit" class="btn btn--primary search-bar__btn">Buscar puntos</button>
+          </form>
+
+          <div class="hero__extra">
+            <a href="mapa.html" class="link-icon">📍 Explorar mapa</a>
+            <span class="hero__stat">+1.250 usuarios ya reciclando</span>
+          </div>
+        </div>
+
+        <!-- Acceso al mapa (vista previa) -->
+        <div class="hero__map">
+          <div class="map-preview" role="img" aria-label="Vista previa del mapa con puntos de reciclaje cercanos">
+            <div class="map-preview__pin map-preview__pin--main">
+              <span>♻</span>
+              <div class="map-preview__tooltip">
+                <strong>Punto Verde Centro</strong>
+                <small>Plástico · Vidrio · Papel</small>
+              </div>
+            </div>
+            <div class="map-preview__pin" style="top:38%; left:20%;">♻</div>
+            <div class="map-preview__pin" style="top:60%; left:35%;">♻</div>
+            <div class="map-preview__pin" style="top:70%; left:65%;">♻</div>
+            <span class="map-preview__distance">📍 320 m</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PUNTOS CERCANOS (datos de ejemplo) ===== -->
+    <section class="section" id="puntos-cercanos">
+      <div class="container">
+        <div class="section__header">
+          <span class="badge badge--muted">Puntos cercanos</span>
+          <h2>Reciclaje cerca de ti</h2>
+          <p class="section__subtitle">Ejemplos de puntos de reciclaje. Estos datos son de muestra: se conectarán al mapa real más adelante.</p>
+        </div>
+
+        <div class="points-grid">
+          <article class="point-card">
+            <div class="point-card__icon">♻</div>
+            <h3>Punto Verde Centro</h3>
+            <p class="point-card__materials">Plástico · Vidrio · Papel</p>
+            <p class="point-card__distance">📍 320 m · Abierto hasta las 6:00 pm</p>
+          </article>
+
+          <article class="point-card">
+            <div class="point-card__icon">♻</div>
+            <h3>EcoPunto Norte</h3>
+            <p class="point-card__materials">Cartón · Metal · Electrónico</p>
+            <p class="point-card__distance">📍 850 m · Abierto hasta las 5:00 pm</p>
+          </article>
+
+          <article class="point-card">
+            <div class="point-card__icon">♻</div>
+            <h3>Recicla Más - Plaza Sur</h3>
+            <p class="point-card__materials">Orgánico · Vidrio</p>
+            <p class="point-card__distance">📍 1.2 km · Abierto 24 horas</p>
+          </article>
+        </div>
+
+        <div class="section__footer">
+          <a href="mapa.html" class="btn btn--outline">Ver todos los puntos en el mapa</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GUÍA DE RECICLAJE ===== -->
+    <section class="section section--muted" id="guia-reciclaje">
+      <div class="container">
+        <div class="section__header">
+          <span class="badge badge--muted">Guía de reciclaje</span>
+          <h2>Aprende a separar correctamente</h2>
+          <p class="section__subtitle">Conoce cómo clasificar cada tipo de residuo antes de llevarlo a un punto de reciclaje.</p>
+        </div>
+
+        <div class="guide-grid">
+          <a href="guia.html#plastico" class="guide-card guide-card--plastico">
+            <span class="guide-card__dot"></span>
+            <h3>Plástico</h3>
+            <p>Botellas PET, envases</p>
+          </a>
+          <a href="guia.html#vidrio" class="guide-card guide-card--vidrio">
+            <span class="guide-card__dot"></span>
+            <h3>Vidrio</h3>
+            <p>Botellas, tarros</p>
+          </a>
+          <a href="guia.html#papel" class="guide-card guide-card--papel">
+            <span class="guide-card__dot"></span>
+            <h3>Papel</h3>
+            <p>Periódicos, cajas</p>
+          </a>
+          <a href="guia.html#metal" class="guide-card guide-card--metal">
+            <span class="guide-card__dot"></span>
+            <h3>Metal</h3>
+            <p>Latas, aluminio</p>
+          </a>
+          <a href="guia.html#organico" class="guide-card guide-card--organico">
+            <span class="guide-card__dot"></span>
+            <h3>Orgánico</h3>
+            <p>Restos de comida</p>
+          </a>
+          <a href="guia.html#electronico" class="guide-card guide-card--electronico">
+            <span class="guide-card__dot"></span>
+            <h3>Electrónico</h3>
+            <p>Pilas, aparatos</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA FINAL ===== -->
+    <section class="section cta">
+      <div class="container cta__inner">
+        <span class="cta__icon">♻</span>
+        <h2>Empieza a reciclar <span class="text-accent">hoy</span></h2>
+        <p>Únete a la comunidad de EcoMaps y conviértete en parte del cambio hacia una ciudad más limpia y sostenible.</p>
+        <div class="cta__actions">
+          <a href="login.html#registro" class="btn btn--primary">Crear cuenta gratis</a>
+          <a href="guia.html" class="btn btn--ghost">Ver cómo funciona →</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
+        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
+      </div>
+
+      <div class="footer__col">
+        <h4>Plataforma</h4>
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa interactivo</a>
+        <a href="guia.html">Guía de reciclaje</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+
+      <div class="footer__col">
+        <h4>Recursos</h4>
+        <a href="#">ODS 12 · Info</a>
+        <a href="#">Reportar punto</a>
+      </div>
+
+      <div class="footer__col">
+        <h4>Empresa</h4>
+        <a href="#">Sobre EcoMaps</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

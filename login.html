@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · Inicia sesión o crea tu cuenta</title>
+  <meta name="description" content="Inicia sesión o crea tu cuenta en EcoMaps para localizar puntos de reciclaje y registrar tu impacto.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth">
+
+    <!-- ===== PANEL IZQUIERDO: marca / beneficios ===== -->
+    <aside class="auth__side">
+      <a href="index.html" class="logo logo--onlight">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="40" height="40">
+        <span class="logo__text">EcoMaps</span>
+      </a>
+
+      <!-- Ilustración simple del mapa (sin librería externa) -->
+      <div class="auth__map" role="img" aria-label="Ilustración de un mapa con puntos de reciclaje">
+        <div class="auth__map-pin" style="top:28%; left:30%;">📍</div>
+        <div class="auth__map-pin" style="top:55%; left:22%;">📍</div>
+        <div class="auth__map-pin auth__map-pin--accent" style="top:52%; left:60%;">📍</div>
+        <div class="auth__map-pulse">♻</div>
+      </div>
+
+      <h2 class="auth__side-title">Únete a EcoMaps</h2>
+      <p class="auth__side-text">Encuentra dónde reciclar, registra tus acciones y contribuye a un futuro más sostenible.</p>
+
+      <!-- Datos de ejemplo -->
+      <div class="auth__stats">
+        <div>
+          <strong>12K+</strong>
+          <span>Puntos de reciclaje</span>
+        </div>
+        <div>
+          <strong>50K+</strong>
+          <span>Usuarios activos</span>
+        </div>
+        <div>
+          <strong>98T</strong>
+          <span>CO₂ ahorrado</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== PANEL DERECHO: formularios ===== -->
+    <main class="auth__main">
+      <div class="auth__card">
+
+        <!-- Pestañas Iniciar sesión / Crear cuenta -->
+        <div class="tabs" role="tablist">
+          <button type="button" class="tabs__btn is-active" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login" data-tab="login">Iniciar sesión</button>
+          <button type="button" class="tabs__btn" id="tab-registro" role="tab" aria-selected="false" aria-controls="panel-registro" data-tab="registro">Crear cuenta</button>
+        </div>
+
+        <!-- ===== INICIAR SESIÓN (datos de ejemplo, sin backend) ===== -->
+        <section class="tabs__panel is-active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+          <h1>Bienvenido a EcoMaps</h1>
+          <p class="auth__subtitle">Ingresa a tu cuenta para continuar</p>
+
+          <form class="form" data-demo-form>
+            <label for="login-email">Correo electrónico</label>
+            <input type="email" id="login-email" name="email" placeholder="ana@ejemplo.com" value="ana@ejemplo.com">
+
+            <label for="login-password">Contraseña</label>
+            <div class="form__password">
+              <input type="password" id="login-password" name="password" placeholder="••••••••" value="12345678">
+              <button type="button" class="form__toggle-pass" data-toggle-password="login-password" aria-label="Mostrar u ocultar contraseña">👁</button>
+            </div>
+
+            <div class="form__row">
+              <label class="form__checkbox">
+                <input type="checkbox" name="recordarme">
+                Recordarme
+              </label>
+              <a href="#" class="form__link">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block">Iniciar sesión</button>
+          </form>
+
+          <div class="auth__divider"><span>o</span></div>
+
+          <button type="button" class="btn btn--outline btn--block" data-demo-google>
+            <span class="auth__google-icon">G</span> Continuar con Google
+          </button>
+
+          <p class="auth__switch">¿No tienes una cuenta? <a href="#registro" data-tab-link="registro">Crear cuenta</a></p>
+        </section>
+
+        <!-- ===== CREAR CUENTA (datos de ejemplo, sin backend) ===== -->
+        <section class="tabs__panel" id="panel-registro" role="tabpanel" aria-labelledby="tab-registro" hidden>
+          <h1>Crea tu cuenta</h1>
+          <p class="auth__subtitle">Regístrate y empieza a reciclar con EcoMaps</p>
+
+          <form class="form" data-demo-form>
+            <label for="registro-nombre">Nombre completo</label>
+            <input type="text" id="registro-nombre" name="nombre" placeholder="Ana Torres" value="Ana Torres">
+
+            <label for="registro-email">Correo electrónico</label>
+            <input type="email" id="registro-email" name="email" placeholder="ana@ejemplo.com" value="ana@ejemplo.com">
+
+            <label for="registro-password">Contraseña</label>
+            <div class="form__password">
+              <input type="password" id="registro-password" name="password" placeholder="••••••••" value="12345678">
+              <button type="button" class="form__toggle-pass" data-toggle-password="registro-password" aria-label="Mostrar u ocultar contraseña">👁</button>
+            </div>
+
+            <label class="form__checkbox form__checkbox--terms">
+              <input type="checkbox" name="terminos" checked>
+              Acepto los <a href="#" class="form__link">términos y condiciones</a>
+            </label>
+
+            <button type="submit" class="btn btn--primary btn--block">Crear cuenta</button>
+          </form>
+
+          <div class="auth__divider"><span>o</span></div>
+
+          <button type="button" class="btn btn--outline btn--block" data-demo-google>
+            <span class="auth__google-icon">G</span> Continuar con Google
+          </button>
+
+          <p class="auth__switch">¿Ya tienes una cuenta? <a href="#login" data-tab-link="login">Iniciar sesión</a></p>
+        </section>
+
+        <p class="auth__badge">🌱 Plataforma comprometida con el medio ambiente</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
