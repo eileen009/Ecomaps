@@ -36,7 +36,7 @@
     <!-- ===== HERO + BUSCADOR ===== -->
     <section class="hero">
       <div class="container hero__inner">
-        <div class="hero__content">
+        <div class="hero__content reveal">
           <span class="badge">♻ ODS 12 · Consumo responsable</span>
           <h1 class="hero__title">Reciclar es más fácil <span class="text-accent">cuando sabes dónde.</span></h1>
           <p class="hero__text">Encuentra puntos de reciclaje, descubre cómo separar tus residuos y contribuye a un consumo más responsable.</p>
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Acceso al mapa (vista previa) -->
-        <div class="hero__map">
+        <div class="hero__map reveal" style="--indice:1">
           <div class="map-preview" role="img" aria-label="Vista previa del mapa con puntos de reciclaje cercanos">
             <div class="map-preview__pin map-preview__pin--main">
               <span>♻</span>
@@ -84,28 +84,28 @@
     <!-- ===== PUNTOS CERCANOS (datos de ejemplo) ===== -->
     <section class="section" id="puntos-cercanos">
       <div class="container">
-        <div class="section__header">
+        <div class="section__header reveal">
           <span class="badge badge--muted">Puntos cercanos</span>
           <h2>Reciclaje cerca de ti</h2>
           <p class="section__subtitle">Ejemplos de puntos de reciclaje. Estos datos son de muestra: se conectarán al mapa real más adelante.</p>
         </div>
 
-        <div class="points-grid">
-          <article class="point-card">
+        <div class="points-grid reveal-group">
+          <article class="point-card reveal" style="--indice:0">
             <div class="point-card__icon">♻</div>
             <h3>Punto Verde Centro</h3>
             <p class="point-card__materials">Plástico · Vidrio · Papel</p>
             <p class="point-card__distance">📍 320 m · Abierto hasta las 6:00 pm</p>
           </article>
 
-          <article class="point-card">
+          <article class="point-card reveal" style="--indice:1">
             <div class="point-card__icon">♻</div>
             <h3>EcoPunto Norte</h3>
             <p class="point-card__materials">Cartón · Metal · Electrónico</p>
             <p class="point-card__distance">📍 850 m · Abierto hasta las 5:00 pm</p>
           </article>
 
-          <article class="point-card">
+          <article class="point-card reveal" style="--indice:2">
             <div class="point-card__icon">♻</div>
             <h3>Recicla Más - Plaza Sur</h3>
             <p class="point-card__materials">Orgánico · Vidrio</p>
@@ -122,39 +122,39 @@
     <!-- ===== GUÍA DE RECICLAJE ===== -->
     <section class="section section--muted" id="guia-reciclaje">
       <div class="container">
-        <div class="section__header">
+        <div class="section__header reveal">
           <span class="badge badge--muted">Guía de reciclaje</span>
           <h2>Aprende a separar correctamente</h2>
           <p class="section__subtitle">Conoce cómo clasificar cada tipo de residuo antes de llevarlo a un punto de reciclaje.</p>
         </div>
 
-        <div class="guide-grid">
-          <a href="guia.html#plastico" class="guide-card guide-card--plastico">
+        <div class="guide-grid reveal-group">
+          <a href="guia.html#plastico" class="guide-card guide-card--plastico reveal" style="--indice:0">
             <span class="guide-card__dot"></span>
             <h3>Plástico</h3>
             <p>Botellas PET, envases</p>
           </a>
-          <a href="guia.html#vidrio" class="guide-card guide-card--vidrio">
+          <a href="guia.html#vidrio" class="guide-card guide-card--vidrio reveal" style="--indice:1">
             <span class="guide-card__dot"></span>
             <h3>Vidrio</h3>
             <p>Botellas, tarros</p>
           </a>
-          <a href="guia.html#papel" class="guide-card guide-card--papel">
+          <a href="guia.html#papel" class="guide-card guide-card--papel reveal" style="--indice:2">
             <span class="guide-card__dot"></span>
             <h3>Papel</h3>
             <p>Periódicos, cajas</p>
           </a>
-          <a href="guia.html#metal" class="guide-card guide-card--metal">
+          <a href="guia.html#metal" class="guide-card guide-card--metal reveal" style="--indice:3">
             <span class="guide-card__dot"></span>
             <h3>Metal</h3>
             <p>Latas, aluminio</p>
           </a>
-          <a href="guia.html#organico" class="guide-card guide-card--organico">
+          <a href="guia.html#organico" class="guide-card guide-card--organico reveal" style="--indice:4">
             <span class="guide-card__dot"></span>
             <h3>Orgánico</h3>
             <p>Restos de comida</p>
           </a>
-          <a href="guia.html#electronico" class="guide-card guide-card--electronico">
+          <a href="guia.html#electronico" class="guide-card guide-card--electronico reveal" style="--indice:5">
             <span class="guide-card__dot"></span>
             <h3>Electrónico</h3>
             <p>Pilas, aparatos</p>
@@ -164,7 +164,7 @@
     </section>
 
     <!-- ===== CTA FINAL ===== -->
-    <section class="section cta">
+    <section class="section cta reveal">
       <div class="container cta__inner">
         <span class="cta__icon">♻</span>
         <h2>Empieza a reciclar <span class="text-accent">hoy</span></h2>
@@ -199,13 +199,14 @@
       <div class="footer__col">
         <h4>Recursos</h4>
         <a href="#">ODS 12 · Info</a>
-        <a href="#">Reportar punto</a>
+        <a href="proponer.html">Reportar punto</a>
       </div>
 
       <div class="footer__col">
         <h4>Empresa</h4>
         <a href="#">Sobre EcoMaps</a>
         <a href="#">Contacto</a>
+        <a href="admin.html">Panel admin (demo)</a>
       </div>
     </div>
 

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · Mapa de puntos de reciclaje</title>
+  <meta name="description" content="Encuentra en el mapa los puntos de reciclaje más cercanos a ti, filtrados por tipo de residuo.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav__link">Inicio</a>
+        <a href="mapa.html" class="nav__link nav__link--active">Mapa</a>
+        <a href="guia.html" class="nav__link">Guía de reciclaje</a>
+        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
+      </nav>
+      <div class="header__actions">
+        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="map-hero">
+      <div class="container">
+        <!-- Buscador principal del mapa -->
+        <form class="map-searchbar reveal" onsubmit="return false" role="search">
+          <span class="search-bar__icon">🔍</span>
+          <input type="search" id="mapa-buscador" placeholder="Ej. plástico, baterías, vidrio, cartón..." autocomplete="off">
+          <button type="submit" class="btn btn--primary">Buscar</button>
+        </form>
+
+        <!-- Búsquedas rápidas (datos de ejemplo) -->
+        <div class="map-quicktags reveal">
+          <button type="button">Plástico</button>
+          <button type="button">Vidrio</button>
+          <button type="button">Baterías</button>
+          <button type="button">Electrónicos</button>
+          <button type="button">Cartón</button>
+          <button type="button">Orgánico</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="map-layout container reveal">
+      <!-- Mapa ilustrativo (aún sin conexión a Google Maps / OpenStreetMap) -->
+      <div class="map-canvas" role="img" aria-label="Mapa ilustrativo con puntos de reciclaje cercanos">
+        <div class="map-canvas__pin" style="top:30%; left:22%;"><span>♻</span></div>
+        <div class="map-canvas__pin" style="top:48%; left:58%;"><span>♻</span></div>
+        <div class="map-canvas__pin" style="top:66%; left:34%;"><span>♻</span></div>
+        <div class="map-canvas__pin" style="top:20%; left:70%;"><span>♻</span></div>
+        <div class="map-canvas__pin map-canvas__pin--me" style="top:52%; left:46%;"><span>📍</span></div>
+
+        <div class="map-canvas__controls">
+          <button type="button" aria-label="Acercar">+</button>
+          <button type="button" aria-label="Alejar">−</button>
+        </div>
+
+        <div class="map-canvas__legend">
+          <span><i class="legend-dot legend-dot--activo"></i> Punto de reciclaje</span>
+          <span><i class="legend-dot legend-dot--cerrado"></i> Punto cerrado</span>
+          <span><i class="legend-dot legend-dot--yo"></i> Mi ubicación</span>
+        </div>
+
+        <a href="proponer.html" class="btn btn--primary map-canvas__cta">+ Proponer punto</a>
+      </div>
+
+      <!-- Panel lateral: puntos cercanos (datos de ejemplo) -->
+      <aside class="map-layout__panel">
+        <div class="map-layout__panel-header">
+          <h2>Puntos cercanos</h2>
+          <span class="badge badge--muted">4 encontrados</span>
+        </div>
+
+        <div class="map-filters">
+          <select aria-label="Tipo de residuo">
+            <option>Tipo de residuo: todos</option>
+            <option>Plástico</option>
+            <option>Vidrio</option>
+            <option>Papel</option>
+            <option>Metal</option>
+            <option>Orgánico</option>
+            <option>Electrónico</option>
+          </select>
+          <select aria-label="Distancia">
+            <option>Distancia: todas</option>
+            <option>Menos de 1 km</option>
+            <option>Menos de 3 km</option>
+            <option>Menos de 5 km</option>
+          </select>
+        </div>
+
+        <article class="map-point">
+          <div class="map-point__top">
+            <h3>EcoCentro Norte</h3>
+            <span class="map-point__rating">★ 4.8</span>
+          </div>
+          <p class="map-point__meta">📍 1.2 km · Abierto hasta las 6:00 pm</p>
+          <div class="map-point__tags">
+            <span class="tag">Plástico</span>
+            <span class="tag">Cartón</span>
+            <span class="tag">Vidrio</span>
+          </div>
+          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
+        </article>
+
+        <article class="map-point">
+          <div class="map-point__top">
+            <h3>ReciclaYa</h3>
+            <span class="map-point__rating">★ 4.5</span>
+          </div>
+          <p class="map-point__meta">📍 2.4 km · Abierto</p>
+          <div class="map-point__tags">
+            <span class="tag">Electrónico</span>
+            <span class="tag">Baterías</span>
+          </div>
+          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
+        </article>
+
+        <article class="map-point">
+          <div class="map-point__top">
+            <h3>Punto Verde</h3>
+            <span class="map-point__rating">★ 4.6</span>
+          </div>
+          <p class="map-point__meta">📍 3.1 km · Abierto hasta las 5:00 pm</p>
+          <div class="map-point__tags">
+            <span class="tag">Vidrio</span>
+            <span class="tag">Plástico</span>
+          </div>
+          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
+        </article>
+
+        <article class="map-point">
+          <div class="map-point__top">
+            <h3>EcoParque Central</h3>
+            <span class="map-point__rating">★ 4.3</span>
+          </div>
+          <p class="map-point__meta">📍 4.0 km · Cerrado ahora</p>
+          <div class="map-point__tags">
+            <span class="tag">Papel</span>
+            <span class="tag">Cartón</span>
+          </div>
+          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
+        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
+      </div>
+      <div class="footer__col">
+        <h4>Plataforma</h4>
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa interactivo</a>
+        <a href="guia.html">Guía de reciclaje</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+      <div class="footer__col">
+        <h4>Recursos</h4>
+        <a href="#">ODS 12 · Info</a>
+        <a href="proponer.html">Reportar punto</a>
+      </div>
+      <div class="footer__col">
+        <h4>Empresa</h4>
+        <a href="#">Sobre EcoMaps</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

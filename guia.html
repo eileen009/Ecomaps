@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · Guía de reciclaje</title>
+  <meta name="description" content="Aprende a separar correctamente cada tipo de residuo antes de llevarlo a un punto de reciclaje.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav__link">Inicio</a>
+        <a href="mapa.html" class="nav__link">Mapa</a>
+        <a href="guia.html" class="nav__link nav__link--active">Guía de reciclaje</a>
+        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
+      </nav>
+      <div class="header__actions">
+        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:40px 24px 64px;">
+    <div class="section__header reveal">
+      <span class="badge badge--muted">Guía de reciclaje</span>
+      <h2>Aprende a separar correctamente</h2>
+      <p class="section__subtitle">Conoce qué se puede reciclar, cómo prepararlo y qué evitar en cada categoría.</p>
+    </div>
+
+    <!-- Navegación rápida entre categorías -->
+    <nav class="guide-nav reveal">
+      <a href="#plastico">🧴 Plástico</a>
+      <a href="#vidrio">🍾 Vidrio</a>
+      <a href="#papel">📄 Papel</a>
+      <a href="#metal">🥫 Metal</a>
+      <a href="#organico">🌱 Orgánico</a>
+      <a href="#electronico">💻 Electrónico</a>
+    </nav>
+
+    <div class="guide-detail-grid">
+      <article class="guide-detail-card reveal" id="plastico">
+        <div class="guide-detail-card__icon" style="background:#FBF0D6; color:var(--golden-brown);">🧴</div>
+        <div>
+          <h3>Plástico</h3>
+          <p style="color:var(--texto-suave); margin:0;">Enjuaga los envases y retira tapas y etiquetas cuando sea posible.</p>
+          <ul>
+            <li>Botellas PET (agua, gaseosas)</li>
+            <li>Envases de champú, detergente</li>
+            <li>Bolsas y empaques limpios</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No incluyas plásticos con restos de comida o aceite.</p>
+        </div>
+      </article>
+
+      <article class="guide-detail-card reveal" id="vidrio">
+        <div class="guide-detail-card__icon" style="background:var(--fondo-alt); color:var(--verde-oscuro);">🍾</div>
+        <div>
+          <h3>Vidrio</h3>
+          <p style="color:var(--texto-suave); margin:0;">Separa por color si el punto lo solicita y evita romperlo antes de llevarlo.</p>
+          <ul>
+            <li>Botellas y frascos</li>
+            <li>Envases de conservas</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No incluyas vidrio de ventanas, espejos ni bombillas.</p>
+        </div>
+      </article>
+
+      <article class="guide-detail-card reveal" id="papel">
+        <div class="guide-detail-card__icon" style="background:#E6EEFA; color:#4C7BDB;">📄</div>
+        <div>
+          <h3>Papel y cartón</h3>
+          <p style="color:var(--texto-suave); margin:0;">Mantenlo seco y sin restos de cinta adhesiva o grapas grandes.</p>
+          <ul>
+            <li>Periódicos y revistas</li>
+            <li>Cajas de cartón (aplastadas)</li>
+            <li>Hojas y cuadernos</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No incluyas papel encerado, servilletas usadas ni papel carbón.</p>
+        </div>
+      </article>
+
+      <article class="guide-detail-card reveal" id="metal">
+        <div class="guide-detail-card__icon" style="background:#EEEFF1; color:#5A6472;">🥫</div>
+        <div>
+          <h3>Metal</h3>
+          <p style="color:var(--texto-suave); margin:0;">Enjuaga las latas y, si puedes, aplástalas para ahorrar espacio.</p>
+          <ul>
+            <li>Latas de aluminio y conservas</li>
+            <li>Tapas metálicas</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No incluyas aerosoles sin vaciar ni metales oxidados peligrosos.</p>
+        </div>
+      </article>
+
+      <article class="guide-detail-card reveal" id="organico">
+        <div class="guide-detail-card__icon" style="background:#F7F4D9; color:#8A7A0A;">🌱</div>
+        <div>
+          <h3>Orgánico</h3>
+          <p style="color:var(--texto-suave); margin:0;">Ideal para compostaje comunitario; sepáralo del resto de residuos.</p>
+          <ul>
+            <li>Restos de frutas y verduras</li>
+            <li>Cáscaras de huevo, posos de café</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No incluyas carnes, lácteos ni aceites usados.</p>
+        </div>
+      </article>
+
+      <article class="guide-detail-card reveal" id="electronico">
+        <div class="guide-detail-card__icon" style="background:#F1E6FA; color:#A24CDB;">💻</div>
+        <div>
+          <h3>Electrónico</h3>
+          <p style="color:var(--texto-suave); margin:0;">Llévalo a un punto especializado; nunca lo mezcles con la basura común.</p>
+          <ul>
+            <li>Pilas y baterías</li>
+            <li>Celulares y cargadores en desuso</li>
+            <li>Pequeños electrodomésticos</li>
+          </ul>
+          <p class="guide-detail-card__no">✕ No los deseches en el contenedor de reciclaje regular.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="cta reveal" style="border-radius:var(--radio); margin-top:40px; padding:40px 24px;">
+      <div class="cta__inner">
+        <span class="cta__icon">📍</span>
+        <h2>¿Ya sabes qué reciclar?</h2>
+        <p>Encuentra el punto más cercano que reciba ese tipo de residuo.</p>
+        <div class="cta__actions">
+          <a href="mapa.html" class="btn btn--primary">Ir al mapa</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
+        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
+      </div>
+      <div class="footer__col">
+        <h4>Plataforma</h4>
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa interactivo</a>
+        <a href="guia.html">Guía de reciclaje</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+      <div class="footer__col">
+        <h4>Recursos</h4>
+        <a href="#">ODS 12 · Info</a>
+        <a href="proponer.html">Reportar punto</a>
+      </div>
+      <div class="footer__col">
+        <h4>Empresa</h4>
+        <a href="#">Sobre EcoMaps</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

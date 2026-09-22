@@ -61,4 +61,67 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Inicio de sesión con Google: pendiente de conectar.');
     });
   });
+
+  // ===== Animación al hacer scroll (una sola vez por elemento) =====
+  // Código verde: un único IntersectionObserver reutilizado, sin librerías externas.
+  const elementosRevelables = document.querySelectorAll('.reveal');
+  if (elementosRevelables.length && 'IntersectionObserver' in window) {
+    const observador = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (entrada.isIntersecting) {
+          entrada.target.classList.add('is-visible');
+          observador.unobserve(entrada.target); // deja de observar: ahorra recursos
+        }
+      });
+    }, { threshold: 0.15 });
+
+    elementosRevelables.forEach((el, i) => {
+      el.style.setProperty('--indice', i % 6); // escalona grupos de tarjetas
+      observador.observe(el);
+    });
+  } else {
+    elementosRevelables.forEach((el) => el.classList.add('is-visible'));
+  }
+
+  // ===== Filtros rápidos del mapa (chips de tipo de residuo) =====
+  document.querySelectorAll('.map-quicktags button').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.map-quicktags button').forEach((b) => b.classList.remove('is-active'));
+      chip.classList.add('is-active');
+      const buscador = document.getElementById('mapa-buscador');
+      if (buscador) buscador.value = chip.textContent.trim();
+    });
+  });
+
+  // ===== Pestañas del panel admin (marcar enlace activo) =====
+  document.querySelectorAll('.admin__nav a').forEach((link) => {
+    link.addEventListener('click', (evento) => {
+      if (link.getAttribute('href') !== '#') return;
+      evento.preventDefault();
+      document.querySelectorAll('.admin__nav a').forEach((a) => a.classList.remove('is-active'));
+      link.classList.add('is-active');
+    });
+  });
+
+  // ===== Formulario "Proponer punto": marcar ubicación de ejemplo en el mapa =====
+  const mapaPicker = document.querySelector('[data-map-picker]');
+  if (mapaPicker) {
+    mapaPicker.addEventListener('click', (evento) => {
+      const pin = mapaPicker.querySelector('.map-picker__pin');
+      const rect = mapaPicker.getBoundingClientRect();
+      const x = evento.clientX - rect.left;
+      const y = evento.clientY - rect.top;
+      let marcador = pin;
+      if (!marcador) {
+        marcador = document.createElement('div');
+        marcador.className = 'map-picker__pin';
+        marcador.textContent = '📍';
+        mapaPicker.appendChild(marcador);
+      }
+      marcador.style.left = `${x}px`;
+      marcador.style.top = `${y}px`;
+      const hint = mapaPicker.querySelector('.map-picker__hint');
+      if (hint) hint.textContent = 'Ubicación marcada (ejemplo)';
+    });
+  }
 });

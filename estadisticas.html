@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · Estadísticas e impacto</title>
+  <meta name="description" content="Datos de ejemplo sobre el alcance de la comunidad EcoMaps y su impacto ambiental.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav__link">Inicio</a>
+        <a href="mapa.html" class="nav__link">Mapa</a>
+        <a href="guia.html" class="nav__link">Guía de reciclaje</a>
+        <a href="estadisticas.html" class="nav__link nav__link--active">Estadísticas</a>
+      </nav>
+      <div class="header__actions">
+        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats-hero container">
+      <span class="badge badge--muted reveal">Impacto global</span>
+      <h1 class="reveal" style="color:var(--dark-moss-green); font-size:2.2rem; margin:12px 0 8px;">Estadísticas e impacto</h1>
+      <p class="reveal" style="color:var(--texto-suave); max-width:60ch;">Datos de ejemplo sobre el alcance de nuestra comunidad y el impacto ambiental que generamos juntos. Se conectarán a la base de datos real más adelante.</p>
+
+      <!-- Tarjetas resumen -->
+      <div class="stats-cards reveal-group">
+        <div class="stat-card reveal" style="--indice:0">
+          <div class="stat-card__icon">👥</div>
+          <div class="stat-card__value">148,320</div>
+          <p class="stat-card__label">Usuarios registrados</p>
+          <span class="stat-card__delta">+12% este mes</span>
+        </div>
+        <div class="stat-card reveal" style="--indice:1">
+          <div class="stat-card__icon">📍</div>
+          <div class="stat-card__value">3,847</div>
+          <p class="stat-card__label">Puntos de reciclaje activos</p>
+          <span class="stat-card__delta">+84 esta semana</span>
+        </div>
+        <div class="stat-card reveal" style="--indice:2">
+          <div class="stat-card__icon">♻</div>
+          <div class="stat-card__value">2.4M</div>
+          <p class="stat-card__label">Acciones de reciclaje totales</p>
+          <span class="stat-card__delta">+31% vs año anterior</span>
+        </div>
+        <div class="stat-card reveal" style="--indice:3">
+          <div class="stat-card__icon">🌱</div>
+          <div class="stat-card__value">9,240 t</div>
+          <p class="stat-card__label">CO₂ ahorrado</p>
+          <span class="stat-card__delta">Equivale a 412k árboles</span>
+        </div>
+      </div>
+
+      <!-- Gráficas (CSS/SVG puro, sin librerías externas) -->
+      <div class="charts-grid">
+        <div class="chart-card reveal">
+          <h3>Materiales más reciclados</h3>
+          <p>Toneladas procesadas — acumulado anual</p>
+          <div class="bar-chart">
+            <div class="bar-chart__col bar-chart__col--top">
+              <div class="bar-chart__bar" style="height:100%;"></div>
+              <span class="bar-chart__label">Plástico<br>PET</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:83%;"></div>
+              <span class="bar-chart__label">Cartón</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:63%;"></div>
+              <span class="bar-chart__label">Vidrio</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:49%;"></div>
+              <span class="bar-chart__label">Aluminio</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:44%;"></div>
+              <span class="bar-chart__label">Papel</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:31%;"></div>
+              <span class="bar-chart__label">Orgánico</span>
+            </div>
+            <div class="bar-chart__col">
+              <div class="bar-chart__bar" style="height:17%;"></div>
+              <span class="bar-chart__label">Electrónicos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card reveal">
+          <h3>Impacto general</h3>
+          <p>Por categoría ambiental</p>
+          <div class="donut-wrap">
+            <!-- Dona hecha con conic-gradient (CSS puro, sin SVG ni librerías) -->
+            <div class="donut" style="--p1:28%; --p2:49%; --p3:68%; --p4:85%;" role="img" aria-label="Distribución del impacto por categoría ambiental">
+              <div class="donut__hole"></div>
+            </div>
+            <div class="donut-legend">
+              <span><i class="legend-dot" style="background:var(--dark-moss-green)"></i> Residuos evitados</span>
+              <span><i class="legend-dot" style="background:var(--verde-claro)"></i> Agua conservada</span>
+              <span><i class="legend-dot" style="background:var(--flax)"></i> Emisiones reducidas</span>
+              <span><i class="legend-dot" style="background:var(--golden-brown)"></i> Energía recuperada</span>
+              <span><i class="legend-dot" style="background:#B7CBE0"></i> Suelo protegido</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logros / ranking (datos de ejemplo) -->
+      <div class="leaderboard reveal">
+        <div class="leaderboard__header">
+          <h2>Logros destacados de la comunidad</h2>
+          <a href="#" class="form__link">Ver ranking completo →</a>
+        </div>
+        <p style="margin:-8px 0 4px; color:var(--texto-suave); font-size:0.85rem;">Top recicladores del mes — septiembre 2026</p>
+
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">1</span>
+          <span class="leaderboard__avatar">CR</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Claudia Ramírez</div>
+            <div class="leaderboard__city">Ciudad de México</div>
+          </div>
+          <span class="leaderboard__badge">Recicladora Elite</span>
+          <div class="leaderboard__score">
+            <strong>1.248</strong> acciones
+            <div class="leaderboard__bar"><span style="width:100%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">2</span>
+          <span class="leaderboard__avatar">TH</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Tomás Herrera</div>
+            <div class="leaderboard__city">Guadalajara</div>
+          </div>
+          <span class="leaderboard__badge">Guardián Verde</span>
+          <div class="leaderboard__score">
+            <strong>1.041</strong> acciones
+            <div class="leaderboard__bar"><span style="width:83%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">3</span>
+          <span class="leaderboard__avatar">VC</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Valentina Cruz</div>
+            <div class="leaderboard__city">Monterrey</div>
+          </div>
+          <span class="leaderboard__badge">Eco Campeona</span>
+          <div class="leaderboard__score">
+            <strong>987</strong> acciones
+            <div class="leaderboard__bar"><span style="width:79%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">4</span>
+          <span class="leaderboard__avatar">DS</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Diego Salinas</div>
+            <div class="leaderboard__city">Puebla</div>
+          </div>
+          <span class="leaderboard__badge">Defensor del Planeta</span>
+          <div class="leaderboard__score">
+            <strong>876</strong> acciones
+            <div class="leaderboard__bar"><span style="width:70%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">5</span>
+          <span class="leaderboard__avatar">SM</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Sofía Mendoza</div>
+            <div class="leaderboard__city">Querétaro</div>
+          </div>
+          <span class="leaderboard__badge">Eco Estrella</span>
+          <div class="leaderboard__score">
+            <strong>803</strong> acciones
+            <div class="leaderboard__bar"><span style="width:64%"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-strip reveal" style="margin-bottom:56px;">
+        <div><strong>24,810</strong><span>Recicladores este mes</span></div>
+        <div><strong>187,420</strong><span>Acciones colectivas este mes</span></div>
+        <div><strong>842 t</strong><span>CO₂ evitado en septiembre</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
+        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
+      </div>
+      <div class="footer__col">
+        <h4>Plataforma</h4>
+        <a href="index.html">Inicio</a>
+        <a href="mapa.html">Mapa interactivo</a>
+        <a href="guia.html">Guía de reciclaje</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+      <div class="footer__col">
+        <h4>Recursos</h4>
+        <a href="#">ODS 12 · Info</a>
+        <a href="proponer.html">Reportar punto</a>
+      </div>
+      <div class="footer__col">
+        <h4>Empresa</h4>
+        <a href="#">Sobre EcoMaps</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
