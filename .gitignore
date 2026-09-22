@@ -1,5 +1,46 @@
-node_modules/
+# ===== EcoMaps - .gitignore =====
+
+# Variables de entorno / credenciales
 .env
+.env.*
+*.env
+config.py
+instance/
+
+# Base de datos (MySQL / SQLite local)
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+db_backup/
+dump.sql
+
+# Python / Flask
 __pycache__/
 *.pyc
+*.pyo
+venv/
+env/
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Node (si se usa para herramientas de frontend)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+logs/
+
+# Archivos del sistema operativo
 .DS_Store
+Thumbs.db
+
+# Editores / IDE
+.vscode/
+.idea/
+
+# Claves y certificados
+*.pem
+*.key
