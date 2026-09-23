@@ -17,13 +17,19 @@
         <span class="logo__text">Eco<strong>Maps</strong></span>
       </a>
 
-      <nav class="nav">
-        <a href="index.html" class="nav__link nav__link--active">Inicio</a>
+      <nav class="nav" id="menu-principal" aria-label="Navegación principal">
+        <a href="index.html" class="nav__link">Inicio</a>
         <a href="mapa.html" class="nav__link">Mapa</a>
-        <a href="guia.html" class="nav__link">Guía de reciclaje</a>
+        <a href="guia.html" class="nav__link">Guía</a>
+        <a href="actividad.html" class="nav__link">Actividades</a>
+        <a href="logros.html" class="nav__link">Logros</a>
+        <a href="empresas.html" class="nav__link">Empresas</a>
         <a href="estadisticas.html" class="nav__link">Estadísticas</a>
+        <a href="ods12.html" class="nav__link">ODS 12</a>
       </nav>
-
+      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
+        <span></span><span></span><span></span>
+      </button>
       <div class="header__actions">
         <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
         <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
@@ -163,6 +169,50 @@
       </div>
     </section>
 
+    <!-- ===== EXPLORA ECOMAPS ===== -->
+    <section class="section section--muted" id="explora-ecomaps">
+      <div class="container">
+        <div class="section__header reveal">
+          <span class="badge badge--muted">Explora EcoMaps</span>
+          <h2>Todo lo que puedes consultar</h2>
+          <p class="section__subtitle">Accede desde el menú a las diferentes secciones de la plataforma y conoce las herramientas disponibles.</p>
+        </div>
+
+        <div class="home-links-grid reveal-group">
+          <a href="actividad.html" class="home-link-card reveal" style="--indice:0">
+            <span class="home-link-card__icon">♻</span>
+            <div><h3>Actividades</h3><p>Registra tus acciones de reciclaje y consulta tu historial.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+          <a href="logros.html" class="home-link-card reveal" style="--indice:1">
+            <span class="home-link-card__icon">🏆</span>
+            <div><h3>Logros</h3><p>Conoce los puntos y reconocimientos de tu participación.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+          <a href="empresas.html" class="home-link-card reveal" style="--indice:2">
+            <span class="home-link-card__icon">🏢</span>
+            <div><h3>Empresas y organizaciones</h3><p>Consulta organizaciones relacionadas con el aprovechamiento de materiales.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+          <a href="ods12.html" class="home-link-card reveal" style="--indice:3">
+            <span class="home-link-card__icon">🌱</span>
+            <div><h3>ODS 12</h3><p>Aprende sobre producción y consumo responsables y su relación con EcoMaps.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+          <a href="proponer.html" class="home-link-card reveal" style="--indice:4">
+            <span class="home-link-card__icon">📍</span>
+            <div><h3>Proponer un punto</h3><p>Sugiere un nuevo punto de reciclaje para la comunidad.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+          <a href="reportar.html" class="home-link-card reveal" style="--indice:5">
+            <span class="home-link-card__icon">⚠</span>
+            <div><h3>Reportar problema</h3><p>Informa si encuentras información incorrecta en un punto.</p></div>
+            <span class="home-link-card__arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== CTA FINAL ===== -->
     <section class="section cta reveal">
       <div class="container cta__inner">
@@ -187,26 +237,26 @@
         <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
         <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
       </div>
-
       <div class="footer__col">
         <h4>Plataforma</h4>
         <a href="index.html">Inicio</a>
-        <a href="mapa.html">Mapa interactivo</a>
+        <a href="mapa.html">Mapa</a>
         <a href="guia.html">Guía de reciclaje</a>
         <a href="estadisticas.html">Estadísticas</a>
       </div>
-
       <div class="footer__col">
-        <h4>Recursos</h4>
-        <a href="#">ODS 12 · Info</a>
-        <a href="proponer.html">Reportar punto</a>
+        <h4>Comunidad</h4>
+        <a href="actividad.html">Actividades</a>
+        <a href="logros.html">Mis logros</a>
+        <a href="perfil.html">Mi perfil</a>
+        <a href="empresas.html">Empresas</a>
       </div>
-
       <div class="footer__col">
-        <h4>Empresa</h4>
-        <a href="#">Sobre EcoMaps</a>
-        <a href="#">Contacto</a>
-        <a href="admin.html">Panel admin (demo)</a>
+        <h4>Información</h4>
+        <a href="ods12.html">ODS 12</a>
+        <a href="proponer.html">Proponer punto</a>
+        <a href="reportar.html">Reportar problema</a>
+        <a href="login.html">Iniciar sesión</a>
       </div>
     </div>
 
