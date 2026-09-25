@@ -1,16 +1,16 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>EcoMaps · ODS 12</title><link rel="stylesheet" href="css/style.css"></head>
-<body><header class="header"><div class="container header__inner"><a href="index.html" class="logo"><img src="assets/img/logo.png" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a><nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="index.html" class="nav__link">Inicio</a>
-        <a href="mapa.html" class="nav__link">Mapa</a>
-        <a href="guia.html" class="nav__link">Guía</a>
-        <a href="actividad.html" class="nav__link">Actividades</a>
-        <a href="logros.html" class="nav__link">Logros</a>
-        <a href="empresas.html" class="nav__link">Empresas</a>
-        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
-        <a href="ods12.html" class="nav__link">ODS 12</a>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>EcoMaps · ODS 12</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body><header class="header"><div class="container header__inner"><a href="{{ url_for('paginas.inicio') }}" class="logo"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a><nav class="nav" id="menu-principal" aria-label="Navegación principal">
+        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
+        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
+        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
+        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav><button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
         <span></span><span></span><span></span>
-      </button><div class="header__actions"><a href="login.html" class="btn btn--ghost">Iniciar sesión</a><a href="login.html#registro" class="btn btn--primary">Crear cuenta</a></div></div></header>
+      </button><div class="header__actions"><a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a><a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a></div></div></header>
 <main><section class="ods-hero"><div class="container ods-hero__inner"><div class="reveal"><span class="badge">ODS 12 · Producción y Consumo Responsables</span><h1>Producir y consumir de manera responsable.</h1><p>El ODS 12 busca garantizar modalidades de consumo y producción sostenibles, promoviendo el uso eficiente de los recursos y la reducción de residuos.</p><a href="#metas" class="btn btn--primary">Conocer las metas</a></div><div class="ods-number reveal" style="--indice:1"><strong>12</strong><span>Objetivo de Desarrollo Sostenible</span></div></div></section>
 <section class="section"><div class="container two-column-info"><div class="info-copy reveal"><span class="badge">¿Qué es?</span><h2>Una forma más responsable de producir y consumir</h2><p>El ODS 12 forma parte de los 17 Objetivos de Desarrollo Sostenible de la Agenda 2030. Su propósito es promover modelos que permitan satisfacer las necesidades actuales utilizando los recursos naturales de manera eficiente y reduciendo los impactos ambientales.</p><p>La producción y el consumo responsables involucran a gobiernos, empresas, organizaciones y ciudadanía. Cada etapa, desde la extracción de materias primas hasta el uso y disposición de un producto, puede generar impactos sobre el ambiente.</p></div><div class="info-card reveal" style="--indice:1"><h3>¿Por qué es importante?</h3><ul class="check-list"><li>Reduce el desperdicio de recursos.</li><li>Disminuye la generación de residuos.</li><li>Promueve el reciclaje y la reutilización.</li><li>Favorece procesos productivos más eficientes.</li><li>Impulsa hábitos de consumo conscientes.</li></ul></div></div></section>
 <section class="section section--muted" id="metas"><div class="container"><div class="section__header reveal"><span class="badge badge--muted">Metas principales</span><h2>¿Qué busca lograr el ODS 12?</h2><p class="section__subtitle">Estas metas orientan acciones para transformar los modelos de producción y consumo.</p></div><div class="goal-grid reveal-group">
@@ -21,32 +21,32 @@
 <section class="section section--muted"><div class="container source-box"><h2>Fuentes</h2><p>Para ampliar la información sobre el ODS 12, consulta las fuentes oficiales de Naciones Unidas y las entidades ambientales correspondientes.</p><ul><li>Naciones Unidas · Objetivos de Desarrollo Sostenible.</li><li>Programa de las Naciones Unidas para el Medio Ambiente (PNUMA).</li><li>Departamento Nacional de Planeación de Colombia.</li><li>Ministerio de Ambiente y Desarrollo Sostenible de Colombia.</li></ul></div></section></main>
 <footer class="footer"><div class="container footer__inner">
       <div class="footer__brand">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
         <span class="logo__text">Eco<strong>Maps</strong></span>
         <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
         <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
       </div>
       <div class="footer__col">
         <h4>Plataforma</h4>
-        <a href="index.html">Inicio</a>
-        <a href="mapa.html">Mapa</a>
-        <a href="guia.html">Guía de reciclaje</a>
-        <a href="estadisticas.html">Estadísticas</a>
+        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
+        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
         <h4>Comunidad</h4>
-        <a href="actividad.html">Actividades</a>
-        <a href="logros.html">Mis logros</a>
-        <a href="perfil.html">Mi perfil</a>
-        <a href="empresas.html">Empresas</a>
+        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
+        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
+        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>
-        <a href="ods12.html">ODS 12</a>
-        <a href="proponer.html">Proponer punto</a>
-        <a href="reportar.html">Reportar problema</a>
-        <a href="login.html">Iniciar sesión</a>
+        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
+        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
+        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
     </div>
 
-    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer><script src="js/main.js"></script></body></html>
+    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer><script src="{{ url_for('static', filename='js/main.js') }}"></script></body></html>

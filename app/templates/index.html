@@ -5,34 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Encuentra puntos de reciclaje</title>
   <meta name="description" content="EcoMaps: localiza puntos de reciclaje cercanos, aprende a separar tus residuos y contribuye al ODS 12.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
   <!-- ===== HEADER / NAV ===== -->
   <header class="header">
     <div class="container header__inner">
-      <a href="index.html" class="logo">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+      <a href="{{ url_for('paginas.inicio') }}" class="logo">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
         <span class="logo__text">Eco<strong>Maps</strong></span>
       </a>
 
       <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="index.html" class="nav__link">Inicio</a>
-        <a href="mapa.html" class="nav__link">Mapa</a>
-        <a href="guia.html" class="nav__link">Guía</a>
-        <a href="actividad.html" class="nav__link">Actividades</a>
-        <a href="logros.html" class="nav__link">Logros</a>
-        <a href="empresas.html" class="nav__link">Empresas</a>
-        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
-        <a href="ods12.html" class="nav__link">ODS 12</a>
+        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
+        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
+        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
+        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav>
       <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
         <span></span><span></span><span></span>
       </button>
       <div class="header__actions">
-        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
       </div>
     </div>
   </header>
@@ -48,7 +48,7 @@
           <p class="hero__text">Encuentra puntos de reciclaje, descubre cómo separar tus residuos y contribuye a un consumo más responsable.</p>
 
           <!-- Buscador de residuos -->
-          <form class="search-bar" action="mapa.html" method="get">
+          <form class="search-bar" action="{{ url_for('paginas.mapa') }}" method="get">
             <label for="buscar-residuo" class="visually-hidden">¿Qué quieres reciclar?</label>
             <span class="search-bar__icon">🔍</span>
             <input
@@ -63,7 +63,7 @@
           </form>
 
           <div class="hero__extra">
-            <a href="mapa.html" class="link-icon">📍 Explorar mapa</a>
+            <a href="{{ url_for('paginas.mapa') }}" class="link-icon">📍 Explorar mapa</a>
             <span class="hero__stat">+1.250 usuarios ya reciclando</span>
           </div>
         </div>
@@ -120,7 +120,7 @@
         </div>
 
         <div class="section__footer">
-          <a href="mapa.html" class="btn btn--outline">Ver todos los puntos en el mapa</a>
+          <a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver todos los puntos en el mapa</a>
         </div>
       </div>
     </section>
@@ -135,32 +135,32 @@
         </div>
 
         <div class="guide-grid reveal-group">
-          <a href="guia.html#plastico" class="guide-card guide-card--plastico reveal" style="--indice:0">
+          <a href="{{ url_for('paginas.guia') }}#plastico" class="guide-card guide-card--plastico reveal" style="--indice:0">
             <span class="guide-card__dot"></span>
             <h3>Plástico</h3>
             <p>Botellas PET, envases</p>
           </a>
-          <a href="guia.html#vidrio" class="guide-card guide-card--vidrio reveal" style="--indice:1">
+          <a href="{{ url_for('paginas.guia') }}#vidrio" class="guide-card guide-card--vidrio reveal" style="--indice:1">
             <span class="guide-card__dot"></span>
             <h3>Vidrio</h3>
             <p>Botellas, tarros</p>
           </a>
-          <a href="guia.html#papel" class="guide-card guide-card--papel reveal" style="--indice:2">
+          <a href="{{ url_for('paginas.guia') }}#papel" class="guide-card guide-card--papel reveal" style="--indice:2">
             <span class="guide-card__dot"></span>
             <h3>Papel</h3>
             <p>Periódicos, cajas</p>
           </a>
-          <a href="guia.html#metal" class="guide-card guide-card--metal reveal" style="--indice:3">
+          <a href="{{ url_for('paginas.guia') }}#metal" class="guide-card guide-card--metal reveal" style="--indice:3">
             <span class="guide-card__dot"></span>
             <h3>Metal</h3>
             <p>Latas, aluminio</p>
           </a>
-          <a href="guia.html#organico" class="guide-card guide-card--organico reveal" style="--indice:4">
+          <a href="{{ url_for('paginas.guia') }}#organico" class="guide-card guide-card--organico reveal" style="--indice:4">
             <span class="guide-card__dot"></span>
             <h3>Orgánico</h3>
             <p>Restos de comida</p>
           </a>
-          <a href="guia.html#electronico" class="guide-card guide-card--electronico reveal" style="--indice:5">
+          <a href="{{ url_for('paginas.guia') }}#electronico" class="guide-card guide-card--electronico reveal" style="--indice:5">
             <span class="guide-card__dot"></span>
             <h3>Electrónico</h3>
             <p>Pilas, aparatos</p>
@@ -179,32 +179,32 @@
         </div>
 
         <div class="home-links-grid reveal-group">
-          <a href="actividad.html" class="home-link-card reveal" style="--indice:0">
+          <a href="{{ url_for('paginas.actividad') }}" class="home-link-card reveal" style="--indice:0">
             <span class="home-link-card__icon">♻</span>
             <div><h3>Actividades</h3><p>Registra tus acciones de reciclaje y consulta tu historial.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
-          <a href="logros.html" class="home-link-card reveal" style="--indice:1">
+          <a href="{{ url_for('paginas.logros') }}" class="home-link-card reveal" style="--indice:1">
             <span class="home-link-card__icon">🏆</span>
             <div><h3>Logros</h3><p>Conoce los puntos y reconocimientos de tu participación.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
-          <a href="empresas.html" class="home-link-card reveal" style="--indice:2">
+          <a href="{{ url_for('paginas.empresas') }}" class="home-link-card reveal" style="--indice:2">
             <span class="home-link-card__icon">🏢</span>
             <div><h3>Empresas y organizaciones</h3><p>Consulta organizaciones relacionadas con el aprovechamiento de materiales.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
-          <a href="ods12.html" class="home-link-card reveal" style="--indice:3">
+          <a href="{{ url_for('paginas.ods12') }}" class="home-link-card reveal" style="--indice:3">
             <span class="home-link-card__icon">🌱</span>
             <div><h3>ODS 12</h3><p>Aprende sobre producción y consumo responsables y su relación con EcoMaps.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
-          <a href="proponer.html" class="home-link-card reveal" style="--indice:4">
+          <a href="{{ url_for('paginas.proponer') }}" class="home-link-card reveal" style="--indice:4">
             <span class="home-link-card__icon">📍</span>
             <div><h3>Proponer un punto</h3><p>Sugiere un nuevo punto de reciclaje para la comunidad.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
-          <a href="reportar.html" class="home-link-card reveal" style="--indice:5">
+          <a href="{{ url_for('paginas.reportar') }}" class="home-link-card reveal" style="--indice:5">
             <span class="home-link-card__icon">⚠</span>
             <div><h3>Reportar problema</h3><p>Informa si encuentras información incorrecta en un punto.</p></div>
             <span class="home-link-card__arrow">→</span>
@@ -220,8 +220,8 @@
         <h2>Empieza a reciclar <span class="text-accent">hoy</span></h2>
         <p>Únete a la comunidad de EcoMaps y conviértete en parte del cambio hacia una ciudad más limpia y sostenible.</p>
         <div class="cta__actions">
-          <a href="login.html#registro" class="btn btn--primary">Crear cuenta gratis</a>
-          <a href="guia.html" class="btn btn--ghost">Ver cómo funciona →</a>
+          <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta gratis</a>
+          <a href="{{ url_for('paginas.guia') }}" class="btn btn--ghost">Ver cómo funciona →</a>
         </div>
       </div>
     </section>
@@ -232,31 +232,31 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
         <span class="logo__text">Eco<strong>Maps</strong></span>
         <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
         <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
       </div>
       <div class="footer__col">
         <h4>Plataforma</h4>
-        <a href="index.html">Inicio</a>
-        <a href="mapa.html">Mapa</a>
-        <a href="guia.html">Guía de reciclaje</a>
-        <a href="estadisticas.html">Estadísticas</a>
+        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
+        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
         <h4>Comunidad</h4>
-        <a href="actividad.html">Actividades</a>
-        <a href="logros.html">Mis logros</a>
-        <a href="perfil.html">Mi perfil</a>
-        <a href="empresas.html">Empresas</a>
+        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
+        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
+        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>
-        <a href="ods12.html">ODS 12</a>
-        <a href="proponer.html">Proponer punto</a>
-        <a href="reportar.html">Reportar problema</a>
-        <a href="login.html">Iniciar sesión</a>
+        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
+        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
+        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
     </div>
 
@@ -265,6 +265,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
