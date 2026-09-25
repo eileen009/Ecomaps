@@ -5,38 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Proponer nuevo punto</title>
   <meta name="description" content="Propón un nuevo punto de reciclaje para que la comunidad EcoMaps lo encuentre en el mapa.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
   <header class="header">
     <div class="container header__inner">
-      <a href="index.html" class="logo">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="36" height="36">
+      <a href="{{ url_for('paginas.inicio') }}" class="logo">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
         <span class="logo__text">Eco<strong>Maps</strong></span>
       </a>
       <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="index.html" class="nav__link">Inicio</a>
-        <a href="mapa.html" class="nav__link">Mapa</a>
-        <a href="guia.html" class="nav__link">Guía</a>
-        <a href="actividad.html" class="nav__link">Actividades</a>
-        <a href="logros.html" class="nav__link">Logros</a>
-        <a href="empresas.html" class="nav__link">Empresas</a>
-        <a href="estadisticas.html" class="nav__link">Estadísticas</a>
-        <a href="ods12.html" class="nav__link">ODS 12</a>
+        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
+        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
+        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
+        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav>
       <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
         <span></span><span></span><span></span>
       </button>
       <div class="header__actions">
-        <a href="login.html" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="login.html#registro" class="btn btn--primary">Crear cuenta</a>
+        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
+        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
       </div>
     </div>
   </header>
 
   <main class="container form-page">
-    <p class="breadcrumb"><a href="index.html">Inicio</a> › <a href="mapa.html">Puntos de reciclaje</a> › Proponer nuevo punto</p>
+    <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › <a href="{{ url_for('paginas.mapa') }}">Puntos de reciclaje</a> › Proponer nuevo punto</p>
 
     <div class="form-page__header reveal">
       <div class="form-page__header-icon">📍</div>
@@ -131,31 +131,31 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="32" height="32">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
         <span class="logo__text">Eco<strong>Maps</strong></span>
         <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
         <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
       </div>
       <div class="footer__col">
         <h4>Plataforma</h4>
-        <a href="index.html">Inicio</a>
-        <a href="mapa.html">Mapa</a>
-        <a href="guia.html">Guía de reciclaje</a>
-        <a href="estadisticas.html">Estadísticas</a>
+        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
+        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
+        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
+        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
         <h4>Comunidad</h4>
-        <a href="actividad.html">Actividades</a>
-        <a href="logros.html">Mis logros</a>
-        <a href="perfil.html">Mi perfil</a>
-        <a href="empresas.html">Empresas</a>
+        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
+        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
+        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
+        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>
-        <a href="ods12.html">ODS 12</a>
-        <a href="proponer.html">Proponer punto</a>
-        <a href="reportar.html">Reportar problema</a>
-        <a href="login.html">Iniciar sesión</a>
+        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
+        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
+        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
     </div>
 
@@ -164,6 +164,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

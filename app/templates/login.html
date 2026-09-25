@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Inicia sesión o crea tu cuenta</title>
   <meta name="description" content="Inicia sesión o crea tu cuenta en EcoMaps para localizar puntos de reciclaje y registrar tu impacto.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="auth-body">
 
@@ -13,8 +13,8 @@
 
     <!-- ===== PANEL IZQUIERDO: marca / beneficios ===== -->
     <aside class="auth__side">
-      <a href="index.html" class="logo logo--onlight">
-        <img src="assets/img/logo.png" alt="EcoMaps" class="logo__img" width="40" height="40">
+      <a href="{{ url_for('paginas.inicio') }}" class="logo logo--onlight">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="40" height="40">
         <span class="logo__text">EcoMaps</span>
       </a>
 
@@ -131,6 +131,6 @@
     </main>
   </div>
 
-  <script src="js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
