@@ -18,11 +18,7 @@
       <nav class="nav" id="menu-principal" aria-label="Navegación principal">
         <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
         <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
-        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
-        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
-        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
         <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav>
       <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
@@ -39,7 +35,7 @@
     <section class="stats-hero container">
       <span class="badge badge--muted reveal">Impacto global</span>
       <h1 class="reveal" style="color:var(--dark-moss-green); font-size:2.2rem; margin:12px 0 8px;">Estadísticas e impacto</h1>
-      <p class="reveal" style="color:var(--texto-suave); max-width:60ch;">Datos de ejemplo sobre el alcance de nuestra comunidad y el impacto ambiental que generamos juntos. Se conectarán a la base de datos real más adelante.</p>
+      <p class="reveal" style="color:var(--texto-suave); max-width:60ch;">Cifras generales (datos de ejemplo) que muestran el aporte de la comunidad EcoMaps al ODS 12: Producción y consumo responsables. Se conectarán a la base de datos real más adelante.</p>
 
       <!-- Tarjetas resumen -->
       <div class="stats-cards reveal-group">
@@ -125,81 +121,6 @@
         </div>
       </div>
 
-      <!-- Logros / ranking (datos de ejemplo) -->
-      <div class="leaderboard reveal">
-        <div class="leaderboard__header">
-          <h2>Logros destacados de la comunidad</h2>
-          <a href="#" class="form__link">Ver ranking completo →</a>
-        </div>
-        <p style="margin:-8px 0 4px; color:var(--texto-suave); font-size:0.85rem;">Top recicladores del mes — septiembre 2026</p>
-
-        <div class="leaderboard__row">
-          <span class="leaderboard__rank">1</span>
-          <span class="leaderboard__avatar">CR</span>
-          <div class="leaderboard__info">
-            <div class="leaderboard__name">Claudia Ramírez</div>
-            <div class="leaderboard__city">Ciudad de México</div>
-          </div>
-          <span class="leaderboard__badge">Recicladora Elite</span>
-          <div class="leaderboard__score">
-            <strong>1.248</strong> acciones
-            <div class="leaderboard__bar"><span style="width:100%"></span></div>
-          </div>
-        </div>
-        <div class="leaderboard__row">
-          <span class="leaderboard__rank">2</span>
-          <span class="leaderboard__avatar">TH</span>
-          <div class="leaderboard__info">
-            <div class="leaderboard__name">Tomás Herrera</div>
-            <div class="leaderboard__city">Guadalajara</div>
-          </div>
-          <span class="leaderboard__badge">Guardián Verde</span>
-          <div class="leaderboard__score">
-            <strong>1.041</strong> acciones
-            <div class="leaderboard__bar"><span style="width:83%"></span></div>
-          </div>
-        </div>
-        <div class="leaderboard__row">
-          <span class="leaderboard__rank">3</span>
-          <span class="leaderboard__avatar">VC</span>
-          <div class="leaderboard__info">
-            <div class="leaderboard__name">Valentina Cruz</div>
-            <div class="leaderboard__city">Monterrey</div>
-          </div>
-          <span class="leaderboard__badge">Eco Campeona</span>
-          <div class="leaderboard__score">
-            <strong>987</strong> acciones
-            <div class="leaderboard__bar"><span style="width:79%"></span></div>
-          </div>
-        </div>
-        <div class="leaderboard__row">
-          <span class="leaderboard__rank">4</span>
-          <span class="leaderboard__avatar">DS</span>
-          <div class="leaderboard__info">
-            <div class="leaderboard__name">Diego Salinas</div>
-            <div class="leaderboard__city">Puebla</div>
-          </div>
-          <span class="leaderboard__badge">Defensor del Planeta</span>
-          <div class="leaderboard__score">
-            <strong>876</strong> acciones
-            <div class="leaderboard__bar"><span style="width:70%"></span></div>
-          </div>
-        </div>
-        <div class="leaderboard__row">
-          <span class="leaderboard__rank">5</span>
-          <span class="leaderboard__avatar">SM</span>
-          <div class="leaderboard__info">
-            <div class="leaderboard__name">Sofía Mendoza</div>
-            <div class="leaderboard__city">Querétaro</div>
-          </div>
-          <span class="leaderboard__badge">Eco Estrella</span>
-          <div class="leaderboard__score">
-            <strong>803</strong> acciones
-            <div class="leaderboard__bar"><span style="width:64%"></span></div>
-          </div>
-        </div>
-      </div>
-
       <div class="summary-strip reveal" style="margin-bottom:56px;">
         <div><strong>24,810</strong><span>Recicladores este mes</span></div>
         <div><strong>187,420</strong><span>Acciones colectivas este mes</span></div>
@@ -224,11 +145,9 @@
         <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
-        <h4>Comunidad</h4>
-        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
-        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
-        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
+        <h4>Tu cuenta</h4>
+        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>

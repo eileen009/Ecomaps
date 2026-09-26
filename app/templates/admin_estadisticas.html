@@ -1,0 +1,107 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Estadísticas{% endblock %}
+{% block migas %}Estadísticas{% endblock %}
+
+{% block contenido %}
+      <h1>Estadísticas detalladas</h1>
+      <p>Actividad interna y ranking de usuarios — visible solo para el equipo administrador.</p>
+
+      <div class="stats-cards reveal-group" style="margin:24px 0;">
+        <div class="stat-card reveal" style="--indice:0">
+          <div class="stat-card__icon">👥</div>
+          <div class="stat-card__value">148,320</div>
+          <p class="stat-card__label">Usuarios registrados</p>
+          <span class="stat-card__delta">+12% este mes</span>
+        </div>
+        <div class="stat-card reveal" style="--indice:1">
+          <div class="stat-card__icon">🕒</div>
+          <div class="stat-card__value">8</div>
+          <p class="stat-card__label">Puntos pendientes de revisión</p>
+        </div>
+        <div class="stat-card reveal" style="--indice:2">
+          <div class="stat-card__icon">⚠️</div>
+          <div class="stat-card__value">5</div>
+          <p class="stat-card__label">Reportes abiertos</p>
+        </div>
+        <div class="stat-card reveal" style="--indice:3">
+          <div class="stat-card__icon">✨</div>
+          <div class="stat-card__value">24,810</div>
+          <p class="stat-card__label">Recicladores activos este mes</p>
+        </div>
+      </div>
+
+      <!-- Ranking con nombres de usuarios: dato personal, solo visible aquí (panel admin) -->
+      <div class="leaderboard reveal">
+        <div class="leaderboard__header">
+          <h2>Ranking de usuarios</h2>
+        </div>
+        <p style="margin:-8px 0 4px; color:var(--texto-suave); font-size:0.85rem;">Top recicladores del mes — septiembre 2026</p>
+
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">1</span>
+          <span class="leaderboard__avatar">CR</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Claudia Ramírez</div>
+            <div class="leaderboard__city">Ciudad de México</div>
+          </div>
+          <span class="leaderboard__badge">Recicladora Elite</span>
+          <div class="leaderboard__score">
+            <strong>1.248</strong> acciones
+            <div class="leaderboard__bar"><span style="width:100%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">2</span>
+          <span class="leaderboard__avatar">TH</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Tomás Herrera</div>
+            <div class="leaderboard__city">Guadalajara</div>
+          </div>
+          <span class="leaderboard__badge">Guardián Verde</span>
+          <div class="leaderboard__score">
+            <strong>1.041</strong> acciones
+            <div class="leaderboard__bar"><span style="width:83%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">3</span>
+          <span class="leaderboard__avatar">VC</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Valentina Cruz</div>
+            <div class="leaderboard__city">Monterrey</div>
+          </div>
+          <span class="leaderboard__badge">Eco Campeona</span>
+          <div class="leaderboard__score">
+            <strong>987</strong> acciones
+            <div class="leaderboard__bar"><span style="width:79%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">4</span>
+          <span class="leaderboard__avatar">DS</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Diego Salinas</div>
+            <div class="leaderboard__city">Puebla</div>
+          </div>
+          <span class="leaderboard__badge">Defensor del Planeta</span>
+          <div class="leaderboard__score">
+            <strong>876</strong> acciones
+            <div class="leaderboard__bar"><span style="width:70%"></span></div>
+          </div>
+        </div>
+        <div class="leaderboard__row">
+          <span class="leaderboard__rank">5</span>
+          <span class="leaderboard__avatar">SM</span>
+          <div class="leaderboard__info">
+            <div class="leaderboard__name">Sofía Mendoza</div>
+            <div class="leaderboard__city">Querétaro</div>
+          </div>
+          <span class="leaderboard__badge">Eco Estrella</span>
+          <div class="leaderboard__score">
+            <strong>803</strong> acciones
+            <div class="leaderboard__bar"><span style="width:64%"></span></div>
+          </div>
+        </div>
+      </div>
+{% endblock %}

@@ -20,11 +20,7 @@
       <nav class="nav" id="menu-principal" aria-label="Navegación principal">
         <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
         <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
-        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
-        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
-        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
         <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav>
       <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
@@ -179,19 +175,9 @@
         </div>
 
         <div class="home-links-grid reveal-group">
-          <a href="{{ url_for('paginas.actividad') }}" class="home-link-card reveal" style="--indice:0">
-            <span class="home-link-card__icon">♻</span>
-            <div><h3>Actividades</h3><p>Registra tus acciones de reciclaje y consulta tu historial.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
-          <a href="{{ url_for('paginas.logros') }}" class="home-link-card reveal" style="--indice:1">
-            <span class="home-link-card__icon">🏆</span>
-            <div><h3>Logros</h3><p>Conoce los puntos y reconocimientos de tu participación.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
-          <a href="{{ url_for('paginas.empresas') }}" class="home-link-card reveal" style="--indice:2">
-            <span class="home-link-card__icon">🏢</span>
-            <div><h3>Empresas y organizaciones</h3><p>Consulta organizaciones relacionadas con el aprovechamiento de materiales.</p></div>
+          <a href="{{ url_for('paginas.login') }}" class="home-link-card reveal" style="--indice:0">
+            <span class="home-link-card__icon">👤</span>
+            <div><h3>Mi cuenta</h3><p>Inicia sesión para ver tus actividades, logros y perfil.</p></div>
             <span class="home-link-card__arrow">→</span>
           </a>
           <a href="{{ url_for('paginas.ods12') }}" class="home-link-card reveal" style="--indice:3">
@@ -245,11 +231,9 @@
         <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
-        <h4>Comunidad</h4>
-        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
-        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
-        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
+        <h4>Tu cuenta</h4>
+        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>
