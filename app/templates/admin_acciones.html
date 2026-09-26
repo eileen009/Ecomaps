@@ -1,0 +1,17 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Aportes por confirmar{% endblock %}
+{% block migas %}Aportes por confirmar{% endblock %}
+
+{% block contenido %}
+      <h1>Aportes por confirmar</h1>
+      <p>Revisa la foto de cada aporte antes de asignar los puntos al usuario.</p>
+
+      <div id="lista-acciones" class="admin-acciones-grid reveal-group" style="margin-top:24px;">
+        <p class="map-layout__panel-vacio">Cargando…</p>
+      </div>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/admin_acciones.js') }}"></script>
+{% endblock %}

@@ -1,33 +1,16 @@
-// EcoMaps - lógica principal
-// Por ahora: solo interacción de la interfaz (pestañas de login/registro).
-// Sin conexión a backend todavía.
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ===== Pestañas de la página de login/registro =====
-  const tabButtons = document.querySelectorAll('[data-tab]');
-  const tabPanels = document.querySelectorAll('.tabs__panel');
-
-  const activarPestana = (nombre) => {
-    tabButtons.forEach((btn) => {
-      const activo = btn.dataset.tab === nombre;
-      btn.classList.toggle('is-active', activo);
-      btn.setAttribute('aria-selected', activo);
-    });
-    tabPanels.forEach((panel) => {
-      const activo = panel.id === `panel-${nombre}`;
-      panel.classList.toggle('is-active', activo);
-      panel.hidden = !activo;
-    });
-  };// =========================================================
+// =========================================================
 // EcoMaps · JavaScript del frontend
-// Solo interacción visual/demostrativa. Sin backend todavía.
 // =========================================================
 
+const CLAVE_SESION = 'ecomaps_sesion';
+
 document.addEventListener('DOMContentLoaded', () => {
+  initProteccionPagina();
   initMobileMenu();
+  initEstadoSesion();
   initLoginTabs();
   initPasswordToggle();
+  initAuthForms();
   initDemoForms();
   initGoogleDemo();
   initScrollReveal();
@@ -35,6 +18,68 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdminNavigation();
   initMapPicker();
 });
+
+// ===== Sesión (JWT guardado en localStorage tras iniciar sesión) =====
+function obtenerSesion() {
+  try {
+    const bruto = localStorage.getItem(CLAVE_SESION);
+    return bruto ? JSON.parse(bruto) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function guardarSesion(usuario, token) {
+  try {
+    localStorage.setItem(CLAVE_SESION, JSON.stringify({ usuario, token }));
+  } catch (error) {
+    // localStorage no disponible (modo privado, etc.): la sesión no persiste.
+  }
+}
+
+function cerrarSesion() {
+  try {
+    localStorage.removeItem(CLAVE_SESION);
+  } catch (error) { /* nada que limpiar */ }
+  window.location.href = '/login';
+}
+
+// Páginas privadas (perfil, actividades, logros, panel admin): si no hay
+// sesión (o no tiene el rol requerido), se redirige a login antes de
+// mostrar nada. Se marca en <body data-requiere-sesion="true"> o
+// <body data-requiere-rol="admin">.
+function initProteccionPagina() {
+  const body = document.body;
+  const requiereSesion = body.dataset.requiereSesion === 'true';
+  const requiereRol = body.dataset.requiereRol;
+  if (!requiereSesion && !requiereRol) return;
+
+  const sesion = obtenerSesion();
+  const rolValido = !requiereRol || (sesion && sesion.usuario.rol === requiereRol);
+
+  if (!sesion || !rolValido) {
+    const siguiente = encodeURIComponent(window.location.pathname);
+    window.location.href = `/login?next=${siguiente}`;
+  }
+}
+
+// Cambia "Iniciar sesión / Crear cuenta" del header por el usuario activo.
+function initEstadoSesion() {
+  const sesion = obtenerSesion();
+  if (!sesion) return;
+
+  document.querySelectorAll('.header__actions').forEach((contenedor) => {
+    const nombre = (sesion.usuario.nombre || 'Mi cuenta').split(' ')[0];
+    contenedor.innerHTML = `
+      <a href="/perfil" class="btn btn--ghost">👤 ${nombre}</a>
+      <button type="button" class="btn btn--primary" data-cerrar-sesion>Cerrar sesión</button>
+    `;
+  });
+
+  document.querySelectorAll('[data-cerrar-sesion]').forEach((boton) => {
+    boton.addEventListener('click', cerrarSesion);
+  });
+}
 
 // ===== Menú principal =====
 function initMobileMenu() {
@@ -46,13 +91,6 @@ function initMobileMenu() {
     const abierto = nav.classList.toggle('nav--open');
     toggle.setAttribute('aria-expanded', String(abierto));
     toggle.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
-  });
-
-  // Marca automáticamente la página actual.
-  const pagina = window.location.pathname.split('/').pop() || 'index.html';
-  nav.querySelectorAll('.nav__link').forEach((link) => {
-    const activa = link.getAttribute('href') === pagina;
-    link.classList.toggle('nav__link--active', activa);
   });
 }
 
@@ -101,12 +139,67 @@ function initPasswordToggle() {
   });
 }
 
-// ===== Formularios de demostración =====
+// ===== Login / registro reales (conectados al backend) =====
+function initAuthForms() {
+  const formLogin = document.querySelector('[data-auth-form="login"]');
+  const formRegistro = document.querySelector('[data-auth-form="registro"]');
+  if (!formLogin && !formRegistro) return;
+
+  const enviar = async (form, endpoint, cuerpo) => {
+    const errorEl = form.querySelector('[data-form-error]');
+    if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+    const boton = form.querySelector('button[type="submit"]');
+    if (boton) boton.disabled = true;
+
+    try {
+      const respuesta = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cuerpo),
+      });
+      const datos = await respuesta.json();
+      if (!respuesta.ok) throw new Error(datos.error || 'No se pudo completar la solicitud.');
+
+      guardarSesion(datos.usuario, datos.access_token);
+      const siguiente = new URLSearchParams(window.location.search).get('next');
+      window.location.href = siguiente || '/perfil';
+    } catch (error) {
+      if (errorEl) {
+        errorEl.textContent = error.message;
+        errorEl.hidden = false;
+      }
+    } finally {
+      if (boton) boton.disabled = false;
+    }
+  };
+
+  if (formLogin) {
+    formLogin.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      enviar(formLogin, '/api/auth/login', {
+        correo: formLogin.querySelector('#login-email').value.trim(),
+        password: formLogin.querySelector('#login-password').value,
+      });
+    });
+  }
+
+  if (formRegistro) {
+    formRegistro.addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      enviar(formRegistro, '/api/auth/registro', {
+        nombre: formRegistro.querySelector('#registro-nombre').value.trim(),
+        correo: formRegistro.querySelector('#registro-email').value.trim(),
+        password: formRegistro.querySelector('#registro-password').value,
+      });
+    });
+  }
+}
+
+// ===== Formularios de demostración que aún no tienen backend propio =====
 function initDemoForms() {
   const mensajes = {
-    actividad: 'Actividad registrada como demostración. Más adelante se conectará con la base de datos.',
     perfil: 'Cambios guardados como demostración. Más adelante se conectarán con tu cuenta.',
-    reporte: 'Reporte enviado como demostración. Más adelante será almacenado para revisión.'
+    reporte: 'Reporte enviado como demostración. Más adelante será almacenado para revisión.',
   };
 
   document.querySelectorAll('[data-demo-form]').forEach((form) => {
@@ -144,7 +237,7 @@ function initScrollReveal() {
       entradas.forEach((entrada) => {
         if (entrada.isIntersecting) {
           entrada.target.classList.add('is-visible');
-          observador.unobserve(entrada.target);
+          observador.unobserve(entrada.target); // deja de observar: ahorra recursos
         }
       });
     }, { threshold: 0.15 });
@@ -158,7 +251,9 @@ function initScrollReveal() {
   }
 }
 
-// ===== Filtros rápidos del mapa =====
+// ===== Filtros rápidos del mapa (chips de tipo de residuo) =====
+// La lógica de carga de puntos reales vive en mapa.js (solo se usa en /mapa);
+// aquí solo se sincroniza el texto del buscador con el chip elegido.
 function initMapQuickFilters() {
   document.querySelectorAll('.map-quicktags button').forEach((chip) => {
     chip.addEventListener('click', () => {
@@ -166,6 +261,7 @@ function initMapQuickFilters() {
       chip.classList.add('is-active');
       const buscador = document.getElementById('mapa-buscador');
       if (buscador) buscador.value = chip.textContent.trim();
+      document.dispatchEvent(new CustomEvent('ecomaps:filtro-mapa'));
     });
   });
 }
@@ -207,109 +303,3 @@ function initMapPicker() {
     if (hint) hint.textContent = 'Ubicación marcada (ejemplo)';
   });
 }
-
-
-  tabButtons.forEach((btn) => {
-    btn.addEventListener('click', () => activarPestana(btn.dataset.tab));
-  });
-
-  // Enlaces internos que cambian de pestaña (ej. "Crear cuenta" dentro del formulario)
-  document.querySelectorAll('[data-tab-link]').forEach((link) => {
-    link.addEventListener('click', (evento) => {
-      evento.preventDefault();
-      activarPestana(link.dataset.tabLink);
-    });
-  });
-
-  // Si la URL llega con #registro, abrir esa pestaña directamente
-  if (window.location.hash === '#registro') {
-    activarPestana('registro');
-  }
-
-  // ===== Mostrar / ocultar contraseña =====
-  document.querySelectorAll('[data-toggle-password]').forEach((boton) => {
-    boton.addEventListener('click', () => {
-      const input = document.getElementById(boton.dataset.togglePassword);
-      if (!input) return;
-      input.type = input.type === 'password' ? 'text' : 'password';
-    });
-  });
-
-  // ===== Formularios de ejemplo (login / registro): aún sin backend =====
-  document.querySelectorAll('[data-demo-form]').forEach((form) => {
-    form.addEventListener('submit', (evento) => {
-      evento.preventDefault();
-      alert('Funcionalidad de ejemplo: todavía no está conectada al servidor.');
-    });
-  });
-
-  // Botón "Continuar con Google" (demo, sin backend)
-  document.querySelectorAll('[data-demo-google]').forEach((boton) => {
-    boton.addEventListener('click', () => {
-      alert('Inicio de sesión con Google: pendiente de conectar.');
-    });
-  });
-
-  // ===== Animación al hacer scroll (una sola vez por elemento) =====
-  // Código verde: un único IntersectionObserver reutilizado, sin librerías externas.
-  const elementosRevelables = document.querySelectorAll('.reveal');
-  if (elementosRevelables.length && 'IntersectionObserver' in window) {
-    const observador = new IntersectionObserver((entradas) => {
-      entradas.forEach((entrada) => {
-        if (entrada.isIntersecting) {
-          entrada.target.classList.add('is-visible');
-          observador.unobserve(entrada.target); // deja de observar: ahorra recursos
-        }
-      });
-    }, { threshold: 0.15 });
-
-    elementosRevelables.forEach((el, i) => {
-      el.style.setProperty('--indice', i % 6); // escalona grupos de tarjetas
-      observador.observe(el);
-    });
-  } else {
-    elementosRevelables.forEach((el) => el.classList.add('is-visible'));
-  }
-
-  // ===== Filtros rápidos del mapa (chips de tipo de residuo) =====
-  document.querySelectorAll('.map-quicktags button').forEach((chip) => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.map-quicktags button').forEach((b) => b.classList.remove('is-active'));
-      chip.classList.add('is-active');
-      const buscador = document.getElementById('mapa-buscador');
-      if (buscador) buscador.value = chip.textContent.trim();
-    });
-  });
-
-  // ===== Pestañas del panel admin (marcar enlace activo) =====
-  document.querySelectorAll('.admin__nav a').forEach((link) => {
-    link.addEventListener('click', (evento) => {
-      if (link.getAttribute('href') !== '#') return;
-      evento.preventDefault();
-      document.querySelectorAll('.admin__nav a').forEach((a) => a.classList.remove('is-active'));
-      link.classList.add('is-active');
-    });
-  });
-
-  // ===== Formulario "Proponer punto": marcar ubicación de ejemplo en el mapa =====
-  const mapaPicker = document.querySelector('[data-map-picker]');
-  if (mapaPicker) {
-    mapaPicker.addEventListener('click', (evento) => {
-      const pin = mapaPicker.querySelector('.map-picker__pin');
-      const rect = mapaPicker.getBoundingClientRect();
-      const x = evento.clientX - rect.left;
-      const y = evento.clientY - rect.top;
-      let marcador = pin;
-      if (!marcador) {
-        marcador = document.createElement('div');
-        marcador.className = 'map-picker__pin';
-        marcador.textContent = '📍';
-        mapaPicker.appendChild(marcador);
-      }
-      marcador.style.left = `${x}px`;
-      marcador.style.top = `${y}px`;
-      const hint = mapaPicker.querySelector('.map-picker__hint');
-      if (hint) hint.textContent = 'Ubicación marcada (ejemplo)';
-    });
-  }
-});

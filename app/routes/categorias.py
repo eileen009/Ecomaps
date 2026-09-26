@@ -1,7 +1,7 @@
-"""Catálogo de categorías de residuos.
+"""Catálogo de categorías de residuos (módulo 3).
 
-Por ahora solo lectura (la usan el formulario de "proponer punto" y
-el buscador). El CRUD completo se agrega en el módulo de buscador /
+Solo lectura por ahora (lo usan el buscador, la guía, el formulario de
+"proponer punto" y el panel admin). El CRUD completo se agrega junto al
 panel admin.
 """
 from flask import Blueprint, jsonify
@@ -15,3 +15,11 @@ categorias_bp = Blueprint("categorias", __name__, url_prefix="/api/categorias")
 def listar_categorias():
     categorias = CategoriaResiduo.query.order_by(CategoriaResiduo.nombre).all()
     return jsonify([c.to_dict() for c in categorias]), 200
+
+
+@categorias_bp.get("/<string:nombre>")
+def obtener_categoria(nombre):
+    categoria = CategoriaResiduo.query.filter(
+        CategoriaResiduo.nombre.ilike(nombre)
+    ).first_or_404()
+    return jsonify(categoria.to_dict()), 200

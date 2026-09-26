@@ -6,6 +6,7 @@
   <title>EcoMaps · Mapa de puntos de reciclaje</title>
   <meta name="description" content="Encuentra en el mapa los puntos de reciclaje más cercanos a ti, filtrados por tipo de residuo.">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
 
@@ -18,7 +19,8 @@
       <nav class="nav" id="menu-principal" aria-label="Navegación principal">
         <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
         <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
+        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
         <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav>
       <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
@@ -32,127 +34,50 @@
   </header>
 
   <main>
+    <div class="container"><p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Mapa</p></div>
     <section class="map-hero">
       <div class="container">
-        <!-- Buscador principal del mapa -->
-        <form class="map-searchbar reveal" onsubmit="return false" role="search">
+        <!-- Única barra de filtros: buscador de texto + chips de material + distancia -->
+        <form class="map-searchbar reveal" role="search">
           <span class="search-bar__icon">🔍</span>
           <input type="search" id="mapa-buscador" placeholder="Ej. plástico, baterías, vidrio, cartón..." autocomplete="off">
           <button type="submit" class="btn btn--primary">Buscar</button>
         </form>
 
-        <!-- Búsquedas rápidas (datos de ejemplo) -->
-        <div class="map-quicktags reveal">
-          <button type="button">Plástico</button>
-          <button type="button">Vidrio</button>
-          <button type="button">Baterías</button>
-          <button type="button">Electrónicos</button>
-          <button type="button">Cartón</button>
-          <button type="button">Orgánico</button>
+        <div class="map-toolbar reveal">
+          <div class="map-quicktags">
+            <button type="button">Plástico</button>
+            <button type="button">Vidrio</button>
+            <button type="button">Baterías</button>
+            <button type="button">Electrónico</button>
+            <button type="button">Cartón</button>
+            <button type="button">Orgánico</button>
+          </div>
+          <select id="mapa-distancia" class="map-toolbar__distancia" aria-label="Distancia">
+            <option value="">Distancia: todas</option>
+            <option value="1">Menos de 1 km</option>
+            <option value="3">Menos de 3 km</option>
+            <option value="5">Menos de 5 km</option>
+          </select>
         </div>
       </div>
     </section>
 
     <section class="map-layout container reveal">
-      <!-- Mapa ilustrativo (aún sin conexión a Google Maps / OpenStreetMap) -->
-      <div class="map-canvas" role="img" aria-label="Mapa ilustrativo con puntos de reciclaje cercanos">
-        <div class="map-canvas__pin" style="top:30%; left:22%;"><span>♻</span></div>
-        <div class="map-canvas__pin" style="top:48%; left:58%;"><span>♻</span></div>
-        <div class="map-canvas__pin" style="top:66%; left:34%;"><span>♻</span></div>
-        <div class="map-canvas__pin" style="top:20%; left:70%;"><span>♻</span></div>
-        <div class="map-canvas__pin map-canvas__pin--me" style="top:52%; left:46%;"><span>📍</span></div>
-
-        <div class="map-canvas__controls">
-          <button type="button" aria-label="Acercar">+</button>
-          <button type="button" aria-label="Alejar">−</button>
-        </div>
-
-        <div class="map-canvas__legend">
-          <span><i class="legend-dot legend-dot--activo"></i> Punto de reciclaje</span>
-          <span><i class="legend-dot legend-dot--cerrado"></i> Punto cerrado</span>
-          <span><i class="legend-dot legend-dot--yo"></i> Mi ubicación</span>
-        </div>
-
+      <!-- Mapa real: OpenStreetMap vía Leaflet, sin necesidad de API key -->
+      <div class="map-canvas">
+        <div id="mapa-leaflet"></div>
         <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary map-canvas__cta">+ Proponer punto</a>
       </div>
 
-      <!-- Panel lateral: puntos cercanos (datos de ejemplo) -->
+      <!-- Panel lateral: puntos activos, cargados desde /api/puntos -->
       <aside class="map-layout__panel">
         <div class="map-layout__panel-header">
           <h2>Puntos cercanos</h2>
-          <span class="badge badge--muted">4 encontrados</span>
+          <span class="badge badge--muted" id="contador-puntos">Cargando…</span>
         </div>
 
-        <div class="map-filters">
-          <select aria-label="Tipo de residuo">
-            <option>Tipo de residuo: todos</option>
-            <option>Plástico</option>
-            <option>Vidrio</option>
-            <option>Papel</option>
-            <option>Metal</option>
-            <option>Orgánico</option>
-            <option>Electrónico</option>
-          </select>
-          <select aria-label="Distancia">
-            <option>Distancia: todas</option>
-            <option>Menos de 1 km</option>
-            <option>Menos de 3 km</option>
-            <option>Menos de 5 km</option>
-          </select>
-        </div>
-
-        <article class="map-point">
-          <div class="map-point__top">
-            <h3>EcoCentro Norte</h3>
-            <span class="map-point__rating">★ 4.8</span>
-          </div>
-          <p class="map-point__meta">📍 1.2 km · Abierto hasta las 6:00 pm</p>
-          <div class="map-point__tags">
-            <span class="tag">Plástico</span>
-            <span class="tag">Cartón</span>
-            <span class="tag">Vidrio</span>
-          </div>
-          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
-        </article>
-
-        <article class="map-point">
-          <div class="map-point__top">
-            <h3>ReciclaYa</h3>
-            <span class="map-point__rating">★ 4.5</span>
-          </div>
-          <p class="map-point__meta">📍 2.4 km · Abierto</p>
-          <div class="map-point__tags">
-            <span class="tag">Electrónico</span>
-            <span class="tag">Baterías</span>
-          </div>
-          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
-        </article>
-
-        <article class="map-point">
-          <div class="map-point__top">
-            <h3>Punto Verde</h3>
-            <span class="map-point__rating">★ 4.6</span>
-          </div>
-          <p class="map-point__meta">📍 3.1 km · Abierto hasta las 5:00 pm</p>
-          <div class="map-point__tags">
-            <span class="tag">Vidrio</span>
-            <span class="tag">Plástico</span>
-          </div>
-          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
-        </article>
-
-        <article class="map-point">
-          <div class="map-point__top">
-            <h3>EcoParque Central</h3>
-            <span class="map-point__rating">★ 4.3</span>
-          </div>
-          <p class="map-point__meta">📍 4.0 km · Cerrado ahora</p>
-          <div class="map-point__tags">
-            <span class="tag">Papel</span>
-            <span class="tag">Cartón</span>
-          </div>
-          <a href="#" class="btn btn--outline btn--block">Ver detalles</a>
-        </article>
+        <div class="map-layout__panel-lista" id="lista-puntos"></div>
       </aside>
     </section>
   </main>
@@ -192,5 +117,7 @@
   </footer>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
 </body>
 </html>

@@ -24,17 +24,15 @@ ESTADOS_VALIDOS = {"pendiente", "activo", "rechazado", "reportado"}
 KM_POR_GRADO = 111
 
 
-@puntos_bp.get("")
-def listar_puntos():
-    ciudad = request.args.get("ciudad", type=str)
-    material = request.args.get("material", type=str)
-    estado = request.args.get("estado", default="activo", type=str)
-    lat = request.args.get("lat", type=float)
-    lng = request.args.get("lng", type=float)
-    radio_km = request.args.get("radio", default=5, type=float)
+def filtrar_puntos(ciudad=None, material=None, estado="activo", lat=None, lng=None, radio_km=5):
+    """Consulta reutilizable de puntos con filtros.
 
+    La usan tanto GET /api/puntos como GET /api/buscar (módulo 3), para
+    no repetir la misma lógica de filtrado/distancia en dos sitios.
+    Devuelve (resultado_dict, error) — error es None si todo salió bien.
+    """
     if estado not in ESTADOS_VALIDOS:
-        return jsonify({"error": "Estado no válido."}), 400
+        return None, "Estado no válido."
 
     # Usa el índice de "estado" en vez de traer toda la tabla y filtrar en Python.
     query = PuntoReciclaje.query.filter_by(estado=estado)
@@ -57,7 +55,6 @@ def listar_puntos():
         )
 
     puntos = query.all()
-
     resultado = [p.to_dict() for p in puntos]
 
     if lat is not None and lng is not None:
@@ -68,6 +65,21 @@ def listar_puntos():
         resultado = [r for r in resultado if r["distancia_km"] <= radio_km]
         resultado.sort(key=lambda r: r["distancia_km"])
 
+    return resultado, None
+
+
+@puntos_bp.get("")
+def listar_puntos():
+    resultado, error = filtrar_puntos(
+        ciudad=request.args.get("ciudad", type=str),
+        material=request.args.get("material", type=str),
+        estado=request.args.get("estado", default="activo", type=str),
+        lat=request.args.get("lat", type=float),
+        lng=request.args.get("lng", type=float),
+        radio_km=request.args.get("radio", default=5, type=float),
+    )
+    if error:
+        return jsonify({"error": error}), 400
     return jsonify(resultado), 200
 
 

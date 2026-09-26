@@ -6,7 +6,7 @@
   <title>EcoMaps · Registrar actividad</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body data-requiere-sesion="true">
 <header class="header"><div class="container header__inner">
   <a href="{{ url_for('paginas.inicio') }}" class="logo"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a>
   <nav class="nav" id="menu-principal" aria-label="Navegación principal">
@@ -19,14 +19,18 @@
       </button><div class="header__actions"><a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a><a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a></div>
 </div></header>
 <main>
+<div class="container"><p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a> › Actividades</p></div>
 <section class="page-hero"><div class="container page-hero__inner reveal"><span class="badge">♻ Mi actividad</span><h1>Registra tus acciones de reciclaje</h1><p>Registra lo que reciclas y visualiza los puntos que has obtenido. Esta vista funciona como demostración del frontend.</p></div></section>
 <section class="section"><div class="container activity-layout">
   <div class="form-section reveal"><div class="form-section__title"><span class="form-section__num">1</span><h2>Registrar actividad</h2></div>
-    <form class="form demo-action-form" data-demo-action="actividad">
-      <label for="material">Material reciclado</label><select id="material" required><option value="">Selecciona un material</option><option>Plástico</option><option>Vidrio</option><option>Papel</option><option>Cartón</option><option>Metal</option><option>Orgánico</option><option>Electrónico</option></select>
+    <form class="form" id="form-actividad">
+      <p class="form__error" data-form-error hidden></p>
+      <label for="material">Material reciclado</label><select id="material" required><option value="">Selecciona un material</option><option>Plástico</option><option>Vidrio</option><option>Papel</option><option>Cartón</option><option>Metal</option><option>Orgánico</option><option>Electrónico</option><option>Baterías</option></select>
       <div class="form-steps"><div><label for="cantidad">Cantidad</label><input id="cantidad" type="number" min="0.1" step="0.1" placeholder="Ej. 2.5" required></div><div><label for="unidad">Unidad</label><select id="unidad"><option>kg</option><option>unidades</option><option>litros</option></select></div></div>
-      <label for="punto">Punto de reciclaje</label><select id="punto"><option>Punto Verde Centro</option><option>EcoPunto Norte</option><option>Recicla Más - Plaza Sur</option></select>
-      <label for="fecha">Fecha</label><input id="fecha" type="date" value="2026-09-22" required>
+      <label for="punto">Punto de reciclaje (opcional)</label><select id="punto"><option value="">Sin especificar</option></select>
+      <label for="foto">Foto de lo que reciclaste</label>
+      <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
+      <p class="form__foto-hint">Un administrador la revisa antes de confirmar tus puntos.</p>
       <button class="btn btn--primary btn--block" type="submit">Registrar actividad</button>
     </form>
   </div>
@@ -67,4 +71,4 @@
     </div>
 
     <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script></body></html>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script><script src="{{ url_for('static', filename='js/actividad.js') }}"></script></body></html>

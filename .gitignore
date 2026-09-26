@@ -46,3 +46,7 @@ Thumbs.db
 *.key
 
 README.md
+
+# Fotos subidas por usuarios (evidencia de reciclaje): no son código
+app/static/uploads/*
+!app/static/uploads/**/.gitkeep
