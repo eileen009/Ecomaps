@@ -3,11 +3,7 @@
 <body><header class="header"><div class="container header__inner"><a href="{{ url_for('paginas.inicio') }}" class="logo"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a><nav class="nav" id="menu-principal" aria-label="Navegación principal">
         <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
         <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>
-        <a href="{{ url_for('paginas.actividad') }}" class="nav__link">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}" class="nav__link">Logros</a>
-        <a href="{{ url_for('paginas.empresas') }}" class="nav__link">Empresas</a>
-        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
+        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
         <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
       </nav><button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
         <span></span><span></span><span></span>
@@ -37,11 +33,9 @@
         <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
       </div>
       <div class="footer__col">
-        <h4>Comunidad</h4>
-        <a href="{{ url_for('paginas.actividad') }}">Actividades</a>
-        <a href="{{ url_for('paginas.logros') }}">Mis logros</a>
-        <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a>
-        <a href="{{ url_for('paginas.empresas') }}">Empresas</a>
+        <h4>Tu cuenta</h4>
+        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
+        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
       </div>
       <div class="footer__col">
         <h4>Información</h4>

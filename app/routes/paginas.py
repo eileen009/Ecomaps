@@ -40,17 +40,22 @@ def proponer():
 
 @paginas_bp.get("/admin")
 def admin():
-    return render_template("admin.html")
+    return render_template("admin.html", activo="puntos")
+
+
+@paginas_bp.get("/admin/empresas")
+def admin_empresas():
+    return render_template("admin_empresas.html", activo="empresas")
+
+
+@paginas_bp.get("/admin/estadisticas")
+def admin_estadisticas():
+    return render_template("admin_estadisticas.html", activo="estadisticas")
 
 
 @paginas_bp.get("/actividad")
 def actividad():
     return render_template("actividad.html")
-
-
-@paginas_bp.get("/empresas")
-def empresas():
-    return render_template("empresas.html")
 
 
 @paginas_bp.get("/logros")

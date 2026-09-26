@@ -1,0 +1,24 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Empresas y organizaciones{% endblock %}
+{% block migas %}Empresas y organizaciones{% endblock %}
+
+{% block contenido %}
+      <h1>Empresas y organizaciones</h1>
+      <p>Gestiona las organizaciones aliadas que reciben materiales reciclables.</p>
+
+      <div class="admin-table-wrap reveal" style="margin-top:24px;">
+        <div class="admin-toolbar">
+          <input type="search" placeholder="🔍 Buscar empresa u organización...">
+          <select><option>Todos los materiales</option><option>Plástico</option><option>Vidrio</option><option>Papel</option><option>Electrónicos</option></select>
+          <a href="#" class="btn btn--primary">+ Agregar empresa</a>
+        </div>
+
+        <div class="company-grid reveal-group">
+          <article class="company-card reveal"><div class="company-card__logo">♻</div><div class="company-card__body"><span class="badge">Activa</span><h3>EcoCentro Norte</h3><p>Montería · Zona norte</p><div class="tag-list"><span class="tag">Plástico</span><span class="tag">Cartón</span><span class="tag">Vidrio</span></div><a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver ubicación</a></div></article>
+          <article class="company-card reveal"><div class="company-card__logo">♻</div><div class="company-card__body"><span class="badge">Activa</span><h3>ReciclaYa</h3><p>Montería · Centro</p><div class="tag-list"><span class="tag">Electrónicos</span><span class="tag">Baterías</span></div><a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver ubicación</a></div></article>
+          <article class="company-card reveal"><div class="company-card__logo">♻</div><div class="company-card__body"><span class="badge">Activa</span><h3>Punto Verde</h3><p>Cereté · Zona urbana</p><div class="tag-list"><span class="tag">Vidrio</span><span class="tag">Plástico</span></div><a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver ubicación</a></div></article>
+          <article class="company-card reveal"><div class="company-card__logo">♻</div><div class="company-card__body"><span class="badge">Activa</span><h3>EcoParque Central</h3><p>Montería · Centro</p><div class="tag-list"><span class="tag">Papel</span><span class="tag">Cartón</span></div><a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver ubicación</a></div></article>
+        </div>
+      </div>
+{% endblock %}
