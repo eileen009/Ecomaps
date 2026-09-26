@@ -127,7 +127,7 @@ def proponer_punto():
         telefono_contacto=(datos.get("telefono_contacto") or "").strip() or None,
         email_contacto=(datos.get("email_contacto") or "").strip() or None,
         estado="pendiente",  # un admin debe revisarlo antes de publicarlo (3.10)
-        creado_por=get_jwt_identity(),
+        creado_por=int(get_jwt_identity()),
         materiales=materiales,
     )
 

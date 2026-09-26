@@ -17,14 +17,14 @@ usuarios_bp = Blueprint("usuarios", __name__, url_prefix="/api/usuarios")
 @usuarios_bp.get("/me")
 @jwt_required()
 def obtener_perfil():
-    usuario = Usuario.query.get_or_404(get_jwt_identity())
+    usuario = Usuario.query.get_or_404(int(get_jwt_identity()))
     return jsonify(usuario.to_dict()), 200
 
 
 @usuarios_bp.put("/me")
 @jwt_required()
 def actualizar_perfil():
-    usuario = Usuario.query.get_or_404(get_jwt_identity())
+    usuario = Usuario.query.get_or_404(int(get_jwt_identity()))
     datos = request.get_json(silent=True) or {}
 
     if "nombre" in datos:
