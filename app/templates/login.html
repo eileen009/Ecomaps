@@ -61,13 +61,15 @@
           <h1>Bienvenido a EcoMaps</h1>
           <p class="auth__subtitle">Ingresa a tu cuenta para continuar</p>
 
-          <form class="form" data-demo-form>
+          <form class="form" data-auth-form="login">
+            <p class="form__error" data-form-error hidden></p>
+
             <label for="login-email">Correo electrónico</label>
-            <input type="email" id="login-email" name="email" placeholder="ana@ejemplo.com" value="ana@ejemplo.com">
+            <input type="email" id="login-email" name="email" placeholder="ana@ejemplo.com" required>
 
             <label for="login-password">Contraseña</label>
             <div class="form__password">
-              <input type="password" id="login-password" name="password" placeholder="••••••••" value="12345678">
+              <input type="password" id="login-password" name="password" placeholder="••••••••" required>
               <button type="button" class="form__toggle-pass" data-toggle-password="login-password" aria-label="Mostrar u ocultar contraseña">👁</button>
             </div>
 
@@ -96,16 +98,18 @@
           <h1>Crea tu cuenta</h1>
           <p class="auth__subtitle">Regístrate y empieza a reciclar con EcoMaps</p>
 
-          <form class="form" data-demo-form>
+          <form class="form" data-auth-form="registro">
+            <p class="form__error" data-form-error hidden></p>
+
             <label for="registro-nombre">Nombre completo</label>
-            <input type="text" id="registro-nombre" name="nombre" placeholder="Ana Torres" value="Ana Torres">
+            <input type="text" id="registro-nombre" name="nombre" placeholder="Ana Torres" required>
 
             <label for="registro-email">Correo electrónico</label>
-            <input type="email" id="registro-email" name="email" placeholder="ana@ejemplo.com" value="ana@ejemplo.com">
+            <input type="email" id="registro-email" name="email" placeholder="ana@ejemplo.com" required>
 
             <label for="registro-password">Contraseña</label>
             <div class="form__password">
-              <input type="password" id="registro-password" name="password" placeholder="••••••••" value="12345678">
+              <input type="password" id="registro-password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
               <button type="button" class="form__toggle-pass" data-toggle-password="registro-password" aria-label="Mostrar u ocultar contraseña">👁</button>
             </div>
 

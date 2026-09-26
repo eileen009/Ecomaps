@@ -53,6 +53,11 @@ def admin_estadisticas():
     return render_template("admin_estadisticas.html", activo="estadisticas")
 
 
+@paginas_bp.get("/admin/acciones")
+def admin_acciones():
+    return render_template("admin_acciones.html", activo="acciones")
+
+
 @paginas_bp.get("/actividad")
 def actividad():
     return render_template("actividad.html")

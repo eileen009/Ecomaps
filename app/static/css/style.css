@@ -689,7 +689,34 @@ button { font: inherit; cursor: pointer; }
 .map-canvas__cta {
   position: absolute;
   bottom: 16px; right: 16px;
+  z-index: 1000; /* por encima de los panes de Leaflet */
 }
+
+/* Contenedor real del mapa (Leaflet + OpenStreetMap) */
+#mapa-leaflet { position: absolute; inset: 0; z-index: 1; }
+.map-canvas__aviso {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+  color: var(--texto-suave); font-size: 0.9rem;
+  z-index: 2;
+}
+
+/* Marcador propio (icono en div, sin imágenes externas: código verde) */
+.map-marker {
+  width: 30px; height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--verde-oscuro);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sombra);
+  border: 2px solid var(--blanco);
+}
+.map-marker span { transform: rotate(45deg); font-size: 0.85rem; }
+.map-marker--yo { background: var(--golden-brown); }
+
+.map-layout__panel-lista { display: flex; flex-direction: column; }
+.map-layout__panel-vacio { color: var(--texto-suave); font-size: 0.85rem; padding: 20px 4px; text-align: center; }
 
 .map-layout__panel {
   background: var(--blanco);
@@ -720,6 +747,30 @@ button { font: inherit; cursor: pointer; }
   font-size: 0.82rem;
   background: var(--blanco);
 }
+
+/* Barra única de filtros del mapa (buscador + chips + distancia) */
+.map-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.map-toolbar__distancia {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  font-size: 0.82rem;
+  background: var(--blanco);
+}
+
+/* Mensajes de error en formularios */
+.form__error {
+  color: #B3261E;
+  background: #FBEAE9;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  margin: -6px 0 6px;
+}
+
+/* Campo de foto (evidencia de reciclaje) */
+.form__foto-hint { font-size: 0.78rem; color: var(--texto-suave); margin: -4px 0 2px; }
+
 
 .map-point {
   border: 1px solid var(--borde);
@@ -1094,6 +1145,31 @@ button { font: inherit; cursor: pointer; }
   border-radius: var(--radio);
   padding: 20px;
 }
+
+/* Panel admin: revisión de aportes con foto */
+.admin-acciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+.admin-accion-card {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+.admin-accion-card img {
+  width: 100%; height: 160px;
+  object-fit: cover;
+  display: block;
+  background: var(--fondo-alt);
+}
+.admin-accion-card__body { padding: 14px; }
+.admin-accion-card__body h3 { margin: 0 0 4px; font-size: 0.95rem; }
+.admin-accion-card__body p { margin: 0 0 12px; color: var(--texto-suave); font-size: 0.82rem; }
+.admin-accion-card__acciones { display: flex; gap: 8px; }
+.admin-accion-card__acciones button { flex: 1; padding: 8px; border-radius: 8px; font-size: 0.82rem; }
+.admin-accion-card__acciones .btn--rechazar { background: var(--fondo-alt); color: var(--bistre); border: 1px solid var(--borde); }
 .admin-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
 .admin-toolbar input {
   flex: 1;

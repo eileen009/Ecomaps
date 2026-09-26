@@ -7,7 +7,7 @@
   <meta name="description" content="Panel de administración de EcoMaps: gestión de puntos de reciclaje, empresas, usuarios y estadísticas.">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="admin-body">
+<body class="admin-body" data-requiere-rol="admin">
 
   <div class="admin">
 
@@ -28,6 +28,7 @@
           <a href="#">👤 Usuarios</a>
           <a href="#">🗑 Residuos</a>
           <a href="#">📈 Reportes</a>
+          <a href="{{ url_for('paginas.admin_acciones') }}" class="{{ 'is-active' if activo == 'acciones' else '' }}">🖼 Aportes por confirmar</a>
           <a href="{{ url_for('paginas.admin_empresas') }}" class="{{ 'is-active' if activo == 'empresas' else '' }}">🏢 Empresas y organizaciones</a>
           <a href="{{ url_for('paginas.admin_estadisticas') }}" class="{{ 'is-active' if activo == 'estadisticas' else '' }}">📉 Estadísticas</a>
           <a href="#">⚙ Configuración</a>
@@ -46,7 +47,7 @@
     <!-- ===== Contenido principal (cada vista rellena su propio bloque) ===== -->
     <main class="admin__main">
       <div class="admin__topbar">
-        <p class="admin__topbar-crumbs">Panel / <strong>{% block migas %}Dashboard{% endblock %}</strong></p>
+        <p class="admin__topbar-crumbs"><a href="{{ url_for('paginas.admin') }}">Panel</a> / <strong>{% block migas %}Dashboard{% endblock %}</strong></p>
         <div class="admin__topbar-right">
           <span class="admin__bell">🔔<span class="admin__bell-dot">3</span></span>
           <span class="admin__avatar">CA</span>
@@ -58,5 +59,6 @@
   </div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block script_extra %}{% endblock %}
 </body>
 </html>
