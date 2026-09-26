@@ -42,7 +42,7 @@ def registro():
     db.session.commit()
 
     token = create_access_token(
-        identity=usuario.id, additional_claims={"rol": usuario.rol}
+        identity=str(usuario.id), additional_claims={"rol": usuario.rol}
     )
     return jsonify({"usuario": usuario.to_dict(), "access_token": token}), 201
 
@@ -64,7 +64,7 @@ def login():
         return jsonify({"error": "Correo o contraseña incorrectos."}), 401
 
     token = create_access_token(
-        identity=usuario.id, additional_claims={"rol": usuario.rol}
+        identity=str(usuario.id), additional_claims={"rol": usuario.rol}
     )
     return jsonify({"usuario": usuario.to_dict(), "access_token": token}), 200
 

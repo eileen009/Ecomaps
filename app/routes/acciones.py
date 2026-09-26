@@ -59,7 +59,7 @@ def registrar_accion():
     foto_url = guardar_foto(foto, carpeta)
 
     accion = AccionReciclaje(
-        id_usuario=get_jwt_identity(),
+        id_usuario=int(get_jwt_identity()),
         id_categoria=categoria.id,
         id_punto=id_punto,
         cantidad=cantidad,
@@ -110,7 +110,7 @@ def revisar_accion(id_accion):
 @acciones_bp.get("/mias")
 @jwt_required()
 def mis_acciones():
-    id_usuario = get_jwt_identity()
+    id_usuario = int(get_jwt_identity())
     acciones = (
         AccionReciclaje.query.filter_by(id_usuario=id_usuario)
         .order_by(AccionReciclaje.fecha.desc())

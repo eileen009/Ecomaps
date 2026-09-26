@@ -161,8 +161,14 @@ function initAuthForms() {
       if (!respuesta.ok) throw new Error(datos.error || 'No se pudo completar la solicitud.');
 
       guardarSesion(datos.usuario, datos.access_token);
+      // Si venía de una página protegida vuelve ahí; si no, cada rol a su inicio.
+      // El admin siempre entra a su panel (salvo que viniera de otra página admin).
       const siguiente = new URLSearchParams(window.location.search).get('next');
-      window.location.href = siguiente || '/perfil';
+      if (datos.usuario.rol === 'admin') {
+        window.location.href = siguiente && siguiente.startsWith('/admin') ? siguiente : '/admin';
+      } else {
+        window.location.href = siguiente || '/perfil';
+      }
     } catch (error) {
       if (errorEl) {
         errorEl.textContent = error.message;
