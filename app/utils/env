@@ -1,0 +1,14 @@
+# Copia este archivo como .env y completa tus valores reales.
+# El .env real nunca se sube a GitHub (ver .gitignore).
+
+MYSQL_HOST=ecomaps-db-eileenandreap009-00ee.a.aivencloud.com
+MYSQL_PORT=13389
+MYSQL_USER=avnadmin
+MYSQL_PASSWORD=AVNS_oHtq2XpLQNewpvL-iQ7
+MYSQL_DB=ecomapsbd
+MYSQL_SSL_CA=ca.pem
+
+JWT_SECRET_KEY=ecosarithyeileen
+
+FLASK_ENV=development
+FLASK_DEBUG=1

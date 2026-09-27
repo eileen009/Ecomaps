@@ -3,252 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoMaps · Encuentra puntos de reciclaje</title>
-  <meta name="description" content="EcoMaps: localiza puntos de reciclaje cercanos, aprende a separar tus residuos y contribuye al ODS 12.">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>EcoMaps | Puntos de reciclaje en Montería</title>
+  <meta name="description" content="Encuentra puntos de reciclaje en Montería, aprende a separar tus residuos con el código de colores y registra lo que reciclas.">
+  {% include '_head_publico.html' %}
 </head>
-<body>
+{% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+{% set mat = url_for('static', filename='assets/img/materiales/') %}
+<body class="publico publico--inicio">
 
-  <!-- ===== HEADER / NAV ===== -->
-  <header class="header">
-    <div class="container header__inner">
-      <a href="{{ url_for('paginas.inicio') }}" class="logo">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-      </a>
-
-      <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav>
-      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="header__actions">
-        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
-      </div>
-    </div>
-  </header>
+  {% include '_header_publico.html' %}
 
   <main>
 
-    <!-- ===== HERO + BUSCADOR ===== -->
-    <section class="hero">
-      <div class="container hero__inner">
-        <div class="hero__content reveal">
-          <span class="badge">♻ ODS 12 · Consumo responsable</span>
-          <h1 class="hero__title">Reciclar es más fácil <span class="text-accent">cuando sabes dónde.</span></h1>
-          <p class="hero__text">Encuentra puntos de reciclaje, descubre cómo separar tus residuos y contribuye a un consumo más responsable.</p>
+    <!-- ===== HERO: buscador + mapa ilustrado ===== -->
+    <section class="inicio-hero">
+      <div class="container inicio-hero__grid">
+        <div class="inicio-hero__texto">
+          <h1 class="inicio-hero__titulo">Reciclar es más fácil cuando sabes dónde.</h1>
+          <p class="inicio-hero__bajada">Escribe qué quieres entregar y te mostramos los puntos de reciclaje de Montería que lo reciben, con dirección y horario.</p>
 
-          <!-- Buscador de residuos -->
-          <form class="search-bar" action="{{ url_for('paginas.mapa') }}" method="get">
+          <form class="search-bar" action="{{ url_for('paginas.mapa') }}" method="get" role="search">
             <label for="buscar-residuo" class="visually-hidden">¿Qué quieres reciclar?</label>
-            <span class="search-bar__icon">🔍</span>
-            <input
-              type="search"
-              id="buscar-residuo"
-              name="residuo"
-              class="search-bar__input"
-              placeholder="¿Qué quieres reciclar? (plástico, vidrio, papel...)"
-              autocomplete="off"
-            >
+            <svg class="search-bar__icon" width="20" height="20" aria-hidden="true"><use href="{{ icono }}#i-buscar"/></svg>
+            <input type="search" id="buscar-residuo" name="residuo" class="search-bar__input"
+                   placeholder="Plástico, vidrio, pilas…" autocomplete="off">
             <button type="submit" class="btn btn--primary search-bar__btn">Buscar puntos</button>
           </form>
 
-          <div class="hero__extra">
-            <a href="{{ url_for('paginas.mapa') }}" class="link-icon">📍 Explorar mapa</a>
-            <span class="hero__stat">+1.250 usuarios ya reciclando</span>
+          <div class="atajos">
+            <span class="atajos__titulo">Lo más buscado:</span>
+            <a href="{{ url_for('paginas.mapa', residuo='Plástico') }}">Plástico</a>
+            <a href="{{ url_for('paginas.mapa', residuo='Cartón') }}">Cartón</a>
+            <a href="{{ url_for('paginas.mapa', residuo='Vidrio') }}">Vidrio</a>
+            <a href="{{ url_for('paginas.mapa', residuo='Baterías') }}">Pilas</a>
           </div>
+
+          <p class="inicio-hero__dato" data-dato-puntos hidden>
+            <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-pin"/></svg>
+            <span><strong data-num-puntos>0</strong> puntos de reciclaje activos en el mapa</span>
+          </p>
         </div>
 
-        <!-- Acceso al mapa (vista previa) -->
-        <div class="hero__map reveal" style="--indice:1">
-          <div class="map-preview" role="img" aria-label="Vista previa del mapa con puntos de reciclaje cercanos">
-            <div class="map-preview__pin map-preview__pin--main">
-              <span>♻</span>
-              <div class="map-preview__tooltip">
-                <strong>Punto Verde Centro</strong>
-                <small>Plástico · Vidrio · Papel</small>
-              </div>
+        <div class="inicio-hero__mapa">
+          <a class="mh-marco" href="{{ url_for('paginas.mapa') }}" aria-label="Abrir el mapa de puntos de reciclaje">
+            {% include 'ilustraciones/mapa_hero.svg' %}
+            <div class="mh-tarjeta" data-punto-destacado>
+              <span class="mh-tarjeta__etiqueta">Punto de reciclaje</span>
+              <strong data-punto-nombre>Punto Verde Centro</strong>
+              <span class="mh-tarjeta__materiales" data-punto-materiales>Plástico, vidrio y papel</span>
             </div>
-            <div class="map-preview__pin" style="top:38%; left:20%;">♻</div>
-            <div class="map-preview__pin" style="top:60%; left:35%;">♻</div>
-            <div class="map-preview__pin" style="top:70%; left:65%;">♻</div>
-            <span class="map-preview__distance">📍 320 m</span>
+            <span class="mh-abrir">
+              <svg width="16" height="16" aria-hidden="true"><use href="{{ icono }}#i-mapa"/></svg>
+              Abrir el mapa
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MATERIALES ===== -->
+    <section class="bloque materiales" aria-labelledby="titulo-materiales">
+      <div class="container">
+        <div class="bloque__cabecera">
+          <h2 id="titulo-materiales">¿Qué quieres reciclar?</h2>
+          <p>Cada material se prepara distinto. Elige uno para ver cómo alistarlo y qué no se recibe.</p>
+        </div>
+
+        <ul class="materiales__lista" data-aparecer>
+          {% for id, nombre, ejemplo in [
+            ('plastico', 'Plástico', 'Botellas PET y envases'),
+            ('vidrio', 'Vidrio', 'Botellas y frascos'),
+            ('papel', 'Papel y cartón', 'Cajas, hojas, periódico'),
+            ('metal', 'Metal', 'Latas y aluminio'),
+            ('organico', 'Orgánico', 'Restos de comida'),
+            ('electronico', 'Electrónico', 'Celulares y cargadores'),
+            ('baterias', 'Pilas', 'Pilas y baterías')
+          ] %}
+          <li style="--i:{{ loop.index0 }}">
+            <a href="{{ url_for('paginas.guia') }}#{{ id }}" class="material">
+              <span class="material__img"><img src="{{ mat }}{{ id }}.svg" alt="" width="96" height="96" loading="lazy"></span>
+              <strong>{{ nombre }}</strong>
+              <small>{{ ejemplo }}</small>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== CÓMO FUNCIONA (es una secuencia real: 1, 2, 3) ===== -->
+    <section class="bloque pasos" aria-labelledby="titulo-pasos">
+      <div class="container">
+        <div class="bloque__cabecera">
+          <h2 id="titulo-pasos">Así funciona</h2>
+        </div>
+        <ol class="pasos__lista" data-aparecer>
+          <li class="paso">
+            <span class="paso__num">1</span>
+            <h3>Busca el material</h3>
+            <p>Escribe qué quieres reciclar o elige un material. El mapa te muestra los puntos que lo reciben y a qué distancia están.</p>
+          </li>
+          <li class="paso">
+            <span class="paso__num">2</span>
+            <h3>Prepáralo en casa</h3>
+            <p>Enjuaga, seca y separa. La guía explica cómo alistar cada residuo para que sí se pueda aprovechar.</p>
+          </li>
+          <li class="paso">
+            <span class="paso__num">3</span>
+            <h3>Entrégalo y regístralo</h3>
+            <p>Lleva el material al punto y, con tu cuenta, registra la entrega con una foto. Cada aporte confirmado suma puntos.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== CÓDIGO DE COLORES ===== -->
+    <section class="bloque colores" aria-labelledby="titulo-colores">
+      <div class="container colores__grid">
+        <figure class="colores__ilustracion" data-aparecer>
+          {% include 'ilustraciones/canecas.svg' %}
+        </figure>
+        <div class="colores__texto">
+          <h2 id="titulo-colores">Separa en casa con el código de colores</h2>
+          <p>Desde 2021, en toda Colombia se usa el mismo código para separar los residuos en la fuente. Si separas bien en casa, el reciclador puede aprovechar mucho más.</p>
+          <dl class="colores__lista">
+            <div class="color color--blanca">
+              <dt>Blanca</dt>
+              <dd>Aprovechables: plástico, vidrio, metales, papel y cartón limpios y secos.</dd>
+            </div>
+            <div class="color color--verde">
+              <dt>Verde</dt>
+              <dd>Orgánicos aprovechables: restos de comida, cáscaras y residuos de jardín.</dd>
+            </div>
+            <div class="color color--negra">
+              <dt>Negra</dt>
+              <dd>No aprovechables: papel higiénico, servilletas y empaques sucios de comida.</dd>
+            </div>
+          </dl>
+          <p class="colores__fuente">Resolución 2184 de 2019, Ministerio de Ambiente y Desarrollo Sostenible.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PUNTOS REALES DESDE /api/puntos ===== -->
+    <section class="bloque puntos-inicio" id="puntos" aria-labelledby="titulo-puntos">
+      <div class="container">
+        <div class="bloque__cabecera bloque__cabecera--fila">
+          <div>
+            <h2 id="titulo-puntos">Puntos de reciclaje en el mapa</h2>
+            <p>Lugares verificados por el equipo de EcoMaps.</p>
           </div>
+          <a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver todos en el mapa</a>
+        </div>
+
+        <div class="puntos-inicio__lista" data-puntos-inicio aria-live="polite">
+          <div class="punto punto--cargando" aria-hidden="true"></div>
+          <div class="punto punto--cargando" aria-hidden="true"></div>
+          <div class="punto punto--cargando" aria-hidden="true"></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== PUNTOS CERCANOS (datos de ejemplo) ===== -->
-    <section class="section" id="puntos-cercanos">
-      <div class="container">
-        <div class="section__header reveal">
-          <span class="badge badge--muted">Puntos cercanos</span>
-          <h2>Reciclaje cerca de ti</h2>
-          <p class="section__subtitle">Ejemplos de puntos de reciclaje. Estos datos son de muestra: se conectarán al mapa real más adelante.</p>
+    <!-- ===== PARTICIPA ===== -->
+    <section class="bloque participa" aria-label="Participa">
+      <div class="container participa__grid">
+        <div class="participa__panel participa__panel--proponer">
+          <svg class="participa__icono" width="28" height="28" aria-hidden="true"><use href="{{ icono }}#i-mas"/></svg>
+          <h2>¿Conoces un punto que no está en el mapa?</h2>
+          <p>Envíanos la ubicación y los materiales que recibe. El equipo lo revisa antes de publicarlo.</p>
+          <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary">Proponer un punto</a>
         </div>
-
-        <div class="points-grid reveal-group">
-          <article class="point-card reveal" style="--indice:0">
-            <div class="point-card__icon">♻</div>
-            <h3>Punto Verde Centro</h3>
-            <p class="point-card__materials">Plástico · Vidrio · Papel</p>
-            <p class="point-card__distance">📍 320 m · Abierto hasta las 6:00 pm</p>
-          </article>
-
-          <article class="point-card reveal" style="--indice:1">
-            <div class="point-card__icon">♻</div>
-            <h3>EcoPunto Norte</h3>
-            <p class="point-card__materials">Cartón · Metal · Electrónico</p>
-            <p class="point-card__distance">📍 850 m · Abierto hasta las 5:00 pm</p>
-          </article>
-
-          <article class="point-card reveal" style="--indice:2">
-            <div class="point-card__icon">♻</div>
-            <h3>Recicla Más - Plaza Sur</h3>
-            <p class="point-card__materials">Orgánico · Vidrio</p>
-            <p class="point-card__distance">📍 1.2 km · Abierto 24 horas</p>
-          </article>
-        </div>
-
-        <div class="section__footer">
-          <a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">Ver todos los puntos en el mapa</a>
+        <div class="participa__panel participa__panel--reportar">
+          <svg class="participa__icono" width="28" height="28" aria-hidden="true"><use href="{{ icono }}#i-alerta"/></svg>
+          <h2>¿Algo cambió en un punto?</h2>
+          <p>Si cerró, cambió de horario o ya no recibe un material, avísanos para corregirlo.</p>
+          <a href="{{ url_for('paginas.reportar') }}" class="btn btn--outline">Reportar un problema</a>
         </div>
       </div>
     </section>
 
-    <!-- ===== GUÍA DE RECICLAJE ===== -->
-    <section class="section section--muted" id="guia-reciclaje">
-      <div class="container">
-        <div class="section__header reveal">
-          <span class="badge badge--muted">Guía de reciclaje</span>
-          <h2>Aprende a separar correctamente</h2>
-          <p class="section__subtitle">Conoce cómo clasificar cada tipo de residuo antes de llevarlo a un punto de reciclaje.</p>
+    <!-- ===== ODS 12 ===== -->
+    <section class="bloque ods-banda" aria-labelledby="titulo-ods">
+      <div class="container ods-banda__grid">
+        <div class="ods-tile" aria-hidden="true">
+          <span class="ods-tile__num">12</span>
+          <span class="ods-tile__txt">Producción y consumo responsables</span>
         </div>
-
-        <div class="guide-grid reveal-group">
-          <a href="{{ url_for('paginas.guia') }}#plastico" class="guide-card guide-card--plastico reveal" style="--indice:0">
-            <span class="guide-card__dot"></span>
-            <h3>Plástico</h3>
-            <p>Botellas PET, envases</p>
-          </a>
-          <a href="{{ url_for('paginas.guia') }}#vidrio" class="guide-card guide-card--vidrio reveal" style="--indice:1">
-            <span class="guide-card__dot"></span>
-            <h3>Vidrio</h3>
-            <p>Botellas, tarros</p>
-          </a>
-          <a href="{{ url_for('paginas.guia') }}#papel" class="guide-card guide-card--papel reveal" style="--indice:2">
-            <span class="guide-card__dot"></span>
-            <h3>Papel</h3>
-            <p>Periódicos, cajas</p>
-          </a>
-          <a href="{{ url_for('paginas.guia') }}#metal" class="guide-card guide-card--metal reveal" style="--indice:3">
-            <span class="guide-card__dot"></span>
-            <h3>Metal</h3>
-            <p>Latas, aluminio</p>
-          </a>
-          <a href="{{ url_for('paginas.guia') }}#organico" class="guide-card guide-card--organico reveal" style="--indice:4">
-            <span class="guide-card__dot"></span>
-            <h3>Orgánico</h3>
-            <p>Restos de comida</p>
-          </a>
-          <a href="{{ url_for('paginas.guia') }}#electronico" class="guide-card guide-card--electronico reveal" style="--indice:5">
-            <span class="guide-card__dot"></span>
-            <h3>Electrónico</h3>
-            <p>Pilas, aparatos</p>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== EXPLORA ECOMAPS ===== -->
-    <section class="section section--muted" id="explora-ecomaps">
-      <div class="container">
-        <div class="section__header reveal">
-          <span class="badge badge--muted">Explora EcoMaps</span>
-          <h2>Todo lo que puedes consultar</h2>
-          <p class="section__subtitle">Accede desde el menú a las diferentes secciones de la plataforma y conoce las herramientas disponibles.</p>
-        </div>
-
-        <div class="home-links-grid reveal-group">
-          <a href="{{ url_for('paginas.login') }}" class="home-link-card reveal" style="--indice:0">
-            <span class="home-link-card__icon">👤</span>
-            <div><h3>Mi cuenta</h3><p>Inicia sesión para ver tus actividades, logros y perfil.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
-          <a href="{{ url_for('paginas.ods12') }}" class="home-link-card reveal" style="--indice:3">
-            <span class="home-link-card__icon">🌱</span>
-            <div><h3>ODS 12</h3><p>Aprende sobre producción y consumo responsables y su relación con EcoMaps.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
-          <a href="{{ url_for('paginas.proponer') }}" class="home-link-card reveal" style="--indice:4">
-            <span class="home-link-card__icon">📍</span>
-            <div><h3>Proponer un punto</h3><p>Sugiere un nuevo punto de reciclaje para la comunidad.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
-          <a href="{{ url_for('paginas.reportar') }}" class="home-link-card reveal" style="--indice:5">
-            <span class="home-link-card__icon">⚠</span>
-            <div><h3>Reportar problema</h3><p>Informa si encuentras información incorrecta en un punto.</p></div>
-            <span class="home-link-card__arrow">→</span>
-          </a>
+        <div>
+          <h2 id="titulo-ods">Parte del Objetivo de Desarrollo Sostenible 12</h2>
+          <p>EcoMaps aporta a la meta 12.5 de la Agenda 2030: reducir la generación de desechos mediante prevención, reducción, reciclaje y reutilización.</p>
+          <a href="{{ url_for('paginas.ods12') }}" class="enlace">Qué es el ODS 12</a>
         </div>
       </div>
     </section>
 
     <!-- ===== CTA FINAL ===== -->
-    <section class="section cta reveal">
-      <div class="container cta__inner">
-        <span class="cta__icon">♻</span>
-        <h2>Empieza a reciclar <span class="text-accent">hoy</span></h2>
-        <p>Únete a la comunidad de EcoMaps y conviértete en parte del cambio hacia una ciudad más limpia y sostenible.</p>
-        <div class="cta__actions">
-          <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta gratis</a>
-          <a href="{{ url_for('paginas.guia') }}" class="btn btn--ghost">Ver cómo funciona →</a>
+    <section class="cierre" aria-labelledby="titulo-cierre">
+      <div class="container"><div class="cierre__inner">
+        <h2 id="titulo-cierre">Crea tu cuenta y lleva la cuenta de lo que reciclas</h2>
+        <p>Cada entrega confirmada suma puntos y sube tu nivel. Tu historial muestra todo lo que has aportado.</p>
+        <div class="cierre__acciones">
+          <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--claro">Crear cuenta gratis</a>
+          <a href="{{ url_for('paginas.mapa') }}" class="btn btn--linea-clara">Ver el mapa</a>
         </div>
-      </div>
+      </div></div>
     </section>
 
   </main>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
-    </div>
-  </footer>
+  {% include '_footer_publico.html' %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/publico.js') }}"></script>
 </body>
 </html>

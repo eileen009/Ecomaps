@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function iconoPunto(esUsuario) {
     return L.divIcon({
       className: '',
-      html: `<div class="map-marker${esUsuario ? ' map-marker--yo' : ''}"><span>${esUsuario ? '📍' : '♻'}</span></div>`,
+      html: `<div class="map-marker${esUsuario ? ' map-marker--yo' : ''}"><span><svg width="15" height="15" style="color:#fff"><use href="/static/assets/img/iconos.svg#${esUsuario ? 'i-usuario' : 'i-reciclar'}"/></svg></span></div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 30],
       popupAnchor: [0, -28],
@@ -43,16 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
       .map((m) => `<span class="tag">${m}</span>`)
       .join(' ');
     const accion = sesion
-      ? `<a href="/actividad?punto=${punto.id}" class="btn btn--primary btn--block">♻ Registrar que reciclé aquí</a>`
+      ? `<a href="/actividad?punto=${punto.id}" class="btn btn--primary btn--block">Registrar que reciclé aquí</a>`
       : `<a href="/login?next=/mapa" class="btn btn--outline btn--block">Inicia sesión para registrar</a>`;
 
     return `
       <div style="min-width:200px;">
         <h3 style="margin:0 0 4px; font-size:0.95rem;">${punto.nombre}</h3>
-        <p style="margin:0 0 8px; color:var(--texto-suave); font-size:0.82rem;">📍 ${punto.direccion}${punto.horario ? ' · ' + punto.horario : ''}</p>
+        <p style="margin:0 0 8px; color:var(--texto-suave); font-size:0.82rem;">${punto.direccion}${punto.horario ? ' · ' + punto.horario : ''}</p>
         <div class="map-point__tags" style="margin-bottom:10px;">${materiales}</div>
         ${accion}
-        <a href="/reportar?punto=${punto.id}" class="map-point__reportar">⚠ Reportar un problema con este punto</a>
+        <a href="/reportar?punto=${punto.id}" class="map-point__reportar">Reportar un problema con este punto</a>
       </div>`;
   }
 
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .map((m) => `<span class="tag">${m}</span>`)
       .join(' ');
     const distancia = typeof punto.distancia_km === 'number'
-      ? `📍 ${punto.distancia_km} km`
-      : `📍 ${punto.ciudad}`;
+      ? `A ${punto.distancia_km} km`
+      : `${punto.ciudad}`;
 
     const articulo = document.createElement('article');
     articulo.className = 'map-point';
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="map-point__tags">${materiales}</div>
       <div class="map-point__acciones">
         <button type="button" class="btn btn--outline" data-ver-mapa>Ver en el mapa</button>
-        <a href="/reportar?punto=${punto.id}" class="btn btn--outline map-point__btn-reportar" title="Reportar un problema">⚠ Reportar</a>
+        <a href="/reportar?punto=${punto.id}" class="btn btn--outline map-point__btn-reportar" title="Reportar un problema">Reportar</a>
       </div>
     `;
     articulo.querySelector('[data-ver-mapa]').addEventListener('click', () => {
@@ -152,6 +152,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (distanciaEl) distanciaEl.addEventListener('change', cargarPuntos);
   document.addEventListener('ecomaps:filtro-mapa', cargarPuntos);
+
+  // Si se llega desde el buscador del inicio (/mapa?residuo=vidrio), se aplica ese filtro.
+  const residuoInicial = new URLSearchParams(window.location.search).get('residuo');
+  if (residuoInicial && buscadorEl) {
+    buscadorEl.value = residuoInicial;
+    document.querySelectorAll('.map-quicktags button').forEach((chip) => {
+      chip.classList.toggle('is-active', chip.textContent.trim().toLowerCase() === residuoInicial.trim().toLowerCase());
+    });
+  }
 
   cargarPuntos();
 });

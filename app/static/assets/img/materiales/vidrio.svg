@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Frasco y botella de vidrio"><ellipse cx="60" cy="108" rx="30" ry="4.5" fill="#365004" opacity=".12"/>
+<path d="M70 8h10v18c0 4 9 8 9 18v58a4 4 0 0 1-4 4H65a4 4 0 0 1-4-4V44c0-10 9-14 9-18z" fill="#5E7D2A"/>
+<rect x="69" y="6" width="12" height="7" rx="2" fill="#925E06"/>
+<path d="M67 46v52" stroke="#A9C46A" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="26" y="50" width="38" height="8" rx="3" fill="#925E06"/>
+<rect x="24" y="57" width="42" height="49" rx="7" fill="#DDEBD0" stroke="#B9CFA4" stroke-width="2"/>
+<path d="M31 64v34" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+<rect x="30" y="74" width="30" height="16" rx="2" fill="#EDE383"/>
+</svg>

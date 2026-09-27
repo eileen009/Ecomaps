@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Inicia sesión o crea tu cuenta</title>
   <meta name="description" content="Inicia sesión o crea tu cuenta en EcoMaps para localizar puntos de reciclaje y registrar tu impacto.">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% include '_head_publico.html' %}
 </head>
 <body class="auth-body">
 
@@ -18,37 +18,24 @@
         <span class="logo__text">EcoMaps</span>
       </a>
 
-      <!-- Ilustración simple del mapa (sin librería externa) -->
-      <div class="auth__map" role="img" aria-label="Ilustración de un mapa con puntos de reciclaje">
-        <div class="auth__map-pin" style="top:28%; left:30%;">📍</div>
-        <div class="auth__map-pin" style="top:55%; left:22%;">📍</div>
-        <div class="auth__map-pin auth__map-pin--accent" style="top:52%; left:60%;">📍</div>
-        <div class="auth__map-pulse">♻</div>
-      </div>
+      {% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+      <div class="auth__ilustracion">{% include 'ilustraciones/mapa_hero.svg' %}</div>
 
-      <h2 class="auth__side-title">Únete a EcoMaps</h2>
-      <p class="auth__side-text">Encuentra dónde reciclar, registra tus acciones y contribuye a un futuro más sostenible.</p>
-
-      <!-- Datos de ejemplo -->
-      <div class="auth__stats">
-        <div>
-          <strong>12K+</strong>
-          <span>Puntos de reciclaje</span>
-        </div>
-        <div>
-          <strong>50K+</strong>
-          <span>Usuarios activos</span>
-        </div>
-        <div>
-          <strong>98T</strong>
-          <span>CO₂ ahorrado</span>
-        </div>
+      <div>
+        <h2 class="auth__side-title">Tu reciclaje, registrado</h2>
+        <p class="auth__side-text">Con una cuenta en EcoMaps puedes:</p>
+      <ul class="auth__beneficios">
+        <li><svg width="20" height="20" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg>Registrar cada entrega con una foto como evidencia.</li>
+        <li><svg width="20" height="20" aria-hidden="true"><use href="{{ icono }}#i-grafica"/></svg>Sumar puntos, subir de nivel y ver tu historial.</li>
+        <li><svg width="20" height="20" aria-hidden="true"><use href="{{ icono }}#i-pin"/></svg>Proponer puntos nuevos para tu barrio.</li>
+      </ul>
       </div>
     </aside>
 
     <!-- ===== PANEL DERECHO: formularios ===== -->
     <main class="auth__main">
       <div class="auth__card reveal">
+        <a href="{{ url_for('paginas.inicio') }}" class="auth__volver"><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-flecha"/></svg>Volver al inicio</a>
 
         <!-- Pestañas Iniciar sesión / Crear cuenta -->
         <div class="tabs" role="tablist">
@@ -70,7 +57,7 @@
             <label for="login-password">Contraseña</label>
             <div class="form__password">
               <input type="password" id="login-password" name="password" placeholder="••••••••" required>
-              <button type="button" class="form__toggle-pass" data-toggle-password="login-password" aria-label="Mostrar u ocultar contraseña">👁</button>
+              <button type="button" class="form__toggle-pass" data-toggle-password="login-password" aria-label="Mostrar u ocultar contraseña"><svg width="18" height="18" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-ojo"/></svg></button>
             </div>
 
             <div class="form__row">
@@ -110,7 +97,7 @@
             <label for="registro-password">Contraseña</label>
             <div class="form__password">
               <input type="password" id="registro-password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
-              <button type="button" class="form__toggle-pass" data-toggle-password="registro-password" aria-label="Mostrar u ocultar contraseña">👁</button>
+              <button type="button" class="form__toggle-pass" data-toggle-password="registro-password" aria-label="Mostrar u ocultar contraseña"><svg width="18" height="18" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-ojo"/></svg></button>
             </div>
 
             <label class="form__checkbox form__checkbox--terms">
@@ -130,7 +117,7 @@
           <p class="auth__switch">¿Ya tienes una cuenta? <a href="#login" data-tab-link="login">Iniciar sesión</a></p>
         </section>
 
-        <p class="auth__badge">🌱 Plataforma comprometida con el medio ambiente</p>
+        
       </div>
     </main>
   </div>

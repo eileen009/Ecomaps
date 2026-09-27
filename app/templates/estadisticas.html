@@ -5,62 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Estadísticas e impacto</title>
   <meta name="description" content="Datos de ejemplo sobre el alcance de la comunidad EcoMaps y su impacto ambiental.">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% include '_head_publico.html' %}
 </head>
-<body>
+<body class="publico">
 
-  <header class="header">
-    <div class="container header__inner">
-      <a href="{{ url_for('paginas.inicio') }}" class="logo">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-      </a>
-      <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav>
-      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="header__actions">
-        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
-      </div>
-    </div>
-  </header>
+  {% include '_header_publico.html' %}
 
   <main>
-    <div class="container"><p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Estadísticas</p></div>
-    <section class="stats-hero container">
-      <span class="badge badge--muted reveal">Impacto global</span>
-      <h1 class="reveal" style="color:var(--dark-moss-green); font-size:2.2rem; margin:12px 0 8px;">Estadísticas e impacto</h1>
-      <p class="reveal" style="color:var(--texto-suave); max-width:60ch;">Cifras generales (datos de ejemplo) que muestran el aporte de la comunidad EcoMaps al ODS 12: Producción y consumo responsables. Se conectarán a la base de datos real más adelante.</p>
-
+    {% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+    <section class="cabecera-pagina">
+      <div class="container">
+        <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Estadísticas</p>
+        <h1>El impacto de reciclar en comunidad</h1>
+        <p>Lo que la comunidad de EcoMaps ha reciclado y el efecto que tiene sobre el ambiente, como aporte al ODS 12.</p>
+      </div>
+    </section>
+    <section class="stats-hero container" style="padding:0 24px">
       <!-- Tarjetas resumen -->
       <div class="stats-cards reveal-group">
         <div class="stat-card reveal" style="--indice:0">
-          <div class="stat-card__icon">👥</div>
-          <div class="stat-card__value">148,320</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-personas"/></svg></div>
+          <div class="stat-card__value">148.320</div>
           <p class="stat-card__label">Usuarios registrados</p>
           <span class="stat-card__delta">+12% este mes</span>
         </div>
         <div class="stat-card reveal" style="--indice:1">
-          <div class="stat-card__icon">📍</div>
-          <div class="stat-card__value">3,847</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-pin"/></svg></div>
+          <div class="stat-card__value">3.847</div>
           <p class="stat-card__label">Puntos de reciclaje activos</p>
           <span class="stat-card__delta">+84 esta semana</span>
         </div>
         <div class="stat-card reveal" style="--indice:2">
-          <div class="stat-card__icon">♻</div>
-          <div class="stat-card__value">2.4M</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-reciclar"/></svg></div>
+          <div class="stat-card__value">2,4 M</div>
           <p class="stat-card__label">Acciones de reciclaje totales</p>
           <span class="stat-card__delta">+31% vs año anterior</span>
         </div>
         <div class="stat-card reveal" style="--indice:3">
-          <div class="stat-card__icon">🌱</div>
-          <div class="stat-card__value">9,240 t</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-hoja"/></svg></div>
+          <div class="stat-card__value">9.240 t</div>
           <p class="stat-card__label">CO₂ ahorrado</p>
           <span class="stat-card__delta">Equivale a 412k árboles</span>
         </div>
@@ -122,48 +105,18 @@
         </div>
       </div>
 
-      <div class="summary-strip reveal" style="margin-bottom:56px;">
-        <div><strong>24,810</strong><span>Recicladores este mes</span></div>
-        <div><strong>187,420</strong><span>Acciones colectivas este mes</span></div>
+      <div class="summary-strip reveal" style="margin-bottom:24px;">
+        <div><strong>24.810</strong><span>Recicladores este mes</span></div>
+        <div><strong>187.420</strong><span>Acciones colectivas este mes</span></div>
         <div><strong>842 t</strong><span>CO₂ evitado en septiembre</span></div>
       </div>
+      <p class="nota-demo">Cifras de demostración: se reemplazarán por los datos reales del sistema.</p>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
-    </div>
-  </footer>
+  {% include '_footer_publico.html' %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/publico.js') }}"></script>
 </body>
 </html>

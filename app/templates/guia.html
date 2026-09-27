@@ -3,251 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoMaps · Guía de reciclaje</title>
-  <meta name="description" content="Aprende a separar correctamente cada tipo de residuo antes de llevarlo a un punto de reciclaje.">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>Guía de reciclaje | EcoMaps</title>
+  <meta name="description" content="Aprende a separar y preparar cada tipo de residuo antes de llevarlo a un punto de reciclaje en Montería.">
+  {% include '_head_publico.html' %}
 </head>
-<body>
+{% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+{% set mat = url_for('static', filename='assets/img/materiales/') %}
+{% set materiales = [
+  {'id': 'plastico', 'nombre': 'Plástico', 'corto': 'Plástico', 'tinte': '#E2EEEE', 'caneca': 'blanca',
+   'intro': 'Es el material que más llega a los puntos de EcoMaps, pero solo se aprovecha si llega limpio y seco.',
+   'pasos': ['Enjuágalo para quitar restos de comida o bebida.', 'Retira tapas y etiquetas si se despegan fácil.', 'Aplástalo para que ocupe menos espacio.'],
+   'si': ['Botellas PET de agua y gaseosa', 'Envases de champú, detergente y limpieza', 'Bolsas y empaques limpios y secos', 'Tapas plásticas (por separado si el punto lo pide)'],
+   'no': 'Plásticos con restos de comida o aceite, ni icopor con grasa.',
+   'dato': 'Una botella PET puede tardar hasta 450 años en descomponerse en un relleno sanitario.'},
+  {'id': 'vidrio', 'nombre': 'Vidrio', 'corto': 'Vidrio', 'tinte': '#E5EDD6', 'caneca': 'blanca',
+   'intro': 'Se puede reciclar infinitas veces sin perder calidad, siempre que no esté roto ni mezclado con otros materiales.',
+   'pasos': ['Enjuágalo para quitar restos del contenido.', 'Retira tapas metálicas o plásticas: van en su propia categoría.', 'Transpórtalo entero, sin romperlo.'],
+   'si': ['Botellas de bebidas', 'Frascos y envases de conservas', 'Envases de perfumería sin residuos'],
+   'no': 'Vidrio de ventanas, espejos, bombillos ni vidrio roto sin proteger: puede herir a quien lo manipula.',
+   'dato': 'Reciclar vidrio consume hasta un 30 % menos de energía que fabricarlo desde cero.'},
+  {'id': 'papel', 'nombre': 'Papel y cartón', 'corto': 'Papel y cartón', 'tinte': '#F3E7D3', 'caneca': 'blanca',
+   'intro': 'Debe mantenerse seco: el papel mojado o manchado de grasa ya no se puede procesar.',
+   'pasos': ['Retira cinta adhesiva, grapas grandes y ganchos.', 'Aplasta las cajas para ahorrar espacio.', 'Guárdalo en un lugar seco hasta llevarlo al punto.'],
+   'si': ['Periódicos y revistas', 'Cajas de cartón aplastadas', 'Hojas, cuadernos y sobres', 'Cartón de empaques (cereal, huevos)'],
+   'no': 'Papel encerado o plastificado, servilletas usadas, papel carbón ni cajas de pizza con grasa.',
+   'dato': 'Cada tonelada de papel reciclado evita talar alrededor de 17 árboles.'},
+  {'id': 'metal', 'nombre': 'Metal', 'corto': 'Metal', 'tinte': '#EBEDF0', 'caneca': 'blanca',
+   'intro': 'El aluminio y el acero se pueden reciclar una y otra vez sin degradarse.',
+   'pasos': ['Enjuaga las latas para quitar restos de comida.', 'Aplástalas si puedes.', 'Vacía por completo los aerosoles antes de entregarlos.'],
+   'si': ['Latas de aluminio y de conservas', 'Tapas y chapas metálicas', 'Utensilios de cocina metálicos en desuso'],
+   'no': 'Aerosoles sin vaciar ni envases con residuos químicos.',
+   'dato': 'Reciclar una lata de aluminio ahorra la energía de tener un televisor encendido unas 3 horas.'},
+  {'id': 'organico', 'nombre': 'Orgánico', 'corto': 'Orgánico', 'tinte': '#F6E4D9', 'caneca': 'verde',
+   'intro': 'Sirve para hacer compost. Sepáralo siempre del resto de residuos desde la cocina.',
+   'pasos': ['Guárdalo en un recipiente aparte, idealmente con tapa.', 'Evita que se mezcle con plástico o papel.', 'Entrégalo con la frecuencia que indique el punto, casi siempre a diario.'],
+   'si': ['Restos de frutas y verduras', 'Cáscaras de huevo y cuncho de café', 'Hojas y restos pequeños de poda'],
+   'no': 'Carnes, lácteos, aceites usados ni residuos con químicos como insecticidas o pintura.',
+   'dato': 'Casi un tercio de la basura de un hogar es materia orgánica que podría convertirse en abono.'},
+  {'id': 'electronico', 'nombre': 'Electrónico', 'corto': 'Electrónico', 'tinte': '#E1ECEE', 'caneca': 'especial',
+   'intro': 'Contiene metales y componentes que contaminan si terminan en un relleno sanitario.',
+   'pasos': ['Si el equipo tiene datos personales, bórralos antes de entregarlo.', 'Retira las baterías sueltas: van aparte.', 'Entrégalo completo, sin desarmar, en un punto que reciba electrónicos.'],
+   'si': ['Celulares, tabletas y cargadores', 'Computadores, teclados y mouse', 'Pequeños electrodomésticos'],
+   'no': 'Nunca lo pongas en la caneca de reciclaje ni en la basura común.',
+   'dato': 'Un celular contiene oro, plata y cobre; por eso a estos residuos se les llama minería urbana.'},
+  {'id': 'baterias', 'nombre': 'Pilas y baterías', 'corto': 'Pilas', 'tinte': '#F1EAD6', 'caneca': 'especial',
+   'intro': 'Nunca deben ir a la basura: contienen metales pesados que contaminan el suelo y el agua.',
+   'pasos': ['Guárdalas en un frasco o bolsa cerrada, aparte de todo lo demás.', 'Si están hinchadas o dañadas, evita manipularlas directamente.', 'Llévalas cuanto antes a un punto que reciba baterías.'],
+   'si': ['Pilas AA, AAA y de botón', 'Baterías de celular, portátil y power banks', 'Baterías recargables en general'],
+   'no': 'No las mezcles con electrónicos grandes ni las tires a la basura o al inodoro.',
+   'dato': 'Una sola pila puede contaminar miles de litros de agua si termina en un relleno sanitario.'}
+] %}
+{% set canecas = {
+  'blanca': ('Caneca blanca', '#FFFFFF', '#C9CFBF'),
+  'verde': ('Caneca verde', '#4E8A2A', '#4E8A2A'),
+  'especial': ('Punto especializado, no va en ninguna caneca', '#925E06', '#925E06')
+} %}
+<body class="publico">
 
-  <header class="header">
-    <div class="container header__inner">
-      <a href="{{ url_for('paginas.inicio') }}" class="logo">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-      </a>
-      <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav>
-      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="header__actions">
-        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
+  {% include '_header_publico.html' %}
+
+  <section class="cabecera-pagina cabecera-pagina--con-imagen">
+    <div class="container">
+      <div>
+        <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Guía de reciclaje</p>
+        <h1>Cómo separar y preparar cada material</h1>
+        <p>Qué se recibe, cómo alistarlo en casa y qué evitar para que tu reciclaje sí se pueda aprovechar.</p>
+      </div>
+      <div class="guia-materiales" aria-hidden="true">
+        {% for m in materiales %}<img src="{{ mat }}{{ m.id }}.svg" alt="" style="--i:{{ loop.index0 }}">{% endfor %}
       </div>
     </div>
-  </header>
+  </section>
 
-  <main class="container" style="padding:40px 24px 64px;">
-    <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Guía de reciclaje</p>
-    <div class="section__header reveal">
-      <span class="badge badge--muted">Guía de reciclaje</span>
-      <h2>Aprende a separar correctamente</h2>
-      <p class="section__subtitle">Conoce qué se puede reciclar, cómo prepararlo y qué evitar en cada categoría.</p>
-    </div>
-
-    <!-- Navegación rápida entre categorías -->
-    <nav class="guide-nav reveal">
-      <a href="#plastico">🧴 Plástico</a>
-      <a href="#vidrio">🍾 Vidrio</a>
-      <a href="#papel">📄 Papel y cartón</a>
-      <a href="#metal">🥫 Metal</a>
-      <a href="#organico">🌱 Orgánico</a>
-      <a href="#electronico">💻 Electrónico</a>
-      <a href="#baterias">🔋 Baterías</a>
+  <main class="container" style="padding-bottom:120px;">
+    <nav class="guide-nav" aria-label="Materiales">
+      {% for m in materiales %}
+      <a href="#{{ m.id }}"><img src="{{ mat }}{{ m.id }}.svg" alt="">{{ m.corto }}</a>
+      {% endfor %}
+      <a href="#codigo-colores">Código de colores</a>
     </nav>
 
     <div class="guide-detail-grid">
-      <article class="guide-detail-card reveal" id="plastico">
-        <div class="guide-detail-card__icon" style="background:#FBF0D6; color:var(--golden-brown);">🧴</div>
+      {% for m in materiales %}
+      {% set c = canecas[m.caneca] %}
+      <article class="guide-detail-card" id="{{ m.id }}">
+        <div class="guide-detail-card__icon" style="--tinte:{{ m.tinte }}">
+          <img src="{{ mat }}{{ m.id }}.svg" alt="" width="130" height="130" loading="lazy">
+        </div>
         <div>
-          <h3>Plástico</h3>
-          <p style="color:var(--texto-suave); margin:0;">Es el material más reciclado en los puntos de EcoMaps, pero solo si llega limpio y seco.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Enjuágalo para quitar restos de comida o bebida.</li>
-            <li>2. Retira tapas y etiquetas si se despegan fácil.</li>
-            <li>3. Aplástalo para que ocupe menos espacio.</li>
-          </ol>
-          <ul>
-            <li>Botellas PET (agua, gaseosas)</li>
-            <li>Envases de champú, detergente y limpieza</li>
-            <li>Bolsas y empaques limpios y secos</li>
-            <li>Tapas plásticas (por separado si el punto lo pide)</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No incluyas plásticos con restos de comida o aceite, ni plástico de un solo uso muy sucio (bandejas de icopor con grasa).</p>
-          <p class="guide-detail-card__tip">💡 Una botella PET puede tardar hasta 450 años en descomponerse en un vertedero — reciclarla evita ese impacto.</p>
+          <h3>{{ m.nombre }}</h3>
+          <p class="guia-intro">{{ m.intro }}</p>
+          <div class="guia-columnas">
+            <div>
+              <h4>Cómo prepararlo</h4>
+              <ol class="guide-detail-card__pasos">
+                {% for p in m.pasos %}<li>{{ p }}</li>{% endfor %}
+              </ol>
+            </div>
+            <div>
+              <h4>Sí se recibe</h4>
+              <ul>
+                {% for s in m.si %}<li>{{ s }}</li>{% endfor %}
+              </ul>
+            </div>
+          </div>
+          <p class="guide-detail-card__no">
+            <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-x"/></svg>
+            <span><strong>No incluyas:</strong> {{ m.no }}</span>
+          </p>
+          <p class="guide-detail-card__tip">
+            <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-hoja"/></svg>
+            <span>{{ m.dato }}</span>
+          </p>
+          <span class="guia-caneca"><i style="--c:{{ c[1] }}; --b:{{ c[2] }}"></i>{{ c[0] }}</span>
         </div>
       </article>
-
-      <article class="guide-detail-card reveal" id="vidrio">
-        <div class="guide-detail-card__icon" style="background:var(--fondo-alt); color:var(--verde-oscuro);">🍾</div>
-        <div>
-          <h3>Vidrio</h3>
-          <p style="color:var(--texto-suave); margin:0;">Se puede reciclar infinitas veces sin perder calidad, siempre que no esté roto ni mezclado con otros materiales.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Enjuágalo para quitar restos del contenido.</li>
-            <li>2. Retira tapas metálicas o plásticas (van en su propia categoría).</li>
-            <li>3. Transpórtalo entero: evita romperlo antes de llevarlo.</li>
-          </ol>
-          <ul>
-            <li>Botellas de bebidas</li>
-            <li>Frascos y envases de conservas</li>
-            <li>Envases de perfumería (sin residuos del producto)</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No incluyas vidrio de ventanas, espejos, bombillas, ni vidrio roto sin proteger (puede lastimar a quien lo manipule).</p>
-          <p class="guide-detail-card__tip">💡 Reciclar vidrio consume hasta un 30% menos de energía que fabricarlo desde cero.</p>
-        </div>
-      </article>
-
-      <article class="guide-detail-card reveal" id="papel">
-        <div class="guide-detail-card__icon" style="background:#E6EEFA; color:#4C7BDB;">📄</div>
-        <div>
-          <h3>Papel y cartón</h3>
-          <p style="color:var(--texto-suave); margin:0;">Debe mantenerse seco: el papel mojado o manchado de grasa ya no se puede procesar.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Retira cinta adhesiva, grapas grandes y ganchos.</li>
-            <li>2. Aplasta las cajas de cartón para ahorrar espacio.</li>
-            <li>3. Guárdalo en un lugar seco hasta llevarlo al punto.</li>
-          </ol>
-          <ul>
-            <li>Periódicos y revistas</li>
-            <li>Cajas de cartón aplastadas</li>
-            <li>Hojas, cuadernos y sobres</li>
-            <li>Cartón de empaques (cereales, huevos)</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No incluyas papel encerado o plastificado, servilletas o pañuelos usados, papel carbón ni cajas de pizza con grasa.</p>
-          <p class="guide-detail-card__tip">💡 Cada tonelada de papel reciclado salva alrededor de 17 árboles.</p>
-        </div>
-      </article>
-
-      <article class="guide-detail-card reveal" id="metal">
-        <div class="guide-detail-card__icon" style="background:#EEEFF1; color:#5A6472;">🥫</div>
-        <div>
-          <h3>Metal</h3>
-          <p style="color:var(--texto-suave); margin:0;">El aluminio y el acero se pueden reciclar una y otra vez sin degradarse.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Enjuaga las latas para quitar restos de comida.</li>
-            <li>2. Aplástalas si puedes, para ahorrar espacio.</li>
-            <li>3. Vacía por completo los aerosoles antes de entregarlos.</li>
-          </ol>
-          <ul>
-            <li>Latas de aluminio y conservas</li>
-            <li>Tapas y chapas metálicas</li>
-            <li>Utensilios de cocina metálicos en desuso</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No incluyas aerosoles sin vaciar, metales oxidados peligrosos ni envases con residuos químicos.</p>
-          <p class="guide-detail-card__tip">💡 Reciclar una lata de aluminio ahorra la energía equivalente a tener un televisor encendido 3 horas.</p>
-        </div>
-      </article>
-
-      <article class="guide-detail-card reveal" id="organico">
-        <div class="guide-detail-card__icon" style="background:#F7F4D9; color:#8A7A0A;">🌱</div>
-        <div>
-          <h3>Orgánico</h3>
-          <p style="color:var(--texto-suave); margin:0;">Ideal para compostaje comunitario; sepáralo siempre del resto de residuos desde la fuente.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Guárdalo en un recipiente separado, idealmente con tapa.</li>
-            <li>2. Evita que se mezcle con plástico o papel.</li>
-            <li>3. Entrégalo con la frecuencia que indique el punto (suele ser diaria).</li>
-          </ol>
-          <ul>
-            <li>Restos de frutas y verduras</li>
-            <li>Cáscaras de huevo y posos de café</li>
-            <li>Hojas y restos de poda pequeños</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No incluyas carnes, lácteos, aceites usados ni residuos con químicos (insecticidas, pintura).</p>
-          <p class="guide-detail-card__tip">💡 Casi un tercio de la basura de los hogares es materia orgánica que podría convertirse en abono.</p>
-        </div>
-      </article>
-
-      <article class="guide-detail-card reveal" id="electronico">
-        <div class="guide-detail-card__icon" style="background:#F1E6FA; color:#A24CDB;">💻</div>
-        <div>
-          <h3>Electrónico</h3>
-          <p style="color:var(--texto-suave); margin:0;">Contiene metales y componentes que contaminan si terminan en un relleno sanitario común.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlo:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Si el equipo tiene datos personales, bórralos antes de entregarlo.</li>
-            <li>2. Retira baterías sueltas (van en la categoría "Baterías").</li>
-            <li>3. Entrégalo completo, sin desarmar, en un punto especializado.</li>
-          </ol>
-          <ul>
-            <li>Celulares, tablets y cargadores en desuso</li>
-            <li>Computadores y periféricos (teclados, mouse)</li>
-            <li>Pequeños electrodomésticos</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No los deseches en el contenedor de reciclaje regular ni en la basura común: llévalos siempre a un punto que reciba electrónicos.</p>
-          <p class="guide-detail-card__tip">💡 Un celular puede contener oro, plata y cobre — por eso la chatarra electrónica también se llama "minería urbana".</p>
-        </div>
-      </article>
-
-      <article class="guide-detail-card reveal" id="baterias">
-        <div class="guide-detail-card__icon" style="background:#FDE7E7; color:#B3261E;">🔋</div>
-        <div>
-          <h3>Baterías</h3>
-          <p style="color:var(--texto-suave); margin:0;">Nunca deben ir en la basura común: contienen metales pesados que contaminan el suelo y el agua.</p>
-          <p class="guide-detail-card__tip" style="margin-top:8px;"><strong>Cómo prepararlas:</strong></p>
-          <ol class="guide-detail-card__pasos">
-            <li>1. Guárdalas en un frasco o bolsa cerrada, separadas de todo lo demás.</li>
-            <li>2. Si están hinchadas o dañadas, evita manipularlas directamente.</li>
-            <li>3. Llévalas a un punto que reciba baterías apenas puedas.</li>
-          </ol>
-          <ul>
-            <li>Pilas AA, AAA y de botón</li>
-            <li>Baterías de celular, portátil y power banks</li>
-            <li>Baterías recargables en general</li>
-          </ul>
-          <p class="guide-detail-card__no">✕ No las incluyas con el reciclaje de electrónicos grandes ni las tires a la basura o al inodoro.</p>
-          <p class="guide-detail-card__tip">💡 Una sola pila puede contaminar hasta 3.000 litros de agua si termina en un relleno sanitario común.</p>
-        </div>
-      </article>
-
+      {% endfor %}
     </div>
 
-    <div class="cta reveal" style="border-radius:var(--radio); margin-top:40px; padding:40px 24px;">
-      <div class="cta__inner">
-        <span class="cta__icon">📍</span>
-        <h2>¿Ya sabes qué reciclar?</h2>
-        <p>Encuentra el punto más cercano que reciba ese tipo de residuo.</p>
-        <div class="cta__actions">
-          <a href="{{ url_for('paginas.mapa') }}" class="btn btn--primary">Ir al mapa</a>
+    <section class="guia-colores" id="codigo-colores" aria-labelledby="titulo-colores">
+      <div class="colores__grid">
+        <figure class="colores__ilustracion" data-aparecer>
+          {% include 'ilustraciones/canecas.svg' %}
+        </figure>
+        <div class="colores__texto">
+          <h2 id="titulo-colores">Código de colores para separar en casa</h2>
+          <p>Desde 2021, en toda Colombia se usa el mismo código para separar los residuos en la fuente.</p>
+          <dl class="colores__lista">
+            <div class="color color--blanca"><dt>Blanca</dt><dd>Aprovechables: plástico, vidrio, metales, papel y cartón limpios y secos.</dd></div>
+            <div class="color color--verde"><dt>Verde</dt><dd>Orgánicos aprovechables: restos de comida, cáscaras y residuos de jardín.</dd></div>
+            <div class="color color--negra"><dt>Negra</dt><dd>No aprovechables: papel higiénico, servilletas y empaques sucios de comida.</dd></div>
+          </dl>
+          <p class="colores__fuente">Resolución 2184 de 2019, Ministerio de Ambiente y Desarrollo Sostenible. Pilas y electrónicos no van en ninguna caneca: llévalos a un punto especializado.</p>
         </div>
       </div>
+    </section>
+
+    <div class="cta-interna">
+      <div>
+        <h2>¿Ya sabes qué vas a reciclar?</h2>
+        <p>Busca el punto más cercano que reciba ese material.</p>
+      </div>
+      <a href="{{ url_for('paginas.mapa') }}" class="btn btn--claro">Ir al mapa</a>
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
-    </div>
-  </footer>
+  {% include '_footer_publico.html' %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/publico.js') }}"></script>
 </body>
 </html>

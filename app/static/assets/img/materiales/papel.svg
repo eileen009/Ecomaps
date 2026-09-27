@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Caja de cartón y periódico"><ellipse cx="60" cy="108" rx="30" ry="4.5" fill="#365004" opacity=".12"/>
+<path d="M18 50 60 38l42 12v46l-42 12-42-12z" fill="#C79653"/>
+<path d="M60 62v46l42-12V50z" fill="#AE7E3D"/>
+<path d="M18 50 60 62l42-12-42-12z" fill="#DDB273"/>
+<path d="M18 50 8 64l42 12 10-14z" fill="#D6A764"/>
+<path d="M102 50l10 14-42 12-10-14z" fill="#B98843"/>
+<path d="M39 44 81 56" stroke="#EDE383" stroke-width="7"/>
+<g transform="rotate(-8 56 24)"><rect x="34" y="12" width="46" height="30" rx="2" fill="#F4F2EA" stroke="#D8D3C2" stroke-width="1.5"/><path d="M40 19h20M40 25h34M40 30h34M40 35h24" stroke="#9C9587" stroke-width="2.4" stroke-linecap="round"/><rect x="63" y="16" width="12" height="7" fill="#8DA432"/></g>
+</svg>
