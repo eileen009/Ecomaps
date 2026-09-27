@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · Proponer nuevo punto</title>
   <meta name="description" content="Propón un nuevo punto de reciclaje para que la comunidad EcoMaps lo encuentre en el mapa.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -42,82 +43,109 @@
       </div>
     </div>
 
-    <form data-demo-form>
+    <p class="form-note" id="proponer-aviso-sesion" hidden>
+      <span>ⓘ</span>
+      <span>Necesitas <a href="{{ url_for('paginas.login') }}?next=/proponer">iniciar sesión</a> para enviar una propuesta.</span>
+    </p>
 
+    <form id="form-proponer" novalidate>
       <!-- 1. Información básica -->
-      <div class="form-section reveal">
+      <div class="form-section">
         <div class="form-section__title">
           <span class="form-section__num">1</span>
           <h2>Información básica</h2>
         </div>
         <div class="form">
           <label for="p-nombre">Nombre del punto *</label>
-          <input type="text" id="p-nombre" name="nombre" placeholder="Ej. Centro de acopio Parque Central" required>
-
-          <div class="form-steps">
-            <div>
-              <label for="p-direccion">Dirección *</label>
-              <input type="text" id="p-direccion" name="direccion" placeholder="Calle, número, colonia" required>
-            </div>
-            <div>
-              <label for="p-ciudad">Ciudad *</label>
-              <input type="text" id="p-ciudad" name="ciudad" placeholder="Ej. Montería" required>
-            </div>
-          </div>
-
-          <label for="p-horario">Horario de atención *</label>
-          <input type="text" id="p-horario" name="horario" placeholder="Ej. Lunes a viernes 9:00–18:00 / Sábados 9:00–13:00" required>
+          <input type="text" id="p-nombre" maxlength="150" placeholder="Ej. Centro de acopio Parque Central" required>
         </div>
       </div>
 
-      <!-- 2. Materiales recibidos -->
-      <div class="form-section reveal">
+      <!-- 2. Ubicación: escribir la dirección o marcarla en el mapa -->
+      <div class="form-section">
         <div class="form-section__title">
           <span class="form-section__num">2</span>
-          <h2>Materiales recibidos</h2>
+          <h2>Ubicación</h2>
+        </div>
+        <div class="form">
+          <div class="form-steps">
+            <div>
+              <label for="p-direccion">Dirección *</label>
+              <input type="text" id="p-direccion" maxlength="220" placeholder="Ej. Calle 41 #6-20" required>
+            </div>
+            <div>
+              <label for="p-ciudad">Ciudad *</label>
+              <input type="text" id="p-ciudad" maxlength="100" placeholder="Ej. Montería" required>
+            </div>
+          </div>
+          <div class="ubicacion-acciones">
+            <button type="button" class="btn btn--outline" id="btn-ubicar-direccion">🔎 Ubicar dirección en el mapa</button>
+            <button type="button" class="btn btn--outline" id="btn-mi-ubicacion">📍 Usar mi ubicación</button>
+          </div>
+        </div>
+        <div class="map-picker map-picker--real" id="proponer-mapa" aria-label="Mapa para marcar la ubicación del punto"></div>
+        <p class="form-hint" id="proponer-mapa-estado">ⓘ Escribe la dirección y pulsa "Ubicar", o haz clic en el mapa. Puedes arrastrar el marcador para ajustarlo.</p>
+      </div>
+
+      <!-- 3. Materiales recibidos -->
+      <div class="form-section">
+        <div class="form-section__title">
+          <span class="form-section__num">3</span>
+          <h2>Materiales recibidos *</h2>
         </div>
         <div class="form-materials">
-          <label><input type="checkbox" name="materiales" value="plastico"> 🧴 Plástico</label>
-          <label><input type="checkbox" name="materiales" value="vidrio"> 🍾 Vidrio</label>
-          <label><input type="checkbox" name="materiales" value="papel"> 📄 Papel</label>
-          <label><input type="checkbox" name="materiales" value="carton"> 📦 Cartón</label>
-          <label><input type="checkbox" name="materiales" value="baterias"> 🔋 Baterías</label>
-          <label><input type="checkbox" name="materiales" value="electronicos"> 💻 Electrónicos</label>
-          <label><input type="checkbox" name="materiales" value="organico"> 🌱 Orgánico</label>
-          <label><input type="checkbox" name="materiales" value="metal"> 🥫 Metal</label>
+          <label><input type="checkbox" name="materiales" value="Plástico"> 🧴 Plástico</label>
+          <label><input type="checkbox" name="materiales" value="Vidrio"> 🍾 Vidrio</label>
+          <label><input type="checkbox" name="materiales" value="Papel"> 📄 Papel</label>
+          <label><input type="checkbox" name="materiales" value="Cartón"> 📦 Cartón</label>
+          <label><input type="checkbox" name="materiales" value="Baterías"> 🔋 Baterías</label>
+          <label><input type="checkbox" name="materiales" value="Electrónico"> 💻 Electrónico</label>
+          <label><input type="checkbox" name="materiales" value="Orgánico"> 🌱 Orgánico</label>
+          <label><input type="checkbox" name="materiales" value="Metal"> 🥫 Metal</label>
         </div>
         <p class="form-hint">Selecciona todos los materiales que se aceptan en este punto.</p>
       </div>
 
-      <!-- 3. Ubicación en el mapa -->
-      <div class="form-section reveal">
-        <div class="form-section__title">
-          <span class="form-section__num">3</span>
-          <h2>Ubicación en el mapa</h2>
-        </div>
-        <div class="map-picker" data-map-picker>
-          <span class="map-picker__hint">📍 Haz clic para marcar la ubicación</span>
-        </div>
-        <p class="form-hint">ⓘ Haz clic en el mapa para marcar la ubicación aproximada del punto. Puedes ajustarlo haciendo clic de nuevo.</p>
-      </div>
-
-      <!-- 4. Información de contacto -->
-      <div class="form-section reveal">
+      <!-- 4. Horario (mismo editor que el panel de empresa) -->
+      <div class="form-section">
         <div class="form-section__title">
           <span class="form-section__num">4</span>
+          <h2>Horario de atención</h2>
+        </div>
+        <div class="horario-tabla" id="horario-tabla"></div>
+        <div class="horario-atajos">
+          <button type="button" class="btn btn--outline" data-atajo="lv">Copiar lunes a L–V</button>
+          <button type="button" class="btn btn--outline" data-atajo="todos">Copiar lunes a todos</button>
+        </div>
+        <p class="form-hint">Vista previa: <strong data-horario="preview">–</strong></p>
+      </div>
+
+      <!-- 5. Contacto -->
+      <div class="form-section">
+        <div class="form-section__title">
+          <span class="form-section__num">5</span>
           <h2>Información de contacto</h2>
         </div>
         <div class="form">
-          <label for="p-contacto">Teléfono, email o sitio web</label>
-          <input type="text" id="p-contacto" name="contacto" placeholder="Ej. +57 300 123 4567 / contacto@ecocentro.co">
+          <div class="form-steps">
+            <div>
+              <label for="p-telefono">Teléfono</label>
+              <input type="tel" id="p-telefono" maxlength="30" placeholder="Ej. 300 123 4567">
+            </div>
+            <div>
+              <label for="p-correo">Correo</label>
+              <input type="email" id="p-correo" maxlength="180" placeholder="contacto@ecocentro.co">
+            </div>
+          </div>
         </div>
         <div class="form-note">
           <span>ⓘ</span>
-          <span>Tu información de contacto solo se compartirá con el equipo de EcoMaps para validar la propuesta. No se publicará en el mapa sin tu autorización.</span>
+          <span>Un administrador revisa cada propuesta antes de publicarla en el mapa.</span>
         </div>
       </div>
 
-      <div class="form-page__footer reveal">
+      <p class="form__error" data-form-error hidden></p>
+      <div class="form-page__footer">
         <p>Al enviar, aceptas los <a href="#">términos de contribución</a> de EcoMaps.</p>
         <button type="submit" class="btn btn--primary">→ Enviar propuesta</button>
       </div>
@@ -158,6 +186,9 @@
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/horario.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/proponer.js') }}"></script>
 </body>
 </html>

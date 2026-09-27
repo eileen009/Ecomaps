@@ -6,6 +6,8 @@ Endpoints:
     POST  /api/puntos              proponer un nuevo punto (queda "pendiente")
     PUT   /api/puntos/<id>         editar (admin)
     PATCH /api/puntos/<id>/estado  aprobar / rechazar / reportar (admin)
+    GET   /api/puntos/mios         puntos de la empresa que inició sesión
+    PUT   /api/puntos/mios/<id>    la empresa edita info de contacto y horario
 """
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -15,6 +17,7 @@ from models.punto_reciclaje import PuntoReciclaje
 from models.categoria_residuo import CategoriaResiduo
 from utils.auth_helpers import requiere_rol
 from utils.geo import distancia_km
+from utils.validaciones import correo_valido
 
 puntos_bp = Blueprint("puntos", __name__, url_prefix="/api/puntos")
 
@@ -173,5 +176,53 @@ def cambiar_estado(id_punto):
         return jsonify({"error": "Estado no válido."}), 400
 
     punto.estado = nuevo_estado
+    db.session.commit()
+    return jsonify(punto.to_dict()), 200
+
+
+# ----- Dashboard de empresa -----
+# Sin tabla "empresa" nueva: el punto le pertenece al usuario que lo
+# propuso (creado_por). Así no se toca el esquema de la BD.
+CAMPOS_EDITABLES_EMPRESA = ("nombre", "horario", "telefono_contacto", "email_contacto")
+MAX_HORARIO = 150  # mismo largo que la columna horario
+
+
+@puntos_bp.get("/mios")
+@requiere_rol("empresa")
+def mis_puntos():
+    # Filtra por creado_por en la consulta: no trae puntos de otros.
+    puntos = (
+        PuntoReciclaje.query.filter_by(creado_por=int(get_jwt_identity()))
+        .order_by(PuntoReciclaje.nombre)
+        .all()
+    )
+    return jsonify([p.to_dict() for p in puntos]), 200
+
+
+@puntos_bp.put("/mios/<int:id_punto>")
+@requiere_rol("empresa")
+def editar_mi_punto(id_punto):
+    punto = PuntoReciclaje.query.filter_by(
+        id=id_punto, creado_por=int(get_jwt_identity())
+    ).first()
+    if not punto:
+        return jsonify({"error": "Ese punto no existe o no es de tu empresa."}), 404
+
+    datos = request.get_json(silent=True) or {}
+
+    if "nombre" in datos and not (datos["nombre"] or "").strip():
+        return jsonify({"error": "El nombre del punto no puede quedar vacío."}), 400
+    if len((datos.get("horario") or "")) > MAX_HORARIO:
+        return jsonify({"error": "El horario es demasiado largo."}), 400
+    correo = (datos.get("email_contacto") or "").strip()
+    if correo and not correo_valido(correo):
+        return jsonify({"error": "Correo de contacto no válido."}), 400
+
+    # Dirección, ciudad y coordenadas NO se editan aquí: cambiarían la
+    # ubicación en el mapa sin revisión del admin.
+    for campo in CAMPOS_EDITABLES_EMPRESA:
+        if campo in datos:
+            setattr(punto, campo, (datos[campo] or "").strip() or None)
+
     db.session.commit()
     return jsonify(punto.to_dict()), 200

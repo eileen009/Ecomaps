@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="margin:0 0 8px; color:var(--texto-suave); font-size:0.82rem;">📍 ${punto.direccion}${punto.horario ? ' · ' + punto.horario : ''}</p>
         <div class="map-point__tags" style="margin-bottom:10px;">${materiales}</div>
         ${accion}
+        <a href="/reportar?punto=${punto.id}" class="map-point__reportar">⚠ Reportar un problema con este punto</a>
       </div>`;
   }
 
@@ -69,9 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="map-point__top"><h3>${punto.nombre}</h3></div>
       <p class="map-point__meta">${distancia}${punto.horario ? ' · ' + punto.horario : ''}</p>
       <div class="map-point__tags">${materiales}</div>
-      <button type="button" class="btn btn--outline btn--block">Ver en el mapa</button>
+      <div class="map-point__acciones">
+        <button type="button" class="btn btn--outline" data-ver-mapa>Ver en el mapa</button>
+        <a href="/reportar?punto=${punto.id}" class="btn btn--outline map-point__btn-reportar" title="Reportar un problema">⚠ Reportar</a>
+      </div>
     `;
-    articulo.querySelector('button').addEventListener('click', () => {
+    articulo.querySelector('[data-ver-mapa]').addEventListener('click', () => {
       mapa.flyTo([punto.latitud, punto.longitud], 16);
       capaPuntos.eachLayer((marcador) => {
         if (marcador._puntoId === punto.id) marcador.openPopup();

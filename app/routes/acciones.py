@@ -5,16 +5,18 @@ Endpoints:
     POST  /api/acciones                  registrar un aporte (queda "pendiente")
     GET   /api/usuarios/me/acciones       historial propio
     GET   /api/acciones?estado=pendiente  listar para revisión (admin)
-    PATCH /api/acciones/<id>/estado       confirmar/rechazar y asignar puntos (admin)
+    PATCH /api/acciones/<id>/estado       confirmar/rechazar y asignar puntos (admin, o la empresa dueña del punto)
+    GET   /api/acciones/mi-punto          aportes pendientes en los puntos de la empresa
 """
 import os
 
 from flask import Blueprint, current_app, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 from extensions import db
 from models.accion_reciclaje import AccionReciclaje
 from models.categoria_residuo import CategoriaResiduo
+from models.punto_reciclaje import PuntoReciclaje
 from models.usuario import Usuario
 from utils.auth_helpers import requiere_rol
 from utils.archivos import extension_valida, guardar_foto
@@ -83,9 +85,17 @@ def listar_acciones():
 
 
 @acciones_bp.patch("/<int:id_accion>/estado")
-@requiere_rol("admin")
+@requiere_rol("admin", "empresa")
 def revisar_accion(id_accion):
     accion = AccionReciclaje.query.get_or_404(id_accion)
+
+    # La empresa solo revisa aportes hechos en sus propios puntos, y
+    # nunca los suyos (no puede darse puntos a sí misma).
+    if get_jwt().get("rol") == "empresa":
+        id_empresa = int(get_jwt_identity())
+        es_su_punto = accion.punto is not None and accion.punto.creado_por == id_empresa
+        if not es_su_punto or accion.id_usuario == id_empresa:
+            return jsonify({"error": "Solo puedes revisar aportes hechos en tus puntos."}), 403
     datos = request.get_json(silent=True) or {}
     nuevo_estado = datos.get("estado")
 
@@ -102,6 +112,9 @@ def revisar_accion(id_accion):
         usuario = Usuario.query.get(accion.id_usuario)
         if usuario:
             usuario.puntos_totales += puntos
+            # Un nivel cada 100 puntos: barato de calcular, no hace falta
+            # una tabla de logros aparte solo para esto (código verde).
+            usuario.nivel = 1 + usuario.puntos_totales // 100
 
     db.session.commit()
     return jsonify(accion.to_dict()), 200
@@ -113,6 +126,28 @@ def mis_acciones():
     id_usuario = int(get_jwt_identity())
     acciones = (
         AccionReciclaje.query.filter_by(id_usuario=id_usuario)
+        .order_by(AccionReciclaje.fecha.desc())
+        .all()
+    )
+    return jsonify([a.to_dict() for a in acciones]), 200
+
+
+@acciones_bp.get("/mi-punto")
+@requiere_rol("empresa")
+def acciones_de_mis_puntos():
+    """Aportes pendientes registrados en los puntos de la empresa.
+
+    Un solo JOIN filtrado por estado (indexado) y dueño del punto: no se
+    traen todas las acciones para filtrarlas en Python.
+    """
+    id_empresa = int(get_jwt_identity())
+    acciones = (
+        AccionReciclaje.query.join(PuntoReciclaje, AccionReciclaje.id_punto == PuntoReciclaje.id)
+        .filter(
+            PuntoReciclaje.creado_por == id_empresa,
+            AccionReciclaje.estado == "pendiente",
+            AccionReciclaje.id_usuario != id_empresa,
+        )
         .order_by(AccionReciclaje.fecha.desc())
         .all()
     )

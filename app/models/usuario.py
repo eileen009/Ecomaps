@@ -22,6 +22,10 @@ class Usuario(db.Model):
 
     nivel = db.Column(db.Integer, nullable=False, default=1)
     puntos_totales = db.Column(db.Integer, nullable=False, default=0)
+    # Ruta pública (relativa a /static) de la foto de perfil; None = usa las iniciales.
+    foto_url = db.Column(db.String(255), nullable=True)
+    # Sello "Empresa verificada": solo lo activa un admin (rol empresa).
+    verificada = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
 
     rol = db.Column(
         db.Enum("ciudadano", "empresa", "admin", name="rol_usuario"),
@@ -41,6 +45,22 @@ class Usuario(db.Model):
     def check_password(self, password_plano: str) -> bool:
         return check_password_hash(self.password_hash, password_plano)
 
+    # ----- Gamificación: marco del avatar según el nivel -----
+    # Nada de tablas ni consultas extra para esto: es una regla fija y
+    # barata de calcular (código verde), no un dato que haya que guardar.
+    NIVELES_MARCO = (
+        (7, "oro"),
+        (5, "plata"),
+        (3, "bronce"),
+    )
+
+    @property
+    def marco_avatar(self) -> str:
+        for nivel_minimo, marco in self.NIVELES_MARCO:
+            if self.nivel >= nivel_minimo:
+                return marco
+        return "ninguno"
+
     # ----- Serialización -----
     def to_dict(self) -> dict:
         """Representación pública del usuario (sin password_hash)."""
@@ -51,5 +71,8 @@ class Usuario(db.Model):
             "nivel": self.nivel,
             "puntos_totales": self.puntos_totales,
             "rol": self.rol,
+            "foto_url": self.foto_url,
+            "marco_avatar": self.marco_avatar,
+            "verificada": bool(self.verificada),
             "fecha_registro": self.fecha_registro.isoformat(),
         }

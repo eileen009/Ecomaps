@@ -1,39 +1,51 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>EcoMaps · Mi perfil</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
-<body data-requiere-sesion="true"><header class="header"><div class="container header__inner"><a href="{{ url_for('paginas.inicio') }}" class="logo"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a><nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav><button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button><div class="header__actions"><button type="button" class="btn btn--ghost" data-cerrar-sesion>Cerrar sesión</button></div></div></header>
-<main><div class="container"><p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › Mi perfil</p></div><section class="page-hero"><div class="container page-hero__inner reveal"><span class="badge">👤 Cuenta</span><h1>Mi perfil</h1><p>Consulta la información de tu cuenta y tu participación dentro de EcoMaps.</p></div></section><section class="section"><div class="container profile-layout"><aside class="profile-card reveal"><div class="profile-avatar">SC</div><h2>Sarith Calles</h2><p>Usuario EcoMaps</p><span class="badge">♻ Reciclador activo</span><div class="profile-stats"><div><strong>1.250</strong><small>Puntos</small></div><div><strong>28</strong><small>Actividades</small></div><div><strong>6</strong><small>Logros</small></div></div><div class="profile-links" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;"><a href="{{ url_for('paginas.actividad') }}" class="btn btn--primary">➕ Registrar aporte</a><a href="{{ url_for('paginas.mapa') }}" class="btn btn--outline">🗺 Abrir mapa</a><a href="{{ url_for('paginas.actividad') }}" class="btn btn--outline">♻ Mis actividades</a><a href="{{ url_for('paginas.logros') }}" class="btn btn--outline">🏆 Mis logros</a></div></aside><div class="form-section reveal" style="--indice:1"><div class="form-section__title"><span class="form-section__num">1</span><h2>Información personal</h2></div><form class="form demo-action-form" data-demo-action="perfil"><label for="nombre">Nombre completo</label><input id="nombre" type="text" value="Sarith Calles"><label for="correo">Correo electrónico</label><input id="correo" type="email" value="usuario@ecomaps.com"><label for="ciudad">Ciudad</label><input id="ciudad" type="text" value="Montería"><label for="bio">Sobre ti</label><textarea id="bio" rows="4" placeholder="Cuéntanos brevemente sobre tus hábitos de reciclaje."></textarea><button class="btn btn--primary" type="submit">Guardar cambios</button></form></div></div></section></main>
-<footer class="footer"><div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
+{% extends "cuenta_base.html" %}
+{% block titulo %}Mi perfil{% endblock %}
+{% block migas %}<strong>Mi perfil</strong>{% endblock %}
 
-    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer><script src="{{ url_for('static', filename='js/main.js') }}"></script></body></html>
+{% block contenido %}
+      <!-- Resumen: foto, nombre y estadísticas -->
+      <section class="profile-card profile-card--resumen">
+        {% include "_avatar_editable.html" %}
+        <div class="profile-card__datos">
+          <h2 data-perfil="nombre">Cargando…</h2>
+          <p data-perfil="correo">Usuario EcoMaps</p>
+          <span class="badge" data-perfil="marco-badge">♻ Reciclador activo</span>
+          <div class="profile-stats">
+            <div><strong data-perfil="puntos">–</strong><small>Puntos</small></div>
+            <div><strong data-perfil="nivel">–</strong><small>Nivel</small></div>
+            <div><strong data-perfil="marco">–</strong><small>Marco</small></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="profile-grid">
+        <!-- Mis puntos: progreso al siguiente nivel -->
+        <section class="profile-panel" id="puntos">
+          <h3>⭐ Mis puntos</h3>
+          <p class="profile-panel__big"><strong data-perfil="puntos-2">–</strong> puntos</p>
+          <div class="progreso" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-perfil="progreso">
+            <span class="progreso__barra" data-perfil="progreso-barra"></span>
+          </div>
+          <p class="profile-panel__nota" data-perfil="progreso-texto">Cada 100 puntos subes de nivel.</p>
+          <a href="{{ url_for('paginas.actividad') }}" class="btn btn--primary">➕ Registrar aporte</a>
+        </section>
+
+        <!-- Mis ganancias: marcos desbloqueados por nivel -->
+        <section class="profile-panel" id="ganancias">
+          <h3>🎁 Mis ganancias</h3>
+          <p class="profile-panel__nota">Marcos para tu foto de perfil que desbloqueas al subir de nivel.</p>
+          <ul class="ganancias">
+            <li data-ganancia="bronce"><span class="ganancias__aro ganancias__aro--bronce"></span><div><strong>Marco bronce</strong><small>Nivel 3</small></div></li>
+            <li data-ganancia="plata"><span class="ganancias__aro ganancias__aro--plata"></span><div><strong>Marco plata</strong><small>Nivel 5</small></div></li>
+            <li data-ganancia="oro"><span class="ganancias__aro ganancias__aro--oro"></span><div><strong>Marco oro</strong><small>Nivel 7</small></div></li>
+          </ul>
+        </section>
+      </div>
+
+      {% with num=1 %}{% include "_form_cuenta.html" %}{% endwith %}
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/cuenta.js') }}"></script>
+<script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+{% endblock %}
