@@ -6,37 +6,17 @@
   <title>EcoMaps · Proponer nuevo punto</title>
   <meta name="description" content="Propón un nuevo punto de reciclaje para que la comunidad EcoMaps lo encuentre en el mapa.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% include '_head_publico.html' %}
 </head>
-<body>
+<body class="publico">
 
-  <header class="header">
-    <div class="container header__inner">
-      <a href="{{ url_for('paginas.inicio') }}" class="logo">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="36" height="36">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-      </a>
-      <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav>
-      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="header__actions">
-        <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
-        <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
-      </div>
-    </div>
-  </header>
+  {% include '_header_publico.html' %}
 
   <main class="container form-page">
     <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › <a href="{{ url_for('paginas.mapa') }}">Puntos de reciclaje</a> › Proponer nuevo punto</p>
 
     <div class="form-page__header reveal">
-      <div class="form-page__header-icon">📍</div>
+      <div class="form-page__header-icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-pin"/></svg></div>
       <div>
         <h1>Proponer nuevo punto de reciclaje</h1>
         <p>Ayuda a tu comunidad agregando un punto de recolección al mapa. Revisaremos tu propuesta en 2–3 días hábiles.</p>
@@ -79,8 +59,8 @@
             </div>
           </div>
           <div class="ubicacion-acciones">
-            <button type="button" class="btn btn--outline" id="btn-ubicar-direccion">🔎 Ubicar dirección en el mapa</button>
-            <button type="button" class="btn btn--outline" id="btn-mi-ubicacion">📍 Usar mi ubicación</button>
+            <button type="button" class="btn btn--outline" id="btn-ubicar-direccion"><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-buscar"/></svg>Ubicar dirección en el mapa</button>
+            <button type="button" class="btn btn--outline" id="btn-mi-ubicacion"><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-pin"/></svg>Usar mi ubicación</button>
           </div>
         </div>
         <div class="map-picker map-picker--real" id="proponer-mapa" aria-label="Mapa para marcar la ubicación del punto"></div>
@@ -152,42 +132,11 @@
     </form>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
-
-    <div class="footer__bottom">
-      <p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p>
-    </div>
-  </footer>
+  {% include '_footer_publico.html' %}
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/publico.js') }}"></script>
   <script src="{{ url_for('static', filename='js/horario.js') }}"></script>
   <script src="{{ url_for('static', filename='js/proponer.js') }}"></script>
 </body>

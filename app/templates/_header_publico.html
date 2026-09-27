@@ -1,0 +1,24 @@
+{# Header de las páginas públicas. Marca la sección actual con request.endpoint. #}
+{% set seccion = request.endpoint %}
+<header class="header" data-header>
+  <div class="container header__inner">
+    <a href="{{ url_for('paginas.inicio') }}" class="logo" aria-label="EcoMaps, ir al inicio">
+      <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="" class="logo__img" width="36" height="36">
+      <span class="logo__text">Eco<strong>Maps</strong></span>
+    </a>
+
+    <nav class="nav" id="menu-principal" aria-label="Navegación principal">
+      {% for endpoint, texto in [('paginas.inicio', 'Inicio'), ('paginas.mapa', 'Mapa'), ('paginas.guia', 'Guía de reciclaje'), ('paginas.estadisticas', 'Estadísticas'), ('paginas.ods12', 'ODS 12')] %}
+      <a href="{{ url_for(endpoint) }}" class="nav__link{% if seccion == endpoint %} nav__link--active{% endif %}"{% if seccion == endpoint %} aria-current="page"{% endif %}>{{ texto }}</a>
+      {% endfor %}
+    </nav>
+
+    <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header__actions">
+      <a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a>
+      <a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a>
+    </div>
+  </div>
+</header>

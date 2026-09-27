@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Botella plástica"><ellipse cx="60" cy="108" rx="30" ry="4.5" fill="#365004" opacity=".12"/>
+<rect x="51" y="10" width="18" height="10" rx="2.5" fill="#365004"/>
+<rect x="49" y="18" width="22" height="4" rx="1.5" fill="#2a3d03"/>
+<path d="M52 22h16v8c0 3 12 9 12 20v52a5 5 0 0 1-5 5H45a5 5 0 0 1-5-5V50c0-11 12-17 12-20z" fill="#CFE4E6"/>
+<path d="M40 60h40v24H40z" fill="#EDE383"/>
+<path d="M40 60h40v4H40zM40 80h40v4H40z" fill="#8DA432"/>
+<path d="M48 36c-4 4-6 8-6 14v44" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".85"/>
+<path d="M40 96h40v6a5 5 0 0 1-5 5H45a5 5 0 0 1-5-5z" fill="#B3D2D5"/>
+</svg>

@@ -1,0 +1,37 @@
+{# Footer de las páginas públicas. #}
+<footer class="footer">
+  <div class="footer__rio" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 34C180 10 320 52 520 34S860 6 1040 26s300 20 400 4V60H0Z" fill="currentColor"/></svg>
+  </div>
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="{{ url_for('paginas.inicio') }}" class="logo">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="" class="logo__img" width="36" height="36">
+        <span class="logo__text">Eco<strong>Maps</strong></span>
+      </a>
+      <p>Encuentra dónde reciclar en Montería, aprende a separar tus residuos y registra tu aporte al consumo responsable.</p>
+    </div>
+    <div class="footer__col">
+      <h4>Reciclar</h4>
+      <a href="{{ url_for('paginas.mapa') }}">Mapa de puntos</a>
+      <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
+      <a href="{{ url_for('paginas.guia') }}#codigo-colores">Código de colores</a>
+    </div>
+    <div class="footer__col">
+      <h4>Comunidad</h4>
+      <a href="{{ url_for('paginas.proponer') }}">Proponer un punto</a>
+      <a href="{{ url_for('paginas.reportar') }}">Reportar un problema</a>
+      <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
+    </div>
+    <div class="footer__col">
+      <h4>Proyecto</h4>
+      <a href="{{ url_for('paginas.ods12') }}">Qué es el ODS 12</a>
+      <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
+      <a href="{{ url_for('paginas.login') }}#registro">Crear cuenta</a>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <p>© 2026 EcoMaps. Montería, Córdoba, Colombia.</p>
+    <p>Mapa base © colaboradores de OpenStreetMap</p>
+  </div>
+</footer>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Celular y cargador"><ellipse cx="60" cy="108" rx="30" ry="4.5" fill="#365004" opacity=".12"/>
+<path d="M84 76c10 0 14 6 14 14s-6 14-16 14H60" stroke="#351903" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<rect x="80" y="62" width="16" height="18" rx="3" fill="#E8E4DA" stroke="#9C9587" stroke-width="1.5"/>
+<path d="M85 58v5M91 58v5" stroke="#8F98A2" stroke-width="2.5" stroke-linecap="round"/>
+<rect x="30" y="12" width="44" height="92" rx="8" fill="#3B3632"/>
+<rect x="34" y="20" width="36" height="72" rx="3" fill="#9CC3C9"/>
+<path d="M34 64 50 48l10 10 10-8v42H34z" fill="#8DA432" opacity=".85"/>
+<circle cx="60" cy="34" r="5" fill="#EDE383"/>
+<rect x="46" y="96" width="12" height="3" rx="1.5" fill="#6E6760"/>
+<path d="M40 24l-2 20" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+</svg>
