@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoMaps · Registrar actividad</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body data-requiere-sesion="true">
-<header class="header"><div class="container header__inner">
-  <a href="{{ url_for('paginas.inicio') }}" class="logo"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img"><span class="logo__text">Eco<strong>Maps</strong></span></a>
-  <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-        <a href="{{ url_for('paginas.inicio') }}" class="nav__link">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}" class="nav__link">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}" class="nav__link">Guía</a>        <a href="{{ url_for('paginas.estadisticas') }}" class="nav__link">Estadísticas</a>
-        <a href="{{ url_for('paginas.ods12') }}" class="nav__link">ODS 12</a>
-      </nav><button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
-        <span></span><span></span><span></span>
-      </button><div class="header__actions"><a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a><a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a></div>
-</div></header>
-<main>
-<div class="container"><p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › <a href="{{ url_for('paginas.perfil') }}">Mi perfil</a> › Actividades</p></div>
-<section class="page-hero"><div class="container page-hero__inner reveal"><span class="badge">♻ Mi actividad</span><h1>Registra tus acciones de reciclaje</h1><p>Registra lo que reciclas y visualiza los puntos que has obtenido. Esta vista funciona como demostración del frontend.</p></div></section>
+{% extends "cuenta_base.html" %}
+{% block titulo %}Registrar aporte{% endblock %}
+{% block migas %}<a href="{{ url_for('paginas.perfil') }}">Mi perfil</a> / <strong>Registrar aporte</strong>{% endblock %}
+
+{% block contenido %}
+<div class="cuenta-titulo"><h1>Registra tus acciones de reciclaje</h1><p>Sube una foto de lo que reciclaste; un administrador la revisa y te asigna los puntos.</p></div>
 <section class="section"><div class="container activity-layout">
   <div class="form-section reveal"><div class="form-section__title"><span class="form-section__num">1</span><h2>Registrar actividad</h2></div>
     <form class="form" id="form-actividad">
@@ -28,47 +11,20 @@
       <label for="material">Material reciclado</label><select id="material" required><option value="">Selecciona un material</option><option>Plástico</option><option>Vidrio</option><option>Papel</option><option>Cartón</option><option>Metal</option><option>Orgánico</option><option>Electrónico</option><option>Baterías</option></select>
       <div class="form-steps"><div><label for="cantidad">Cantidad</label><input id="cantidad" type="number" min="0.1" step="0.1" placeholder="Ej. 2.5" required></div><div><label for="unidad">Unidad</label><select id="unidad"><option>kg</option><option>unidades</option><option>litros</option></select></div></div>
       <label for="punto">Punto de reciclaje (opcional)</label><select id="punto"><option value="">Sin especificar</option></select>
-      <label for="foto">Foto de lo que reciclaste</label>
-      <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
+      <label>Foto de lo que reciclaste</label>
+      <label class="foto-dropzone" id="foto-dropzone" for="foto">
+        <span class="foto-dropzone__icon">📷</span>
+        <span class="foto-dropzone__texto"><strong>Toca para subir una foto</strong><br>o arrástrala aquí (JPG, PNG o WEBP)</span>
+        <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
+      </label>
       <p class="form__foto-hint">Un administrador la revisa antes de confirmar tus puntos.</p>
       <button class="btn btn--primary btn--block" type="submit">Registrar actividad</button>
     </form>
   </div>
-  <aside class="activity-summary reveal" style="--indice:1"><div class="activity-summary__icon">★</div><span>Mis puntos</span><strong>1.250</strong><small>puntos acumulados</small><div class="progress"><span style="width:78%"></span></div><p>Te faltan <strong>250 puntos</strong> para tu próximo logro.</p><a href="{{ url_for('paginas.logros') }}" class="btn btn--outline btn--block">Ver mis logros</a></aside>
+  <aside class="activity-summary reveal" style="--indice:1"><div class="activity-summary__icon">★</div><span>Mis puntos</span><strong data-resumen="puntos">–</strong><small>puntos acumulados · nivel <b data-resumen="nivel">–</b></small><div class="progress"><span data-resumen="barra" style="width:0%"></span></div><p data-resumen="falta">Cada 100 puntos subes de nivel.</p><a href="{{ url_for('paginas.logros') }}" class="btn btn--outline btn--block">Ver mis logros</a></aside>
 </div></section>
-<section class="section section--muted"><div class="container"><div class="section__header reveal"><span class="badge badge--muted">Historial</span><h2>Mis actividades recientes</h2><p class="section__subtitle">Ejemplo de cómo se mostrarían tus acciones registradas.</p></div><div class="activity-list reveal-group">
-<article class="activity-row reveal"><span class="activity-row__icon">♻</span><div><strong>Plástico</strong><small>Punto Verde Centro · 20 sep. 2026</small></div><b>+25 pts</b></article>
-<article class="activity-row reveal"><span class="activity-row__icon">♻</span><div><strong>Cartón</strong><small>EcoPunto Norte · 18 sep. 2026</small></div><b>+18 pts</b></article>
-<article class="activity-row reveal"><span class="activity-row__icon">♻</span><div><strong>Vidrio</strong><small>Recicla Más - Plaza Sur · 15 sep. 2026</small></div><b>+30 pts</b></article>
-</div></div></section>
-</main>
-<footer class="footer"><div class="container footer__inner">
-      <div class="footer__brand">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
-        <span class="logo__text">Eco<strong>Maps</strong></span>
-        <p>Plataforma digital para facilitar el reciclaje y promover el consumo responsable.</p>
-        <span class="badge badge--footer">ODS 12 · Consumo responsable</span>
-      </div>
-      <div class="footer__col">
-        <h4>Plataforma</h4>
-        <a href="{{ url_for('paginas.inicio') }}">Inicio</a>
-        <a href="{{ url_for('paginas.mapa') }}">Mapa</a>
-        <a href="{{ url_for('paginas.guia') }}">Guía de reciclaje</a>
-        <a href="{{ url_for('paginas.estadisticas') }}">Estadísticas</a>
-      </div>
-      <div class="footer__col">
-        <h4>Tu cuenta</h4>
-        <p style="font-size:0.82rem; color:var(--texto-suave); margin:0 0 6px; max-width:22ch;">Actividades, logros y perfil son privados: inicia sesión para verlos.</p>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-      <div class="footer__col">
-        <h4>Información</h4>
-        <a href="{{ url_for('paginas.ods12') }}">ODS 12</a>
-        <a href="{{ url_for('paginas.proponer') }}">Proponer punto</a>
-        <a href="{{ url_for('paginas.reportar') }}">Reportar problema</a>
-        <a href="{{ url_for('paginas.login') }}">Iniciar sesión</a>
-      </div>
-    </div>
+<section class="section"><div class="container"><div class="section__header"><span class="badge badge--muted">Historial</span><h2>Mis actividades recientes</h2></div>
+<div class="activity-list" id="historial"><p class="profile-panel__nota">Cargando tu historial…</p></div></div></section>
+{% endblock %}
 
-    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script><script src="{{ url_for('static', filename='js/actividad.js') }}"></script></body></html>
+{% block script_extra %}<script src="{{ url_for('static', filename='js/actividad.js') }}"></script>{% endblock %}

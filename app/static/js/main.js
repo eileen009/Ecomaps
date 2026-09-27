@@ -4,10 +4,18 @@
 
 const CLAVE_SESION = 'ecomaps_sesion';
 
+// Página de inicio de cada rol (un solo lugar para no cruzar rutas).
+const INICIO_POR_ROL = { admin: '/admin', empresa: '/empresa', ciudadano: '/perfil' };
+function inicioPorRol(rol) {
+  return INICIO_POR_ROL[rol] || '/perfil';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initProteccionPagina();
   initMobileMenu();
   initEstadoSesion();
+  initSidebarCuenta();
+  initSidebarColapsable();
   initLoginTabs();
   initPasswordToggle();
   initAuthForms();
@@ -16,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initMapQuickFilters();
   initAdminNavigation();
-  initMapPicker();
 });
 
 // ===== Sesión (JWT guardado en localStorage tras iniciar sesión) =====
@@ -63,6 +70,50 @@ function initProteccionPagina() {
   }
 }
 
+// ===== Datos del usuario (compartido por perfil, actividad y logros) =====
+// Pide el usuario actualizado (los puntos cambian cuando el admin confirma
+// un aporte) y refresca la sesión. Una sola petición por página.
+async function cargarUsuarioActual() {
+  const sesion = obtenerSesion();
+  if (!sesion) return null;
+  try {
+    const r = await fetch('/api/usuarios/me', { headers: { Authorization: `Bearer ${sesion.token}` } });
+    if (!r.ok) return sesion.usuario;
+    const usuario = await r.json();
+    guardarSesion(usuario, sesion.token);
+    return usuario;
+  } catch (error) {
+    return sesion.usuario; // sin conexión: lo último guardado
+  }
+}
+
+// Misma regla que el backend (acciones.py): 1 nivel cada 100 puntos.
+const PUNTOS_POR_NIVEL = 100;
+function progresoNivel(puntos) {
+  const avance = puntos % PUNTOS_POR_NIVEL;
+  return { avance, faltan: PUNTOS_POR_NIVEL - avance };
+}
+
+// Sidebar de cuenta/admin: nombre y foto reales + enlaces que dependen del rol.
+function initSidebarCuenta() {
+  const sesion = obtenerSesion();
+  if (!sesion) return;
+  const { usuario } = sesion;
+
+  document.querySelectorAll('[data-perfil="nombre-mini"]').forEach((el) => {
+    el.textContent = usuario.nombre || 'Mi cuenta';
+  });
+  if (usuario.foto_url) {
+    document.querySelectorAll('[data-perfil="foto-mini"]').forEach((img) => {
+      img.onerror = () => { img.onerror = null; img.src = '/static/assets/img/avatar-default.svg'; };
+      img.src = `/static/${usuario.foto_url}`;
+    });
+  }
+  document.querySelectorAll('[data-solo-rol]').forEach((el) => {
+    el.hidden = el.dataset.soloRol !== usuario.rol;
+  });
+}
+
 // Cambia "Iniciar sesión / Crear cuenta" del header por el usuario activo.
 function initEstadoSesion() {
   const sesion = obtenerSesion();
@@ -70,8 +121,11 @@ function initEstadoSesion() {
 
   document.querySelectorAll('.header__actions').forEach((contenedor) => {
     const nombre = (sesion.usuario.nombre || 'Mi cuenta').split(' ')[0];
+    // El admin vuelve a su panel; el resto, a su perfil.
+    const etiquetas = { admin: '🛠 Panel admin', empresa: '🏢 Mi empresa' };
+    const etiqueta = etiquetas[sesion.usuario.rol] || `👤 ${nombre}`;
     contenedor.innerHTML = `
-      <a href="/perfil" class="btn btn--ghost">👤 ${nombre}</a>
+      <a href="${inicioPorRol(sesion.usuario.rol)}" class="btn btn--ghost">${etiqueta}</a>
       <button type="button" class="btn btn--primary" data-cerrar-sesion>Cerrar sesión</button>
     `;
   });
@@ -167,7 +221,7 @@ function initAuthForms() {
       if (datos.usuario.rol === 'admin') {
         window.location.href = siguiente && siguiente.startsWith('/admin') ? siguiente : '/admin';
       } else {
-        window.location.href = siguiente || '/perfil';
+        window.location.href = siguiente || inicioPorRol(datos.usuario.rol);
       }
     } catch (error) {
       if (errorEl) {
@@ -284,28 +338,68 @@ function initAdminNavigation() {
   });
 }
 
-// ===== Selector visual de ubicación en "Proponer punto" =====
-function initMapPicker() {
-  const mapaPicker = document.querySelector('[data-map-picker]');
-  if (!mapaPicker) return;
 
-  mapaPicker.addEventListener('click', (evento) => {
-    const rect = mapaPicker.getBoundingClientRect();
-    const x = evento.clientX - rect.left;
-    const y = evento.clientY - rect.top;
 
-    let marcador = mapaPicker.querySelector('.map-picker__pin');
-    if (!marcador) {
-      marcador = document.createElement('div');
-      marcador.className = 'map-picker__pin';
-      marcador.textContent = '📍';
-      mapaPicker.appendChild(marcador);
+// ===== Menú lateral colapsable (admin, cuenta, empresa) =====
+// Escritorio: alterna "solo iconos" y lo recuerda. Tablet: empieza en
+// iconos. Teléfono: el menú es un cajón que se abre y se cierra.
+const CLAVE_SIDEBAR = 'ecomaps_sidebar_colapsado';
+
+function initSidebarColapsable() {
+  const layout = document.querySelector('.admin');
+  const boton = document.querySelector('[data-toggle-sidebar]');
+  if (!layout || !boton) return;
+
+  const backdrop = document.querySelector('[data-cerrar-sidebar]');
+  const esTelefono = window.matchMedia('(max-width: 640px)');
+  const esTablet = window.matchMedia('(max-width: 1024px)');
+
+  const leerPreferencia = () => {
+    try { return localStorage.getItem(CLAVE_SIDEBAR); } catch (e) { return null; }
+  };
+  const guardarPreferencia = (valor) => {
+    try { localStorage.setItem(CLAVE_SIDEBAR, valor); } catch (e) { /* sin almacenamiento */ }
+  };
+
+  const abrirCajon = (abrir) => {
+    layout.classList.toggle('is-abierto', abrir);
+    if (backdrop) backdrop.hidden = !abrir;
+    boton.setAttribute('aria-expanded', String(abrir));
+    document.body.style.overflow = abrir ? 'hidden' : '';
+  };
+
+  const aplicarEstado = () => {
+    abrirCajon(false);
+    if (esTelefono.matches) {
+      boton.setAttribute('aria-expanded', 'false');
+      return;
     }
+    const pref = leerPreferencia();
+    const colapsado = pref !== null ? pref === '1' : esTablet.matches;
+    layout.classList.toggle('is-colapsado', colapsado);
+    boton.setAttribute('aria-expanded', String(!colapsado));
+  };
 
-    marcador.style.left = `${x}px`;
-    marcador.style.top = `${y}px`;
-
-    const hint = mapaPicker.querySelector('.map-picker__hint');
-    if (hint) hint.textContent = 'Ubicación marcada (ejemplo)';
+  boton.addEventListener('click', () => {
+    if (esTelefono.matches) {
+      abrirCajon(!layout.classList.contains('is-abierto'));
+      return;
+    }
+    const colapsado = layout.classList.toggle('is-colapsado');
+    boton.setAttribute('aria-expanded', String(!colapsado));
+    guardarPreferencia(colapsado ? '1' : '0');
   });
+
+  if (backdrop) backdrop.addEventListener('click', () => abrirCajon(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && layout.classList.contains('is-abierto')) abrirCajon(false);
+  });
+  // En el cajón, al tocar un enlace se cierra (útil con los #anclas).
+  layout.querySelector('.admin__sidebar').addEventListener('click', (e) => {
+    if (esTelefono.matches && e.target.closest('a')) abrirCajon(false);
+  });
+
+  esTelefono.addEventListener('change', aplicarEstado);
+  esTablet.addEventListener('change', aplicarEstado);
+  aplicarEstado();
 }

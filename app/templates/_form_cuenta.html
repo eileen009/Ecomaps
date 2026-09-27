@@ -1,0 +1,13 @@
+{# Datos de la cuenta en EcoMaps (nombre de usuario y correo). Lo maneja static/js/cuenta.js. #}
+<section class="form-section" id="mi-cuenta-datos">
+  <div class="form-section__title"><span class="form-section__num">{{ num | default(1) }}</span><h2>Datos de la cuenta</h2></div>
+  <form class="form" id="form-cuenta" novalidate>
+    <label for="cuenta-nombre">{{ etiqueta_nombre | default('Nombre de usuario') }}</label>
+    <input id="cuenta-nombre" type="text" maxlength="120" required>
+    <label for="cuenta-correo">Correo para iniciar sesión</label>
+    <input id="cuenta-correo" type="email" maxlength="180" required>
+    <p class="form__error" data-form-error hidden></p>
+    <p class="empresa-ok" data-cuenta-ok hidden>✔ Datos actualizados</p>
+    <button class="btn btn--primary" type="submit">Guardar datos</button>
+  </form>
+</section>

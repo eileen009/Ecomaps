@@ -67,7 +67,10 @@
       <!-- Mapa real: OpenStreetMap vía Leaflet, sin necesidad de API key -->
       <div class="map-canvas">
         <div id="mapa-leaflet"></div>
-        <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary map-canvas__cta">+ Proponer punto</a>
+        <div class="map-canvas__ctas">
+          <a href="{{ url_for('paginas.reportar') }}" class="btn btn--outline map-canvas__btn-reportar">⚠ Reportar problema</a>
+          <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary">+ Proponer punto</a>
+        </div>
       </div>
 
       <!-- Panel lateral: puntos activos, cargados desde /api/puntos -->

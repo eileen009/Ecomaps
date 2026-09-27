@@ -7,7 +7,26 @@
       </nav><button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">
         <span></span><span></span><span></span>
       </button><div class="header__actions"><a href="{{ url_for('paginas.login') }}" class="btn btn--ghost">Iniciar sesión</a><a href="{{ url_for('paginas.login') }}#registro" class="btn btn--primary">Crear cuenta</a></div></div></header>
-<main><div class="container form-page"><div class="breadcrumb"><a href="{{ url_for('paginas.mapa') }}">Mapa</a> · Reportar problema</div><div class="form-page__header reveal"><div class="form-page__header-icon">⚠</div><div><h1>Reportar un problema</h1><p>Ayúdanos a mantener actualizada la información de los puntos de reciclaje.</p></div></div><form class="demo-action-form" data-demo-action="reporte"><section class="form-section reveal"><div class="form-section__title"><span class="form-section__num">1</span><h2>Selecciona el punto</h2></div><div class="form"><label for="punto-reportado">Punto de reciclaje</label><select id="punto-reportado" required><option value="">Selecciona un punto</option><option>EcoCentro Norte</option><option>Punto Verde Centro</option><option>Recicla Más - Plaza Sur</option></select></div></section><section class="form-section reveal"><div class="form-section__title"><span class="form-section__num">2</span><h2>¿Qué problema encontraste?</h2></div><div class="report-options"><label><input type="radio" name="motivo" value="cerrado" required> Punto cerrado</label><label><input type="radio" name="motivo" value="incorrecto"> Información incorrecta</label><label><input type="radio" name="motivo" value="ubicacion"> Ubicación incorrecta</label><label><input type="radio" name="motivo" value="material"> Ya no recibe materiales</label><label><input type="radio" name="motivo" value="otro"> Otro</label></div><div class="form"><label for="descripcion">Descripción</label><textarea id="descripcion" rows="5" placeholder="Describe brevemente el problema..."></textarea></div></section><div class="form-page__footer reveal"><p>La información será revisada antes de actualizar el punto.</p><button class="btn btn--primary" type="submit">Enviar reporte</button></div></form></div></main>
+<main><div class="container form-page"><div class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › <a href="{{ url_for('paginas.mapa') }}">Mapa</a> › Reportar problema</div><div class="form-page__header reveal"><div class="form-page__header-icon">⚠</div><div><h1>Reportar un problema</h1><p>Ayúdanos a mantener actualizada la información de los puntos de reciclaje.</p></div></div><p class="form-note" id="reporte-aviso-sesion" hidden><span>ⓘ</span><span>Necesitas <a href="{{ url_for('paginas.login') }}?next=/reportar">iniciar sesión</a> para enviar un reporte.</span></p>
+<form id="form-reporte" novalidate>
+<section class="form-section"><div class="form-section__title"><span class="form-section__num">1</span><h2>Selecciona el punto</h2></div>
+<div class="form"><label for="punto-reportado">Punto de reciclaje</label>
+<select id="punto-reportado" required><option value="">Cargando puntos…</option></select>
+<p class="form-hint" id="punto-reportado-info"></p></div></section>
+<section class="form-section"><div class="form-section__title"><span class="form-section__num">2</span><h2>¿Qué problema encontraste?</h2></div>
+<div class="report-options">
+<label><input type="radio" name="tipo" value="cerrado"> Punto cerrado</label>
+<label><input type="radio" name="tipo" value="no_existe"> El punto no existe</label>
+<label><input type="radio" name="tipo" value="direccion_incorrecta"> Ubicación o dirección incorrecta</label>
+<label><input type="radio" name="tipo" value="horario_cambio"> El horario cambió</label>
+<label><input type="radio" name="tipo" value="material_no_recibido"> Ya no recibe algún material</label>
+<label><input type="radio" name="tipo" value="otro"> Otro</label>
+</div>
+<div class="form"><label for="descripcion">Descripción <small>(obligatoria si eliges "Otro")</small></label>
+<textarea id="descripcion" rows="5" maxlength="500" placeholder="Describe brevemente el problema..."></textarea></div></section>
+<p class="form__error" data-form-error hidden></p>
+<div class="form-page__footer"><p>Un administrador revisará el reporte antes de actualizar el punto.</p><button class="btn btn--primary" type="submit">Enviar reporte</button></div>
+</form></div></main>
 <footer class="footer"><div class="container footer__inner">
       <div class="footer__brand">
         <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="32" height="32">
@@ -36,4 +55,4 @@
       </div>
     </div>
 
-    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer><script src="{{ url_for('static', filename='js/main.js') }}"></script></body></html>
+    <div class="footer__bottom"><p>© 2026 EcoMaps · Contribuyendo al ODS 12: Producción y Consumo Responsables</p></div></footer><script src="{{ url_for('static', filename='js/main.js') }}"></script><script src="{{ url_for('static', filename='js/reportar.js') }}"></script></body></html>

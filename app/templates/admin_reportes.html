@@ -1,0 +1,24 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Reportes{% endblock %}
+{% block migas %}Reportes{% endblock %}
+
+{% block contenido %}
+      <h1>Reportes de problemas</h1>
+      <p>Problemas que los usuarios encontraron en los puntos del mapa.</p>
+
+      <div class="admin-table-wrap" style="margin-top:24px;">
+        <div class="admin-toolbar">
+          <select id="filtro-reportes" aria-label="Filtrar por estado">
+            <option value="pendiente">Pendientes</option>
+            <option value="revisado">Revisados</option>
+            <option value="resuelto">Resueltos</option>
+          </select>
+        </div>
+        <div class="reportes-lista" id="lista-reportes"><p class="map-layout__panel-vacio">Cargando…</p></div>
+      </div>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/admin_reportes.js') }}"></script>
+{% endblock %}

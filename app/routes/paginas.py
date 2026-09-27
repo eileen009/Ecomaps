@@ -60,12 +60,12 @@ def admin_acciones():
 
 @paginas_bp.get("/actividad")
 def actividad():
-    return render_template("actividad.html")
+    return render_template("actividad.html", activo="actividad")
 
 
 @paginas_bp.get("/logros")
 def logros():
-    return render_template("logros.html")
+    return render_template("logros.html", activo="logros")
 
 
 @paginas_bp.get("/ods12")
@@ -75,9 +75,19 @@ def ods12():
 
 @paginas_bp.get("/perfil")
 def perfil():
-    return render_template("perfil.html")
+    return render_template("perfil.html", activo="perfil")
 
 
 @paginas_bp.get("/reportar")
 def reportar():
     return render_template("reportar.html")
+
+
+@paginas_bp.get("/empresa")
+def empresa():
+    return render_template("empresa.html", activo="empresa")
+
+
+@paginas_bp.get("/admin/reportes")
+def admin_reportes():
+    return render_template("admin_reportes.html", activo="reportes")

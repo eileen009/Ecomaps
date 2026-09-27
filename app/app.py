@@ -25,6 +25,7 @@ def crear_app(config_class=Config):
     from models.categoria_residuo import CategoriaResiduo  # noqa: F401
     from models.punto_reciclaje import PuntoReciclaje  # noqa: F401
     from models.accion_reciclaje import AccionReciclaje  # noqa: F401
+    from models.reporte import Reporte  # noqa: F401
 
     # ----- Blueprints -----
     from routes.auth import auth_bp
@@ -33,6 +34,7 @@ def crear_app(config_class=Config):
     from routes.puntos import puntos_bp
     from routes.buscador import buscador_bp
     from routes.acciones import acciones_bp
+    from routes.reportes import reportes_bp
     from routes.paginas import paginas_bp
 
     app.register_blueprint(auth_bp)
@@ -41,6 +43,7 @@ def crear_app(config_class=Config):
     app.register_blueprint(puntos_bp)
     app.register_blueprint(buscador_bp)
     app.register_blueprint(acciones_bp)
+    app.register_blueprint(reportes_bp)
     app.register_blueprint(paginas_bp)  # vistas HTML (templates/)
 
     @app.get("/api/salud")

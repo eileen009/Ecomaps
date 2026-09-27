@@ -1,0 +1,101 @@
+{% extends "cuenta_base.html" %}
+{% block titulo %}Panel de empresa{% endblock %}
+{% block body_attrs %}data-requiere-rol="empresa"{% endblock %}
+{% block subtitulo_sidebar %}Panel de empresa{% endblock %}
+{% block migas %}<strong>Panel de empresa</strong>{% endblock %}
+
+{% block nav_opciones %}
+        <p class="admin__sidebar-label">Mi empresa</p>
+        <nav class="admin__nav">
+          <a href="#mi-cuenta" class="is-active" title="Mi cuenta"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Mi cuenta</span></a>
+          <a href="#info-punto" title="Mi punto"><span class="nav-ico" aria-hidden="true">🏢</span><span class="nav-txt">Mi punto</span></a>
+          <a href="#horarios" title="Horarios"><span class="nav-ico" aria-hidden="true">🕒</span><span class="nav-txt">Horarios</span></a>
+          <a href="#aportes" title="Aportes por confirmar"><span class="nav-ico" aria-hidden="true">🖼</span><span class="nav-txt">Aportes por confirmar</span> <span class="admin__nav-count" data-empresa="num-aportes" hidden>0</span></a>
+          <a href="{{ url_for('paginas.proponer') }}" title="Registrar otro punto"><span class="nav-ico" aria-hidden="true">➕</span><span class="nav-txt">Registrar otro punto</span></a>
+          <a href="{{ url_for('paginas.mapa') }}" title="Ver en el mapa"><span class="nav-ico" aria-hidden="true">🗺</span><span class="nav-txt">Ver en el mapa</span></a>
+        </nav>
+{% endblock %}
+
+{% block contenido %}
+<div class="cuenta-titulo">
+  <h1>Panel de empresa</h1>
+  <p>Mantén al día la información y los horarios de tu punto de reciclaje.</p>
+</div>
+
+<!-- Cuenta de la empresa: foto + nombre y correo de inicio de sesión -->
+<section class="profile-card profile-card--resumen" id="mi-cuenta">
+  {% include "_avatar_editable.html" %}
+  <div class="profile-card__datos">
+    <h2 data-perfil="nombre">Cargando…</h2>
+    <p data-perfil="correo">–</p>
+    <span class="badge">🏢 Cuenta de empresa</span>
+    <span class="badge badge--verificada" data-empresa="verificada" hidden>✔ Empresa verificada</span>
+    <p class="profile-panel__nota" data-empresa="no-verificada" hidden>Tu empresa aún no está verificada. Un administrador otorga el sello tras revisar tus datos.</p>
+  </div>
+</section>
+{% with num=1, etiqueta_nombre='Nombre de la empresa' %}{% include "_form_cuenta.html" %}{% endwith %}
+
+<!-- Sin puntos todavía -->
+<section class="profile-panel" id="empresa-vacio" hidden>
+  <h3>Aún no tienes un punto registrado</h3>
+  <p class="profile-panel__nota">Propón tu punto de reciclaje. Un administrador lo revisa y, al aprobarlo, aparece en el mapa.</p>
+  <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary">➕ Registrar mi punto</a>
+</section>
+
+<form id="form-empresa" hidden>
+  <!-- Selector solo visible si la empresa tiene más de un punto -->
+  <div class="empresa-selector" id="empresa-selector" hidden>
+    <label for="punto-select">Punto a gestionar</label>
+    <select id="punto-select"></select>
+  </div>
+
+  <section class="form-section" id="info-punto">
+    <div class="form-section__title"><span class="form-section__num">2</span><h2>Información del punto</h2>
+      <span class="estado-chip" data-empresa="estado"></span></div>
+    <div class="form">
+      <label for="emp-nombre">Nombre del punto</label>
+      <input id="emp-nombre" type="text" maxlength="150" required>
+      <div class="form-steps">
+        <div><label for="emp-telefono">Teléfono de contacto</label><input id="emp-telefono" type="tel" maxlength="30" placeholder="Ej: 300 123 4567"></div>
+        <div><label for="emp-correo">Correo de contacto</label><input id="emp-correo" type="email" maxlength="180" placeholder="contacto@empresa.com"></div>
+      </div>
+      <label>Ubicación</label>
+      <p class="empresa-dato" data-empresa="ubicacion">–</p>
+      <label>Materiales que recibe</label>
+      <p class="empresa-dato" data-empresa="materiales">–</p>
+      <p class="profile-panel__nota">Para cambiar la ubicación o los materiales, contacta a un administrador.</p>
+    </div>
+  </section>
+
+  <section class="form-section" id="horarios">
+    <div class="form-section__title"><span class="form-section__num">3</span><h2>Horarios de atención</h2></div>
+    <p class="profile-panel__nota" data-empresa="horario-antiguo" hidden></p>
+    <div class="horario-tabla" id="horario-tabla"><!-- filas generadas por empresa.js --></div>
+    <div class="horario-atajos">
+      <button type="button" class="btn btn--outline" data-atajo="lv">Copiar lunes a L–V</button>
+      <button type="button" class="btn btn--outline" data-atajo="todos">Copiar lunes a todos</button>
+    </div>
+    <p class="profile-panel__nota">Vista previa: <strong data-horario="preview">–</strong></p>
+  </section>
+
+  <p class="form__error" data-form-error hidden></p>
+  <p class="empresa-ok" data-empresa="ok" hidden>✔ Cambios guardados</p>
+  <button class="btn btn--primary" type="submit">Guardar cambios</button>
+</form>
+
+<!-- Aportes que los ciudadanos registraron en los puntos de esta empresa -->
+<section class="form-section" id="aportes">
+  <div class="form-section__title"><span class="form-section__num">4</span><h2>Aportes por confirmar</h2></div>
+  <p class="profile-panel__nota">Revisa la foto de cada aporte hecho en tus puntos. Al confirmarlo, el ciudadano recibe sus puntos.</p>
+  <div id="lista-acciones" class="admin-acciones-grid" data-endpoint="/api/acciones/mi-punto" style="margin-top:16px;">
+    <p class="map-layout__panel-vacio">Cargando…</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/cuenta.js') }}"></script>
+<script src="{{ url_for('static', filename='js/horario.js') }}"></script>
+<script src="{{ url_for('static', filename='js/empresa.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin_acciones.js') }}"></script>
+{% endblock %}

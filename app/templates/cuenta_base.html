@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMaps · {% block titulo %}Mi cuenta{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-body" {% block body_attrs %}data-requiere-sesion="true"{% endblock %}>
+
+  <div class="admin">
+
+    <!-- ===== Zona 1: opciones del usuario (compartida por perfil, actividad y logros) ===== -->
+    <aside class="admin__sidebar">
+      <div>
+        <a href="{{ url_for('paginas.inicio') }}" class="logo" style="margin-bottom:2px;">
+          <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="30" height="30">
+          <span class="logo__text">EcoMaps</span>
+        </a>
+        <p class="admin__sidebar-sub" style="margin:0 0 0 40px; font-size:0.7rem; color:#A9C27C;">{% block subtitulo_sidebar %}Mi cuenta{% endblock %}</p>
+      </div>
+
+      <div>
+{% block nav_opciones %}
+        <p class="admin__sidebar-label">Opciones</p>
+        <nav class="admin__nav">
+          <a href="{{ url_for('paginas.perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Mi perfil</span></a>
+          <a href="{{ url_for('paginas.mapa') }}" title="Reciclar (buscar punto)"><span class="nav-ico" aria-hidden="true">♻</span><span class="nav-txt">Reciclar (buscar punto)</span></a>
+          <a href="{{ url_for('paginas.actividad') }}" class="{{ 'is-active' if activo == 'actividad' else '' }}" title="Registrar aporte"><span class="nav-ico" aria-hidden="true">➕</span><span class="nav-txt">Registrar aporte</span></a>
+          <a href="{{ url_for('paginas.logros') }}" class="{{ 'is-active' if activo == 'logros' else '' }}" title="Mis logros"><span class="nav-ico" aria-hidden="true">🏆</span><span class="nav-txt">Mis logros</span></a>
+          <a href="{{ url_for('paginas.perfil') }}#ganancias" title="Mis ganancias"><span class="nav-ico" aria-hidden="true">🎁</span><span class="nav-txt">Mis ganancias</span></a>
+          <a href="{{ url_for('paginas.perfil') }}#puntos" title="Mis puntos"><span class="nav-ico" aria-hidden="true">⭐</span><span class="nav-txt">Mis puntos</span></a>
+          <!-- Solo visible si el usuario es admin (lo muestra main.js) -->
+          <a href="{{ url_for('paginas.admin') }}" data-solo-rol="admin" hidden title="Panel admin"><span class="nav-ico" aria-hidden="true">🛠</span><span class="nav-txt">Panel admin</span></a>
+          <a href="{{ url_for('paginas.empresa') }}" data-solo-rol="empresa" hidden title="Panel de empresa"><span class="nav-ico" aria-hidden="true">🏢</span><span class="nav-txt">Panel de empresa</span></a>
+        </nav>
+        {% endblock %}
+      </div>
+
+      <div>
+        <p class="admin__sidebar-label">Explorar</p>
+        <nav class="admin__nav">
+          <a href="{{ url_for('paginas.inicio') }}" title="Inicio"><span class="nav-ico" aria-hidden="true">🏠</span><span class="nav-txt">Inicio</span></a>
+          <a href="{{ url_for('paginas.guia') }}" title="Guía de reciclaje"><span class="nav-ico" aria-hidden="true">📘</span><span class="nav-txt">Guía de reciclaje</span></a>
+          <a href="{{ url_for('paginas.ods12') }}" title="ODS 12"><span class="nav-ico" aria-hidden="true">🌱</span><span class="nav-txt">ODS 12</span></a>
+        </nav>
+      </div>
+
+      <div class="admin__sidebar-user">
+        <img class="admin__avatar admin__avatar--img" data-perfil="foto-mini" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="" width="32" height="32">
+        <div>
+          <strong style="font-size:0.85rem; color:var(--blanco);" data-perfil="nombre-mini">…</strong>
+          <small><button type="button" class="link-btn" data-cerrar-sesion>Cerrar sesión</button></small>
+        </div>
+      </div>
+    </aside>
+    <div class="admin__backdrop" data-cerrar-sidebar hidden></div>
+
+    <!-- ===== Zona 2: contenido de cada vista ===== -->
+    <main class="admin__main">
+      <div class="admin__topbar">
+        <button type="button" class="admin__toggle" data-toggle-sidebar aria-label="Mostrar u ocultar menú" aria-expanded="true"><span></span><span></span><span></span></button>
+        <p class="admin__topbar-crumbs"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> / {% block migas %}<strong>Mi cuenta</strong>{% endblock %}</p>
+      </div>
+
+      {% block contenido %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block script_extra %}{% endblock %}
+</body>
+</html>

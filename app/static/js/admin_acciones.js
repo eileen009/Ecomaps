@@ -1,6 +1,7 @@
 // =========================================================
-// EcoMaps · Panel admin - revisión de aportes con foto (módulo 5)
-// Se carga solo en /admin/acciones.
+// EcoMaps · Revisión de aportes con foto (módulo 5)
+// Se usa en /admin/acciones (todos los pendientes) y en /empresa
+// (solo los de sus puntos). El listado sale de data-endpoint.
 // =========================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,8 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (respuesta.ok) {
         div.remove();
+        avisarCambio();
+        if (!contenedor.querySelector('.admin-accion-card')) {
+          contenedor.innerHTML = '<p class="map-layout__panel-vacio">No hay aportes pendientes por revisar.</p>';
+        }
       } else {
-        alert('No se pudo actualizar el aporte.');
+        const datos = await respuesta.json().catch(() => ({}));
+        alert(datos.error || 'No se pudo actualizar el aporte.');
       }
     };
 
@@ -46,7 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return div;
   }
 
-  fetch('/api/acciones?estado=pendiente', {
+  const endpoint = contenedor.dataset.endpoint || '/api/acciones?estado=pendiente';
+  const avisarCambio = () => document.dispatchEvent(new CustomEvent('aportes-cambiaron', {
+    detail: contenedor.querySelectorAll('.admin-accion-card').length,
+  }));
+
+  fetch(endpoint, {
     headers: { Authorization: `Bearer ${sesion.token}` },
   })
     .then((respuesta) => (respuesta.ok ? respuesta.json() : []))
@@ -57,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       acciones.forEach((accion) => contenedor.appendChild(tarjeta(accion)));
+      avisarCambio();
     })
     .catch(() => {
       contenedor.innerHTML = '<p class="map-layout__panel-vacio">No se pudo cargar la lista.</p>';
