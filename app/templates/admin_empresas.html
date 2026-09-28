@@ -4,12 +4,17 @@
 {% block migas %}Empresas y organizaciones{% endblock %}
 
 {% block contenido %}
-      <h1>Empresas y organizaciones</h1>
-      <p>Cuentas con rol empresa. Otorga el sello de <strong>empresa verificada</strong> tras revisar sus datos.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Empresas y organizaciones</h1>
+          <p>Cuentas con rol empresa. Otorga el sello de <strong>empresa verificada</strong> tras revisar sus datos.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--icono" aria-hidden="true"><svg width="52" height="52" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-edificio"/></svg></div>
+      </header>
 
       <div class="admin-table-wrap" style="margin-top:24px;">
         <div class="admin-toolbar">
-          <input type="search" id="buscar-empresa" placeholder="🔍 Buscar por nombre o correo...">
+          <input type="search" id="buscar-empresa" placeholder="Buscar por nombre o correo...">
         </div>
         <div class="company-grid" id="lista-empresas"><p class="map-layout__panel-vacio">Cargando…</p></div>
       </div>

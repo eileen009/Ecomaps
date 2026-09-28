@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoMaps · {% block titulo %}Mi cuenta{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/logo.png') }}">
+  <link rel="preload" href="{{ url_for('static', filename='fonts/bricolage-grotesque.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ url_for('static', filename='fonts/figtree.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/privado.css') }}">
 </head>
 <body class="admin-body" {% block body_attrs %}data-requiere-sesion="true"{% endblock %}>
 
@@ -24,15 +28,15 @@
 {% block nav_opciones %}
         <p class="admin__sidebar-label">Opciones</p>
         <nav class="admin__nav">
-          <a href="{{ url_for('paginas.perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Mi perfil</span></a>
-          <a href="{{ url_for('paginas.mapa') }}" title="Reciclar (buscar punto)"><span class="nav-ico" aria-hidden="true">♻</span><span class="nav-txt">Reciclar (buscar punto)</span></a>
-          <a href="{{ url_for('paginas.actividad') }}" class="{{ 'is-active' if activo == 'actividad' else '' }}" title="Registrar aporte"><span class="nav-ico" aria-hidden="true">➕</span><span class="nav-txt">Registrar aporte</span></a>
-          <a href="{{ url_for('paginas.logros') }}" class="{{ 'is-active' if activo == 'logros' else '' }}" title="Mis logros"><span class="nav-ico" aria-hidden="true">🏆</span><span class="nav-txt">Mis logros</span></a>
-          <a href="{{ url_for('paginas.perfil') }}#ganancias" title="Mis ganancias"><span class="nav-ico" aria-hidden="true">🎁</span><span class="nav-txt">Mis ganancias</span></a>
-          <a href="{{ url_for('paginas.perfil') }}#puntos" title="Mis puntos"><span class="nav-ico" aria-hidden="true">⭐</span><span class="nav-txt">Mis puntos</span></a>
+          <a href="{{ url_for('paginas.perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-usuario"/></svg></span><span class="nav-txt">Mi perfil</span></a>
+          <a href="{{ url_for('paginas.mapa') }}" title="Reciclar (buscar punto)"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-reciclar"/></svg></span><span class="nav-txt">Reciclar (buscar punto)</span></a>
+          <a href="{{ url_for('paginas.actividad') }}" class="{{ 'is-active' if activo == 'actividad' else '' }}" title="Registrar aporte"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-mas"/></svg></span><span class="nav-txt">Registrar aporte</span></a>
+          <a href="{{ url_for('paginas.logros') }}" class="{{ 'is-active' if activo == 'logros' else '' }}" title="Mis logros"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-trofeo"/></svg></span><span class="nav-txt">Mis logros</span></a>
+          <a href="{{ url_for('paginas.perfil') }}#ganancias" title="Mis ganancias"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-regalo"/></svg></span><span class="nav-txt">Mis ganancias</span></a>
+          <a href="{{ url_for('paginas.perfil') }}#puntos" title="Mis puntos"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-estrella"/></svg></span><span class="nav-txt">Mis puntos</span></a>
           <!-- Solo visible si el usuario es admin (lo muestra main.js) -->
-          <a href="{{ url_for('paginas.admin') }}" data-solo-rol="admin" hidden title="Panel admin"><span class="nav-ico" aria-hidden="true">🛠</span><span class="nav-txt">Panel admin</span></a>
-          <a href="{{ url_for('paginas.empresa') }}" data-solo-rol="empresa" hidden title="Panel de empresa"><span class="nav-ico" aria-hidden="true">🏢</span><span class="nav-txt">Panel de empresa</span></a>
+          <a href="{{ url_for('paginas.admin') }}" data-solo-rol="admin" hidden title="Panel admin"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-herramienta"/></svg></span><span class="nav-txt">Panel admin</span></a>
+          <a href="{{ url_for('paginas.empresa') }}" data-solo-rol="empresa" hidden title="Panel de empresa"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-edificio"/></svg></span><span class="nav-txt">Panel de empresa</span></a>
         </nav>
         {% endblock %}
       </div>
@@ -40,9 +44,9 @@
       <div>
         <p class="admin__sidebar-label">Explorar</p>
         <nav class="admin__nav">
-          <a href="{{ url_for('paginas.inicio') }}" title="Inicio"><span class="nav-ico" aria-hidden="true">🏠</span><span class="nav-txt">Inicio</span></a>
-          <a href="{{ url_for('paginas.guia') }}" title="Guía de reciclaje"><span class="nav-ico" aria-hidden="true">📘</span><span class="nav-txt">Guía de reciclaje</span></a>
-          <a href="{{ url_for('paginas.ods12') }}" title="ODS 12"><span class="nav-ico" aria-hidden="true">🌱</span><span class="nav-txt">ODS 12</span></a>
+          <a href="{{ url_for('paginas.inicio') }}" title="Inicio"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-casa"/></svg></span><span class="nav-txt">Inicio</span></a>
+          <a href="{{ url_for('paginas.guia') }}" title="Guía de reciclaje"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-libro"/></svg></span><span class="nav-txt">Guía de reciclaje</span></a>
+          <a href="{{ url_for('paginas.ods12') }}" title="ODS 12"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-hoja"/></svg></span><span class="nav-txt">ODS 12</span></a>
         </nav>
       </div>
 

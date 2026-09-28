@@ -21,18 +21,18 @@
       <div class="profile-grid">
         <!-- Mis puntos: progreso al siguiente nivel -->
         <section class="profile-panel" id="puntos">
-          <h3>⭐ Mis puntos</h3>
+          <h3><svg class="icono-titulo" width="20" height="20" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-estrella"/></svg>Mis puntos</h3>
           <p class="profile-panel__big"><strong data-perfil="puntos-2">–</strong> puntos</p>
           <div class="progreso" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-perfil="progreso">
             <span class="progreso__barra" data-perfil="progreso-barra"></span>
           </div>
           <p class="profile-panel__nota" data-perfil="progreso-texto">Cada 100 puntos subes de nivel.</p>
-          <a href="{{ url_for('paginas.actividad') }}" class="btn btn--primary">➕ Registrar aporte</a>
+          <a href="{{ url_for('paginas.actividad') }}" class="btn btn--primary"><svg width="18" height="18" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-mas"/></svg>Registrar aporte</a>
         </section>
 
         <!-- Mis ganancias: marcos desbloqueados por nivel -->
         <section class="profile-panel" id="ganancias">
-          <h3>🎁 Mis ganancias</h3>
+          <h3><svg class="icono-titulo" width="20" height="20" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-regalo"/></svg>Mis ganancias</h3>
           <p class="profile-panel__nota">Hay un marco para tu foto por cada nivel. Súbelo reciclando.</p>
           <p class="profile-panel__nota" data-perfil="marco-siguiente"></p>
           <!-- Los 20 marcos: se pintan en perfil.js (desbloqueados en color, el resto en gris) -->

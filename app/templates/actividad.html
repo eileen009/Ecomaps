@@ -3,7 +3,13 @@
 {% block migas %}<a href="{{ url_for('paginas.perfil') }}">Mi perfil</a> / <strong>Registrar aporte</strong>{% endblock %}
 
 {% block contenido %}
-<div class="cuenta-titulo"><h1>Registra tus acciones de reciclaje</h1><p>Sube una foto de lo que reciclaste; un administrador la revisa y te asigna los puntos.</p></div>
+<header class="pagina-banda">
+  <div class="pagina-banda__texto">
+    <h1>Registra tus acciones de reciclaje</h1>
+    <p>Sube una foto de lo que reciclaste; un administrador la revisa y te asigna los puntos.</p>
+  </div>
+  <div class="pagina-banda__arte pagina-banda__arte--materiales" aria-hidden="true"><img src="{{ url_for('static', filename='assets/img/materiales/') }}plastico.svg" alt="" style="--i:0"><img src="{{ url_for('static', filename='assets/img/materiales/') }}vidrio.svg" alt="" style="--i:1"><img src="{{ url_for('static', filename='assets/img/materiales/') }}papel.svg" alt="" style="--i:2"><img src="{{ url_for('static', filename='assets/img/materiales/') }}metal.svg" alt="" style="--i:3"><img src="{{ url_for('static', filename='assets/img/materiales/') }}baterias.svg" alt="" style="--i:4"></div>
+</header>
 <section class="section"><div class="container activity-layout">
   <div class="form-section reveal"><div class="form-section__title"><span class="form-section__num">1</span><h2>Registrar actividad</h2></div>
     <form class="form" id="form-actividad">
@@ -13,7 +19,7 @@
       <label for="punto">Punto de reciclaje (opcional)</label><select id="punto"><option value="">Sin especificar</option></select>
       <label>Foto de lo que reciclaste</label>
       <label class="foto-dropzone" id="foto-dropzone" for="foto">
-        <span class="foto-dropzone__icon">📷</span>
+        <span class="foto-dropzone__icon"><svg width="34" height="34" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-camara"/></svg></span>
         <span class="foto-dropzone__texto"><strong>Toca para subir una foto</strong><br>o arrástrala aquí (JPG, PNG o WEBP)</span>
         <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
       </label>
@@ -21,7 +27,7 @@
       <button class="btn btn--primary btn--block" type="submit">Registrar actividad</button>
     </form>
   </div>
-  <aside class="activity-summary reveal" style="--indice:1"><div class="activity-summary__icon">★</div><span>Mis puntos</span><strong data-resumen="puntos">–</strong><small>puntos acumulados · nivel <b data-resumen="nivel">–</b></small><div class="progress"><span data-resumen="barra" style="width:0%"></span></div><p data-resumen="falta">Cada 100 puntos subes de nivel.</p><a href="{{ url_for('paginas.logros') }}" class="btn btn--outline btn--block">Ver mis logros</a></aside>
+  <aside class="activity-summary reveal" style="--indice:1"><div class="activity-summary__icon"><svg width="26" height="26" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-estrella"/></svg></div><span>Mis puntos</span><strong data-resumen="puntos">–</strong><small>puntos acumulados · nivel <b data-resumen="nivel">–</b></small><div class="progress"><span data-resumen="barra" style="width:0%"></span></div><p data-resumen="falta">Cada 100 puntos subes de nivel.</p><a href="{{ url_for('paginas.logros') }}" class="btn btn--outline btn--block">Ver mis logros</a></aside>
 </div></section>
 <section class="section"><div class="container"><div class="section__header"><span class="badge badge--muted">Historial</span><h2>Mis actividades recientes</h2></div>
 <div class="activity-list" id="historial"><p class="profile-panel__nota">Cargando tu historial…</p></div></div></section>

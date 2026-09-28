@@ -4,8 +4,13 @@
 {% block migas %}Aportes por confirmar{% endblock %}
 
 {% block contenido %}
-      <h1>Aportes por confirmar</h1>
-      <p>Revisa la foto de cada aporte antes de asignar los puntos al usuario.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Aportes por confirmar</h1>
+          <p>Revisa la foto de cada aporte antes de asignar los puntos al usuario.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--materiales" aria-hidden="true"><img src="{{ url_for('static', filename='assets/img/materiales/') }}plastico.svg" alt="" style="--i:0"><img src="{{ url_for('static', filename='assets/img/materiales/') }}papel.svg" alt="" style="--i:1"><img src="{{ url_for('static', filename='assets/img/materiales/') }}vidrio.svg" alt="" style="--i:2"></div>
+      </header>
 
       <div id="lista-acciones" class="admin-acciones-grid reveal-group" style="margin-top:24px;">
         <p class="map-layout__panel-vacio">Cargando…</p>

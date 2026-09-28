@@ -4,33 +4,38 @@
 {% block migas %}Estadísticas{% endblock %}
 
 {% block contenido %}
-      <h1>Estadísticas detalladas</h1>
-      <p>Actividad interna y ranking de usuarios — visible solo para el equipo administrador.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Estadísticas detalladas</h1>
+          <p>Actividad interna y ranking de usuarios — visible solo para el equipo administrador.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--grafica" aria-hidden="true">{% include 'ilustraciones/grafica.svg' %}</div>
+      </header>
 
       <div class="stats-cards" style="margin:24px 0;">
         <div class="stat-card">
-          <div class="stat-card__icon">👥</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-personas"/></svg></div>
           <div class="stat-card__value" data-est="usuarios">–</div>
           <p class="stat-card__label">Usuarios registrados</p>
           <span class="stat-card__delta" data-est="usuarios_mes"></span>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon">🕒</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-reloj"/></svg></div>
           <div class="stat-card__value" data-est="puntos_pendientes">–</div>
           <p class="stat-card__label">Puntos pendientes de revisión</p>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon">⚠️</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-alerta"/></svg></div>
           <div class="stat-card__value" data-est="reportes_pendientes">–</div>
           <p class="stat-card__label">Reportes abiertos</p>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon">🖼</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-imagen"/></svg></div>
           <div class="stat-card__value" data-est="aportes_pendientes">–</div>
           <p class="stat-card__label">Aportes por confirmar</p>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon">✨</div>
+          <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-estrella"/></svg></div>
           <div class="stat-card__value" data-est="recicladores_mes">–</div>
           <p class="stat-card__label">Recicladores activos este mes</p>
         </div>

@@ -7,7 +7,7 @@
     <label for="cuenta-correo">Correo para iniciar sesión</label>
     <input id="cuenta-correo" type="email" maxlength="180" required>
     <p class="form__error" data-form-error hidden></p>
-    <p class="empresa-ok" data-cuenta-ok hidden>✔ Datos actualizados</p>
+    <p class="empresa-ok" data-cuenta-ok hidden><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-check"/></svg>Datos actualizados</p>
     <button class="btn btn--primary" type="submit">Guardar datos</button>
   </form>
 </section>

@@ -4,8 +4,13 @@
 {% block migas %}Reportes{% endblock %}
 
 {% block contenido %}
-      <h1>Reportes de problemas</h1>
-      <p>Problemas que los usuarios encontraron en los puntos del mapa.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Reportes de problemas</h1>
+          <p>Problemas que los usuarios encontraron en los puntos del mapa.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--icono" aria-hidden="true"><svg width="52" height="52" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-alerta"/></svg></div>
+      </header>
 
       <div class="admin-table-wrap" style="margin-top:24px;">
         <div class="admin-toolbar">
