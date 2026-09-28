@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const tarjeta = (e) => `
     <article class="company-card" data-id="${e.id}">
-      <div class="company-card__logo">${e.foto_url ? `<img src="/static/${e.foto_url}" alt="">` : '🏢'}</div>
+      <div class="company-card__logo">${e.foto_url ? `<img src="${urlFoto(e.foto_url)}" alt="">` : '🏢'}</div>
       <div class="company-card__body">
         ${e.verificada ? '<span class="badge badge--verificada">✔ Verificada</span>' : '<span class="badge">Sin verificar</span>'}
         <h3>${e.nombre}</h3>

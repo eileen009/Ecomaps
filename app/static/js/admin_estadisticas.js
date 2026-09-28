@@ -52,8 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>`;
     const img = fila.querySelector('img');
     img.onerror = () => { img.onerror = null; img.src = '/static/assets/img/avatar-default.svg'; };
-    img.src = !u.foto_url ? '/static/assets/img/avatar-default.svg'
-      : (u.foto_url.startsWith('http') ? u.foto_url : `/static/${u.foto_url}`);
+    img.src = urlFoto(u.foto_url);
     fila.querySelector('.leaderboard__name').textContent = u.nombre;
     fila.querySelector('.leaderboard__city').textContent = `Nivel ${u.nivel} · ${fmt(u.aportes)} aportes confirmados`;
     fila.querySelector('strong').textContent = fmt(u.puntos);

@@ -26,7 +26,7 @@ from models.usuario import Usuario
 from models.punto_reciclaje import PuntoReciclaje
 from utils.auth_helpers import requiere_rol
 from utils.validaciones import correo_valido, password_valida
-from utils.archivos import extension_valida, guardar_foto
+from utils.archivos import extension_valida, guardar_foto, borrar_foto
 
 usuarios_bp = Blueprint("usuarios", __name__, url_prefix="/api/usuarios")
 
@@ -73,11 +73,8 @@ def subir_foto_perfil():
     if not extension_valida(foto.filename):
         return jsonify({"error": "La foto debe ser JPG, PNG o WEBP."}), 400
 
-    # Borra la foto anterior para no ir acumulando archivos huérfanos.
-    if usuario.foto_url:
-        ruta_anterior = os.path.join(current_app.static_folder, usuario.foto_url)
-        if os.path.isfile(ruta_anterior):
-            os.remove(ruta_anterior)
+    # Borra la foto anterior (Cloudinary o disco) para no acumular archivos huérfanos.
+    borrar_foto(usuario.foto_url, current_app.static_folder)
 
     carpeta = os.path.join(current_app.static_folder, "uploads", "perfiles")
     usuario.foto_url = guardar_foto(foto, carpeta)
@@ -249,11 +246,8 @@ def eliminar_usuario(id_usuario):
     if _es_ultimo_admin(usuario):
         return jsonify({"error": "Es el único administrador activo; no se puede eliminar."}), 400
 
-    # Borra también su foto de perfil del disco (si es local) para no dejar archivos huérfanos.
-    if usuario.foto_url and not usuario.foto_url.startswith("http"):
-        ruta = os.path.join(current_app.static_folder, usuario.foto_url)
-        if os.path.isfile(ruta):
-            os.remove(ruta)
+    # Borra también su foto de perfil para no dejar archivos huérfanos.
+    borrar_foto(usuario.foto_url, current_app.static_folder)
 
     # En la BD: sus aportes se borran (ON DELETE CASCADE); los puntos que
     # propuso y sus reportes se conservan sin autor (ON DELETE SET NULL).

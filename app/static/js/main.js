@@ -4,6 +4,13 @@
 
 const CLAVE_SESION = 'ecomaps_sesion';
 
+// Ruta de una foto subida: las de Cloudinary ya son URL completas (https://...);
+// las locales son relativas a /static. Sin foto -> avatar por defecto.
+function urlFoto(ruta, porDefecto = '/static/assets/img/avatar-default.svg') {
+  if (!ruta) return porDefecto;
+  return /^https?:\/\//.test(ruta) ? ruta : `/static/${ruta}`;
+}
+
 // Página de inicio de cada rol (un solo lugar para no cruzar rutas).
 const INICIO_POR_ROL = { admin: '/admin', empresa: '/empresa', ciudadano: '/perfil' };
 function inicioPorRol(rol) {
@@ -106,7 +113,7 @@ function initSidebarCuenta() {
   if (usuario.foto_url) {
     document.querySelectorAll('[data-perfil="foto-mini"]').forEach((img) => {
       img.onerror = () => { img.onerror = null; img.src = '/static/assets/img/avatar-default.svg'; };
-      img.src = `/static/${usuario.foto_url}`;
+      img.src = urlFoto(usuario.foto_url);
     });
   }
   document.querySelectorAll('[data-solo-rol]').forEach((el) => {

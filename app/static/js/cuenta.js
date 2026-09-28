@@ -34,7 +34,7 @@ function aplicarUsuario(usuario, guardar = true) {
   $cuenta('nombre-mini').forEach((el) => { el.textContent = usuario.nombre || 'Mi cuenta'; });
   $cuenta('correo').forEach((el) => { el.textContent = usuario.correo || ''; });
 
-  const src = usuario.foto_url ? `/static/${usuario.foto_url}` : AVATAR_DEFAULT;
+  const src = urlFoto(usuario.foto_url, AVATAR_DEFAULT);
   [...$cuenta('foto'), ...$cuenta('foto-mini')].forEach((img) => {
     img.onerror = () => { img.onerror = null; img.src = AVATAR_DEFAULT; };
     img.src = src;

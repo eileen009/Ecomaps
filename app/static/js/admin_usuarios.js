@@ -6,7 +6,6 @@
 const ROL_TEXTO = { ciudadano: 'Ciudadano', empresa: 'Empresa', admin: 'Administrador' };
 const AVATAR_POR_DEFECTO = '/static/assets/img/avatar-default.svg';
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const urlFoto = (ruta) => (!ruta ? AVATAR_POR_DEFECTO : ruta.startsWith('http') ? ruta : `/static/${ruta}`);
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabla = document.getElementById('tabla-usuarios');
