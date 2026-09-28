@@ -302,13 +302,36 @@ function initGoogleLogin() {
     }
   };
 
-  const iniciar = () => {
-    google.accounts.id.initialize({ client_id: window.GOOGLE_CLIENT_ID, callback: alRecibirCredencial });
+  // Ancho del botón = ancho real de la tarjeta del formulario (Google acepta
+  // entre 200 y 400 px). Se mide la tarjeta visible porque la pestaña oculta
+  // mide 0; antes quedaba en 360-400 px y en teléfonos angostos empujaba
+  // todo el formulario fuera de la pantalla.
+  const anchoBoton = () => {
+    const tarjeta = document.querySelector('.auth__card') || document.body;
+    return Math.max(200, Math.min(400, Math.floor(tarjeta.clientWidth)));
+  };
+  const dibujar = () => {
+    const ancho = anchoBoton();
     contenedores.forEach((el) => {
+      el.innerHTML = '';
       google.accounts.id.renderButton(el, {
         type: 'standard', theme: 'outline', size: 'large', shape: 'pill',
-        text: 'continue_with', locale: 'es', width: Math.min(el.clientWidth || 360, 400),
+        text: 'continue_with', locale: 'es', width: ancho,
       });
+    });
+  };
+  const iniciar = () => {
+    google.accounts.id.initialize({ client_id: window.GOOGLE_CLIENT_ID, callback: alRecibirCredencial });
+    dibujar();
+    // Si se gira el teléfono o cambia el tamaño, se ajusta (con espera para no redibujar de más).
+    let espera;
+    let anchoAnterior = anchoBoton();
+    window.addEventListener('resize', () => {
+      clearTimeout(espera);
+      espera = setTimeout(() => {
+        const nuevo = anchoBoton();
+        if (nuevo !== anchoAnterior) { anchoAnterior = nuevo; dibujar(); }
+      }, 250);
     });
   };
 
