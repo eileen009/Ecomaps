@@ -22,11 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const tarjeta = (e) => `
     <article class="company-card" data-id="${e.id}">
-      <div class="company-card__logo">${e.foto_url ? `<img src="${urlFoto(e.foto_url)}" alt="">` : '🏢'}</div>
+      <div class="company-card__logo">${e.foto_url ? `<img src="${escaparHTML(urlFoto(e.foto_url))}" alt="">` : '🏢'}</div>
       <div class="company-card__body">
         ${e.verificada ? '<span class="badge badge--verificada">✔ Verificada</span>' : '<span class="badge">Sin verificar</span>'}
-        <h3>${e.nombre}</h3>
-        <p>${e.correo} · ${e.num_puntos} punto${e.num_puntos === 1 ? '' : 's'}</p>
+        <h3>${escaparHTML(e.nombre)}</h3>
+        <p>${escaparHTML(e.correo)} · ${e.num_puntos} punto${e.num_puntos === 1 ? '' : 's'}</p>
         <div class="company-card__acciones">
           <button type="button" class="btn ${e.verificada ? 'btn--outline' : 'btn--primary'}" data-verificar>
             ${e.verificada ? 'Quitar sello' : '✔ Verificar empresa'}

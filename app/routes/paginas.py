@@ -118,3 +118,20 @@ def admin_usuarios():
 @paginas_bp.get("/admin/perfil")
 def admin_perfil():
     return render_template("admin_perfil.html", activo="perfil")
+
+
+@paginas_bp.get("/recuperar")
+def recuperar():
+    return render_template("recuperar.html", modo="pedir")
+
+
+@paginas_bp.get("/restablecer/<token>")
+def restablecer(token):
+    # Se valida al abrir la página para avisar de una vez si el enlace venció.
+    from utils.recuperacion import usuario_desde_token
+    try:
+        usuario_desde_token(token)
+        error = None
+    except ValueError as e:
+        error = str(e)
+    return render_template("recuperar.html", modo="nueva", token=token, error_enlace=error)

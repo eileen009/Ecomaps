@@ -135,7 +135,7 @@ function initEstadoSesion() {
     const nombre = (sesion.usuario.nombre || 'Mi cuenta').split(' ')[0];
     // El admin vuelve a su panel; el resto, a su perfil.
     const etiquetas = { admin: '🛠 Panel admin', empresa: '🏢 Mi empresa' };
-    const etiqueta = etiquetas[sesion.usuario.rol] || `👤 ${nombre}`;
+    const etiqueta = etiquetas[sesion.usuario.rol] || `👤 ${escaparHTML(nombre)}`;
     contenedor.innerHTML = `
       <a href="${inicioPorRol(sesion.usuario.rol)}" class="btn btn--ghost">${etiqueta}</a>
       <button type="button" class="btn btn--primary" data-cerrar-sesion>Cerrar sesión</button>
@@ -443,3 +443,16 @@ function initSidebarColapsable() {
   esTablet.addEventListener('change', aplicarEstado);
   aplicarEstado();
 }
+
+/* === Sarith: seguridad XSS (B1) === */
+// Convierte los caracteres especiales de HTML en texto seguro.
+// Úsala con TODO dato que venga de la API o del usuario antes de meterlo
+// en un innerHTML o en un template string con etiquetas HTML.
+// Ejemplo: `<h3>${escaparHTML(punto.nombre)}</h3>`
+function escaparHTML(texto) {
+  if (texto === null || texto === undefined) return '';
+  return String(texto).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+/* === Fin Sarith === */

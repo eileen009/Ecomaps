@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function tarjetaLista(punto) {
     const materiales = (punto.materiales || [])
-      .map((m) => `<span class="tag">${m}</span>`)
+      .map((m) => `<span class="tag">${esc(m)}</span>`)
       .join(' ');
     const distancia = typeof punto.distancia_km === 'number'
       ? `A ${punto.distancia_km} km`

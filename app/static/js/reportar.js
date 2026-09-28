@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     info.textContent = 'Cuando haya puntos activos en el mapa podrás reportarlos aquí.';
   } else {
     select.innerHTML = '<option value="">Selecciona un punto</option>' + puntos
-      .map((p) => `<option value="${p.id}">${p.nombre} · ${p.ciudad}</option>`).join('');
+      .map((p) => `<option value="${escaparHTML(p.id)}">${escaparHTML(p.nombre)} · ${escaparHTML(p.ciudad)}</option>`).join('');
     if (puntoInicial) select.value = puntoInicial;
   }
 

@@ -161,7 +161,7 @@ async function pintarResumenYHistorial() {
     const lugar = a.punto || 'Sin punto especificado';
     const puntosTxt = a.estado === 'confirmada' ? `+${a.puntos_otorgados} pts` : '';
     return `<article class="activity-row"><span class="activity-row__icon">♻</span>
-      <div><strong>${a.categoria || 'Material'} · ${a.cantidad} ${a.unidad}</strong><small>${lugar} · ${fecha}</small></div>
+      <div><strong>${escaparHTML(a.categoria || 'Material')} · ${escaparHTML(a.cantidad)} ${escaparHTML(a.unidad)}</strong><small>${escaparHTML(lugar)} · ${fecha}</small></div>
       <span class="estado-chip ${estado.clase}">${estado.texto}</span><b>${puntosTxt}</b></article>`;
   }).join('');
 }
