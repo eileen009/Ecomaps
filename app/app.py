@@ -35,6 +35,7 @@ def crear_app(config_class=Config):
     from routes.buscador import buscador_bp
     from routes.acciones import acciones_bp
     from routes.reportes import reportes_bp
+    from routes.estadisticas import estadisticas_bp
     from routes.paginas import paginas_bp
 
     app.register_blueprint(auth_bp)
@@ -44,12 +45,26 @@ def crear_app(config_class=Config):
     app.register_blueprint(buscador_bp)
     app.register_blueprint(acciones_bp)
     app.register_blueprint(reportes_bp)
+    app.register_blueprint(estadisticas_bp)
     app.register_blueprint(paginas_bp)  # vistas HTML (templates/)
 
     @app.get("/api/salud")
     def salud():
         """Endpoint simple para verificar que el servidor responde."""
         return jsonify({"estado": "ok"}), 200
+
+    # ----- Sesiones: un token deja de valer si la cuenta se suspendió, se
+    # eliminó o le cambiaron el rol (así el cambio aplica de inmediato).
+    # db.session.get usa la caché de la sesión: si la ruta vuelve a pedir
+    # el mismo usuario, no hay una segunda consulta.
+    @jwt.token_in_blocklist_loader
+    def token_revocado(_cabecera, datos_jwt):
+        usuario = db.session.get(Usuario, int(datos_jwt["sub"]))
+        return usuario is None or not usuario.activo or usuario.rol != datos_jwt.get("rol")
+
+    @jwt.revoked_token_loader
+    def token_revocado_respuesta(_cabecera, _datos_jwt):
+        return jsonify({"error": "Tu sesión ya no es válida. Inicia sesión de nuevo."}), 401
 
     # ----- Manejo de errores comunes en JSON (en vez de HTML) -----
     @app.errorhandler(404)

@@ -1800,3 +1800,44 @@ button { font: inherit; cursor: pointer; }
   .reporte-card { flex-direction: column; align-items: stretch; }
   .reporte-card__acciones .btn { flex: 1; }
 }
+
+/* ===== Estadísticas reales ===== */
+.bar-chart__valor { font-size: .72rem; font-weight: 700; color: var(--dark-moss-green); }
+.stats-vacio { margin: 24px 0; padding: 18px; border-radius: 12px; background: var(--fondo-alt); color: var(--texto-suave); font-size: .9rem; }
+.leaderboard__avatar--img { object-fit: cover; padding: 0; }
+
+/* ===== Admin: puntos y usuarios (CRUD) ===== */
+.admin-table__vacio { text-align: center; color: var(--texto-suave); padding: 28px 12px !important; }
+.admin-table__total { margin: 12px 0 0; font-size: .82rem; color: var(--texto-suave); }
+.admin-table__actions { flex-wrap: wrap; }
+.status-dot--rechazado { color: var(--texto-suave); }
+.admin-btn { padding: 5px 10px; border-radius: 8px; border: 1px solid var(--borde); background: var(--blanco); color: var(--verde-oscuro); font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.admin-btn:hover { background: var(--fondo-alt); }
+.admin-btn:disabled { opacity: .5; cursor: wait; }
+.admin-btn--aprobar { background: var(--dark-moss-green); border-color: var(--dark-moss-green); color: var(--blanco); }
+.admin-btn--aprobar:hover { background: #2a3f03; }
+.admin-btn--rechazar { color: var(--golden-brown); border-color: #E6D3B0; }
+.admin-btn--peligro { color: #A12A12; border-color: #F0CFC4; }
+.admin-btn--peligro:hover { background: #FBEDE8; }
+.admin-usuario { display: flex; align-items: center; gap: 10px; }
+.admin-usuario img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: none; }
+.admin-usuario small { color: var(--texto-suave); font-weight: 400; }
+tr.is-suspendido td { opacity: .6; }
+tr.is-suspendido td:last-child { opacity: 1; }
+.rol-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: var(--fondo-alt); color: var(--dark-moss-green); }
+.rol-chip--empresa { background: var(--flax); color: var(--bistre); }
+.rol-chip--admin { background: var(--dark-moss-green); color: var(--blanco); }
+
+.admin-dialogo { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); border: 0; border-radius: var(--radio); padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.admin-dialogo::backdrop { background: rgba(53, 25, 3, .45); }
+.admin-dialogo h2 { margin: 0 0 4px; color: var(--dark-moss-green); font-size: 1.2rem; }
+.admin-dialogo select { padding: 12px 14px; border: 1px solid var(--borde); border-radius: 10px; font: inherit; }
+.admin-dialogo__acciones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+@media (max-width: 560px) {
+  .admin-dialogo { padding: 18px; }
+  .admin-dialogo__acciones .btn { flex: 1; }
+}
+@media (max-width: 560px) {
+  .admin__main .stats-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .admin__main .stat-card { padding: 14px; }
+}

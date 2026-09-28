@@ -1,0 +1,61 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Usuarios{% endblock %}
+{% block migas %}Usuarios{% endblock %}
+
+{% block contenido %}
+      <h1>Usuarios</h1>
+      <p>Crea, edita, suspende o elimina cuentas y asigna el rol de cada una (ciudadano, empresa o admin).</p>
+
+      <div class="admin-table-wrap" style="margin-top:24px;">
+        <div class="admin-toolbar">
+          <input type="search" id="buscar-usuario" placeholder="🔍 Buscar por nombre o correo..." aria-label="Buscar usuario">
+          <select id="filtro-rol" aria-label="Filtrar por rol">
+            <option value="">Todos los roles</option>
+            <option value="ciudadano">Ciudadanos</option>
+            <option value="empresa">Empresas</option>
+            <option value="admin">Administradores</option>
+          </select>
+          <select id="filtro-activo" aria-label="Filtrar por estado">
+            <option value="">Activos y suspendidos</option>
+            <option value="activo">Solo activos</option>
+            <option value="suspendido">Solo suspendidos</option>
+          </select>
+          <button type="button" class="btn btn--primary" id="btn-nuevo-usuario">+ Nuevo usuario</button>
+        </div>
+
+        <table class="admin-table">
+          <thead>
+            <tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Puntos</th><th>Registro</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="tabla-usuarios"><tr><td colspan="6" class="admin-table__vacio">Cargando…</td></tr></tbody>
+        </table>
+        <p class="admin-table__total" id="total-usuarios"></p>
+      </div>
+
+      <!-- Crear / editar usuario (dialog nativo, sin librerías) -->
+      <dialog class="admin-dialogo" id="dialogo-usuario">
+        <form method="dialog" class="form" id="form-usuario" novalidate>
+          <h2 data-titulo>Nuevo usuario</h2>
+          <label for="eu-nombre">Nombre *</label><input id="eu-nombre" type="text" maxlength="120" required>
+          <label for="eu-correo">Correo *</label><input id="eu-correo" type="email" maxlength="180" required>
+          <label for="eu-rol">Rol *</label>
+          <select id="eu-rol">
+            <option value="ciudadano">Ciudadano</option>
+            <option value="empresa">Empresa</option>
+            <option value="admin">Administrador</option>
+          </select>
+          <label for="eu-password" data-label-password>Contraseña * (mínimo 8 caracteres)</label>
+          <input id="eu-password" type="password" minlength="8" autocomplete="new-password">
+          <p class="form__error" data-form-error hidden></p>
+          <div class="admin-dialogo__acciones">
+            <button type="button" class="btn btn--outline" data-cerrar-dialogo>Cancelar</button>
+            <button type="submit" class="btn btn--primary">Guardar</button>
+          </div>
+        </form>
+      </dialog>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/admin_usuarios.js') }}"></script>
+{% endblock %}

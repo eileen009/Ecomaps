@@ -21,96 +21,72 @@
       </div>
     </section>
     <section class="stats-hero container" style="padding:0 24px">
-      <!-- Tarjetas resumen -->
+      <!-- Tarjetas resumen: datos reales (utils/estadisticas.py, cacheados 10 min) -->
       <div class="stats-cards reveal-group">
         <div class="stat-card reveal" style="--indice:0">
           <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-personas"/></svg></div>
-          <div class="stat-card__value">148.320</div>
+          <div class="stat-card__value">{{ stats.usuarios | miles }}</div>
           <p class="stat-card__label">Usuarios registrados</p>
-          <span class="stat-card__delta">+12% este mes</span>
+          {% if stats.usuarios_mes %}<span class="stat-card__delta">+{{ stats.usuarios_mes | miles }} este mes</span>{% endif %}
         </div>
         <div class="stat-card reveal" style="--indice:1">
           <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-pin"/></svg></div>
-          <div class="stat-card__value">3.847</div>
+          <div class="stat-card__value">{{ stats.puntos_activos | miles }}</div>
           <p class="stat-card__label">Puntos de reciclaje activos</p>
-          <span class="stat-card__delta">+84 esta semana</span>
         </div>
         <div class="stat-card reveal" style="--indice:2">
           <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-reciclar"/></svg></div>
-          <div class="stat-card__value">2,4 M</div>
-          <p class="stat-card__label">Acciones de reciclaje totales</p>
-          <span class="stat-card__delta">+31% vs año anterior</span>
+          <div class="stat-card__value">{{ stats.aportes | miles }}</div>
+          <p class="stat-card__label">Aportes de reciclaje confirmados</p>
+          {% if stats.aportes_mes %}<span class="stat-card__delta">+{{ stats.aportes_mes | miles }} este mes</span>{% endif %}
         </div>
         <div class="stat-card reveal" style="--indice:3">
           <div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ icono }}#i-hoja"/></svg></div>
-          <div class="stat-card__value">9.240 t</div>
-          <p class="stat-card__label">CO₂ ahorrado</p>
-          <span class="stat-card__delta">Equivale a 412k árboles</span>
+          <div class="stat-card__value">{{ stats.kg | peso }}</div>
+          <p class="stat-card__label">Material reciclado (en kg)</p>
         </div>
       </div>
 
-      <!-- Gráficas (CSS/SVG puro, sin librerías externas) -->
+      <!-- Gráficas (CSS puro, sin librerías externas) -->
       <div class="charts-grid">
         <div class="chart-card reveal">
           <h3>Materiales más reciclados</h3>
-          <p>Toneladas procesadas — acumulado anual</p>
-          <div class="bar-chart">
-            <div class="bar-chart__col bar-chart__col--top">
-              <div class="bar-chart__bar" style="height:100%;"></div>
-              <span class="bar-chart__label">Plástico<br>PET</span>
+          <p>Aportes confirmados por tipo de material</p>
+          {% if stats.por_material %}
+          <div class="bar-chart" role="img" aria-label="Aportes confirmados por material">
+            {% for m in stats.por_material %}
+            <div class="bar-chart__col{% if loop.first %} bar-chart__col--top{% endif %}">
+              <span class="bar-chart__valor">{{ m.valor | miles }}</span>
+              <div class="bar-chart__bar" style="height:{{ m.pct }}%;"></div>
+              <span class="bar-chart__label">{{ m.etiqueta }}</span>
             </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:83%;"></div>
-              <span class="bar-chart__label">Cartón</span>
-            </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:63%;"></div>
-              <span class="bar-chart__label">Vidrio</span>
-            </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:49%;"></div>
-              <span class="bar-chart__label">Aluminio</span>
-            </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:44%;"></div>
-              <span class="bar-chart__label">Papel</span>
-            </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:31%;"></div>
-              <span class="bar-chart__label">Orgánico</span>
-            </div>
-            <div class="bar-chart__col">
-              <div class="bar-chart__bar" style="height:17%;"></div>
-              <span class="bar-chart__label">Electrónicos</span>
-            </div>
+            {% endfor %}
           </div>
+          {% else %}
+          <p class="stats-vacio">Todavía no hay aportes confirmados. Cuando un administrador o una empresa confirme el primero, aparecerá aquí.</p>
+          {% endif %}
         </div>
 
         <div class="chart-card reveal">
-          <h3>Impacto general</h3>
-          <p>Por categoría ambiental</p>
-          <div class="donut-wrap">
-            <!-- Dona hecha con conic-gradient (CSS puro, sin SVG ni librerías) -->
-            <div class="donut" style="--p1:28%; --p2:49%; --p3:68%; --p4:85%;" role="img" aria-label="Distribución del impacto por categoría ambiental">
-              <div class="donut__hole"></div>
+          <h3>Aportes por mes</h3>
+          <p>Aportes confirmados en los últimos 6 meses</p>
+          <div class="bar-chart" role="img" aria-label="Aportes confirmados en los últimos 6 meses">
+            {% for m in stats.por_mes %}
+            <div class="bar-chart__col{% if loop.last %} bar-chart__col--top{% endif %}">
+              <span class="bar-chart__valor">{{ m.valor | miles }}</span>
+              <div class="bar-chart__bar" style="height:{{ m.pct if m.valor else 2 }}%;"></div>
+              <span class="bar-chart__label">{{ m.etiqueta }}</span>
             </div>
-            <div class="donut-legend">
-              <span><i class="legend-dot" style="background:var(--dark-moss-green)"></i> Residuos evitados</span>
-              <span><i class="legend-dot" style="background:var(--verde-claro)"></i> Agua conservada</span>
-              <span><i class="legend-dot" style="background:var(--flax)"></i> Emisiones reducidas</span>
-              <span><i class="legend-dot" style="background:var(--golden-brown)"></i> Energía recuperada</span>
-              <span><i class="legend-dot" style="background:#B7CBE0"></i> Suelo protegido</span>
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
 
-      <div class="summary-strip reveal" style="margin-bottom:24px;">
-        <div><strong>24.810</strong><span>Recicladores este mes</span></div>
-        <div><strong>187.420</strong><span>Acciones colectivas este mes</span></div>
-        <div><strong>842 t</strong><span>CO₂ evitado en septiembre</span></div>
+      <div class="summary-strip reveal" style="margin-bottom:120px;">
+        <div><strong>{{ stats.recicladores_mes | miles }}</strong><span>Personas que reciclaron en {{ stats.mes_actual }}</span></div>
+        <div><strong>{{ stats.aportes_mes | miles }}</strong><span>Aportes confirmados en {{ stats.mes_actual }}</span></div>
+        <div><strong>{{ stats.kg_mes | peso }}</strong><span>Reciclados en {{ stats.mes_actual }}</span></div>
       </div>
-      <p class="nota-demo">Cifras de demostración: se reemplazarán por los datos reales del sistema.</p>
     </section>
   </main>
 
