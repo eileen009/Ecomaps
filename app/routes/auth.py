@@ -62,6 +62,8 @@ def login():
     # es incorrecta: evita revelar qué correos están registrados.
     if not usuario or not usuario.check_password(password):
         return jsonify({"error": "Correo o contraseña incorrectos."}), 401
+    if not usuario.activo:
+        return jsonify({"error": "Tu cuenta está suspendida. Escribe al equipo de EcoMaps."}), 403
 
     token = create_access_token(
         identity=str(usuario.id), additional_claims={"rol": usuario.rol}

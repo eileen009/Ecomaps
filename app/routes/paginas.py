@@ -5,6 +5,8 @@ módulo solo renderiza páginas, no expone datos JSON.
 """
 from flask import Blueprint, render_template
 
+from utils.estadisticas import obtener_generales
+
 paginas_bp = Blueprint("paginas", __name__)
 
 
@@ -25,7 +27,8 @@ def mapa():
 
 @paginas_bp.get("/estadisticas")
 def estadisticas():
-    return render_template("estadisticas.html")
+    # Render en el servidor: una sola petición, sin JS extra para pintar cifras.
+    return render_template("estadisticas.html", stats=obtener_generales())
 
 
 @paginas_bp.get("/guia")
@@ -91,3 +94,22 @@ def empresa():
 @paginas_bp.get("/admin/reportes")
 def admin_reportes():
     return render_template("admin_reportes.html", activo="reportes")
+
+
+@paginas_bp.app_template_filter("miles")
+def formato_miles(numero):
+    """1234567 -> 1.234.567 (formato colombiano)."""
+    return f"{int(numero):,}".replace(",", ".")
+
+
+@paginas_bp.app_template_filter("peso")
+def formato_peso(kg):
+    """Kilos legibles: 850 -> '850 kg', 1530 -> '1,5 t'."""
+    if kg >= 1000:
+        return f"{kg / 1000:.1f} t".replace(".", ",")
+    return f"{kg:.0f} kg" if kg == int(kg) else f"{kg:.1f} kg".replace(".", ",")
+
+
+@paginas_bp.get("/admin/usuarios")
+def admin_usuarios():
+    return render_template("admin_usuarios.html", activo="usuarios")

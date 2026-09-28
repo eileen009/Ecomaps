@@ -24,8 +24,8 @@
       <div>
         <p class="admin__sidebar-label">Menú principal</p>
         <nav class="admin__nav">
-          <a href="{{ url_for('paginas.admin') }}" class="{{ 'is-active' if activo == 'puntos' else '' }}" title="Puntos de reciclaje"><span class="nav-ico" aria-hidden="true">📍</span><span class="nav-txt">Puntos de reciclaje</span> <span class="admin__nav-count">85</span></a>
-          <a href="#" title="Usuarios"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Usuarios</span></a>
+          <a href="{{ url_for('paginas.admin') }}" class="{{ 'is-active' if activo == 'puntos' else '' }}" title="Puntos de reciclaje"><span class="nav-ico" aria-hidden="true">📍</span><span class="nav-txt">Puntos de reciclaje</span> <span class="admin__nav-count" data-nav-pendientes hidden></span></a>
+          <a href="{{ url_for('paginas.admin_usuarios') }}" class="{{ 'is-active' if activo == 'usuarios' else '' }}" title="Usuarios"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Usuarios</span></a>
           <a href="#" title="Residuos"><span class="nav-ico" aria-hidden="true">🗑</span><span class="nav-txt">Residuos</span></a>
           <a href="{{ url_for('paginas.admin_reportes') }}" class="{{ 'is-active' if activo == 'reportes' else '' }}" title="Reportes"><span class="nav-ico" aria-hidden="true">📈</span><span class="nav-txt">Reportes</span></a>
           <a href="{{ url_for('paginas.admin_acciones') }}" class="{{ 'is-active' if activo == 'acciones' else '' }}" title="Aportes por confirmar"><span class="nav-ico" aria-hidden="true">🖼</span><span class="nav-txt">Aportes por confirmar</span></a>

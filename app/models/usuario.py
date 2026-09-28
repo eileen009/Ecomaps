@@ -26,6 +26,9 @@ class Usuario(db.Model):
     foto_url = db.Column(db.String(255), nullable=True)
     # Sello "Empresa verificada": solo lo activa un admin (rol empresa).
     verificada = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    # Cuenta suspendida por un admin = False: no puede iniciar sesión y sus
+    # tokens dejan de valer (ver app.py, token_in_blocklist_loader).
+    activo = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
 
     rol = db.Column(
         db.Enum("ciudadano", "empresa", "admin", name="rol_usuario"),
@@ -74,5 +77,6 @@ class Usuario(db.Model):
             "foto_url": self.foto_url,
             "marco_avatar": self.marco_avatar,
             "verificada": bool(self.verificada),
+            "activo": bool(self.activo),
             "fecha_registro": self.fecha_registro.isoformat(),
         }

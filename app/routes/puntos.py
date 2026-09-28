@@ -8,9 +8,12 @@ Endpoints:
     PATCH /api/puntos/<id>/estado  aprobar / rechazar / reportar (admin)
     GET   /api/puntos/mios         puntos de la empresa que inició sesión
     PUT   /api/puntos/mios/<id>    la empresa edita info de contacto y horario
+    GET   /api/puntos/resumen      conteo por estado (admin)
+    DELETE /api/puntos/<id>        eliminar un punto (admin)
 """
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, verify_jwt_in_request
+from sqlalchemy import func
 
 from extensions import db
 from models.punto_reciclaje import PuntoReciclaje
@@ -34,11 +37,13 @@ def filtrar_puntos(ciudad=None, material=None, estado="activo", lat=None, lng=No
     no repetir la misma lógica de filtrado/distancia en dos sitios.
     Devuelve (resultado_dict, error) — error es None si todo salió bien.
     """
-    if estado not in ESTADOS_VALIDOS:
+    if estado != "todos" and estado not in ESTADOS_VALIDOS:
         return None, "Estado no válido."
 
     # Usa el índice de "estado" en vez de traer toda la tabla y filtrar en Python.
-    query = PuntoReciclaje.query.filter_by(estado=estado)
+    query = PuntoReciclaje.query
+    if estado != "todos":
+        query = query.filter_by(estado=estado)
 
     if ciudad:
         query = query.filter(PuntoReciclaje.ciudad.ilike(ciudad))
@@ -73,10 +78,17 @@ def filtrar_puntos(ciudad=None, material=None, estado="activo", lat=None, lng=No
 
 @puntos_bp.get("")
 def listar_puntos():
+    estado = request.args.get("estado", default="activo", type=str)
+    # Los puntos que no están publicados (pendientes, rechazados...) solo los ve el admin.
+    if estado != "activo":
+        verify_jwt_in_request(optional=True)
+        if (get_jwt() or {}).get("rol") != "admin":
+            return jsonify({"error": "No tienes permisos para ver esos puntos."}), 403
+
     resultado, error = filtrar_puntos(
         ciudad=request.args.get("ciudad", type=str),
         material=request.args.get("material", type=str),
-        estado=request.args.get("estado", default="activo", type=str),
+        estado=estado,
         lat=request.args.get("lat", type=float),
         lng=request.args.get("lng", type=float),
         radio_km=request.args.get("radio", default=5, type=float),
@@ -226,3 +238,28 @@ def editar_mi_punto(id_punto):
 
     db.session.commit()
     return jsonify(punto.to_dict()), 200
+
+
+# ----- Panel admin -----
+@puntos_bp.get("/resumen")
+@requiere_rol("admin")
+def resumen_puntos():
+    """Conteo por estado en UNA consulta (GROUP BY), para las tarjetas del panel."""
+    conteo = dict(
+        db.session.query(PuntoReciclaje.estado, func.count(PuntoReciclaje.id))
+        .group_by(PuntoReciclaje.estado)
+        .all()
+    )
+    return jsonify({
+        "total": sum(conteo.values()),
+        **{e: conteo.get(e, 0) for e in ESTADOS_VALIDOS},
+    }), 200
+
+
+@puntos_bp.delete("/<int:id_punto>")
+@requiere_rol("admin")
+def eliminar_punto(id_punto):
+    punto = PuntoReciclaje.query.get_or_404(id_punto)
+    db.session.delete(punto)
+    db.session.commit()
+    return jsonify({"mensaje": "Punto eliminado."}), 200

@@ -5,112 +5,64 @@
 
 {% block contenido %}
       <h1>Gestión de puntos de reciclaje</h1>
-      <p>Administra y verifica los puntos disponibles en EcoMaps.</p>
+      <p>Aprueba las propuestas, corrige la información y controla qué puntos se ven en el mapa.</p>
 
-      <!-- Tarjetas resumen -->
-      <div class="stats-cards reveal-group" style="margin-bottom:24px;">
-        <div class="stat-card reveal" style="--indice:0">
-          <div class="stat-card__icon">📍</div>
-          <div class="stat-card__value">85</div>
-          <p class="stat-card__label">Puntos registrados</p>
-        </div>
-        <div class="stat-card reveal" style="--indice:1">
-          <div class="stat-card__icon">✅</div>
-          <div class="stat-card__value">72</div>
-          <p class="stat-card__label">Activos</p>
-        </div>
-        <div class="stat-card reveal" style="--indice:2">
-          <div class="stat-card__icon">🕒</div>
-          <div class="stat-card__value">8</div>
-          <p class="stat-card__label">Pendientes</p>
-        </div>
-        <div class="stat-card reveal" style="--indice:3">
-          <div class="stat-card__icon">⚠️</div>
-          <div class="stat-card__value">5</div>
-          <p class="stat-card__label">Reportados</p>
-        </div>
+      <!-- Tarjetas resumen (GET /api/puntos/resumen) -->
+      <div class="stats-cards" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card__icon">📍</div><div class="stat-card__value" data-resumen="total">–</div><p class="stat-card__label">Puntos registrados</p></div>
+        <div class="stat-card"><div class="stat-card__icon">✅</div><div class="stat-card__value" data-resumen="activo">–</div><p class="stat-card__label">Activos (en el mapa)</p></div>
+        <div class="stat-card"><div class="stat-card__icon">🕒</div><div class="stat-card__value" data-resumen="pendiente">–</div><p class="stat-card__label">Pendientes de revisión</p></div>
+        <div class="stat-card"><div class="stat-card__icon">⚠️</div><div class="stat-card__value" data-resumen="reportado">–</div><p class="stat-card__label">Reportados</p></div>
       </div>
 
-      <!-- Tabla de puntos (datos de ejemplo) -->
-      <div class="admin-table-wrap reveal">
+      <div class="admin-table-wrap">
         <div class="admin-toolbar">
-          <input type="search" placeholder="🔍 Buscar punto...">
-          <select><option>Todas las ciudades</option><option>Montería</option><option>Cereté</option><option>Lorica</option></select>
-          <select><option>Todos los estados</option><option>Activo</option><option>Pendiente</option><option>Reportado</option></select>
+          <input type="search" id="buscar-punto" placeholder="🔍 Buscar por nombre o dirección..." aria-label="Buscar punto">
+          <select id="filtro-ciudad" aria-label="Filtrar por ciudad"><option value="">Todas las ciudades</option></select>
+          <select id="filtro-estado" aria-label="Filtrar por estado">
+            <option value="pendiente">Pendientes</option>
+            <option value="activo">Activos</option>
+            <option value="reportado">Reportados</option>
+            <option value="rechazado">Rechazados</option>
+            <option value="todos">Todos</option>
+          </select>
           <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary">+ Agregar punto</a>
         </div>
 
         <table class="admin-table">
           <thead>
-            <tr>
-              <th>Punto</th>
-              <th>Ubicación</th>
-              <th>Materiales</th>
-              <th>Estado</th>
-              <th>Última actualización</th>
-              <th>Acciones</th>
-            </tr>
+            <tr><th>Punto</th><th>Ubicación</th><th>Materiales</th><th>Estado</th><th>Registrado</th><th>Acciones</th></tr>
           </thead>
-          <tbody>
-            <tr>
-              <td><span class="admin-table__point">EcoCentro Norte</span><span class="admin-table__id">ID #0001</span></td>
-              <td>📍 Montería</td>
-              <td><span class="tag">Plástico</span> <span class="tag">Cartón</span> <span class="tag">Vidrio</span></td>
-              <td><span class="status-dot status-dot--activo">Activo</span></td>
-              <td>Hoy</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-            <tr>
-              <td><span class="admin-table__point">ReciclaYa</span><span class="admin-table__id">ID #0002</span></td>
-              <td>📍 Montería</td>
-              <td><span class="tag">Electrónicos</span></td>
-              <td><span class="status-dot status-dot--pendiente">Pendiente</span></td>
-              <td>Ayer</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-            <tr>
-              <td><span class="admin-table__point">Punto Verde</span><span class="admin-table__id">ID #0003</span></td>
-              <td>📍 Cereté</td>
-              <td><span class="tag">Vidrio</span> <span class="tag">Plástico</span></td>
-              <td><span class="status-dot status-dot--activo">Activo</span></td>
-              <td>25 ago</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-            <tr>
-              <td><span class="admin-table__point">EcoParque Central</span><span class="admin-table__id">ID #0004</span></td>
-              <td>📍 Montería</td>
-              <td><span class="tag">Papel</span> <span class="tag">Cartón</span></td>
-              <td><span class="status-dot status-dot--activo">Activo</span></td>
-              <td>24 ago</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-            <tr>
-              <td><span class="admin-table__point">Centro de Acopio Sur</span><span class="admin-table__id">ID #0005</span></td>
-              <td>📍 Lorica</td>
-              <td><span class="tag">Metal</span> <span class="tag">Plástico</span> <span class="tag">Vidrio</span></td>
-              <td><span class="status-dot status-dot--reportado">Reportado</span></td>
-              <td>22 ago</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-            <tr>
-              <td><span class="admin-table__point">Recicladora Comunal</span><span class="admin-table__id">ID #0006</span></td>
-              <td>📍 Sahagún</td>
-              <td><span class="tag">Papel</span> <span class="tag">Cartón</span> <span class="tag">Metal</span></td>
-              <td><span class="status-dot status-dot--activo">Activo</span></td>
-              <td>21 ago</td>
-              <td class="admin-table__actions"><a href="#">Ver</a><a href="#">Editar</a></td>
-            </tr>
-          </tbody>
+          <tbody id="tabla-puntos"><tr><td colspan="6" class="admin-table__vacio">Cargando…</td></tr></tbody>
         </table>
-
-        <div class="admin-pagination">
-          <span>Mostrando 1–6 de 8 puntos</span>
-          <div class="admin-pagination__pages">
-            <button type="button" aria-label="Anterior">←</button>
-            <button type="button" class="is-active">1</button>
-            <button type="button">2</button>
-            <button type="button" aria-label="Siguiente">→</button>
-          </div>
-        </div>
+        <p class="admin-table__total" id="total-puntos"></p>
       </div>
+
+      <!-- Formulario de edición (dialog nativo del navegador, sin librerías) -->
+      <dialog class="admin-dialogo" id="dialogo-punto">
+        <form method="dialog" class="form" id="form-punto">
+          <h2>Editar punto</h2>
+          <label for="ep-nombre">Nombre *</label><input id="ep-nombre" type="text" maxlength="150" required>
+          <div class="form-steps">
+            <div><label for="ep-direccion">Dirección *</label><input id="ep-direccion" type="text" maxlength="220" required></div>
+            <div><label for="ep-ciudad">Ciudad *</label><input id="ep-ciudad" type="text" maxlength="100" required></div>
+          </div>
+          <label for="ep-horario">Horario</label><input id="ep-horario" type="text" maxlength="150" placeholder="Lun-Vie 08:00-18:00; Sáb 09:00-13:00">
+          <div class="form-steps">
+            <div><label for="ep-telefono">Teléfono</label><input id="ep-telefono" type="tel" maxlength="30"></div>
+            <div><label for="ep-correo">Correo</label><input id="ep-correo" type="email" maxlength="180"></div>
+          </div>
+          <label>Materiales que recibe</label>
+          <div class="form-materials" id="ep-materiales"></div>
+          <p class="form__error" data-form-error hidden></p>
+          <div class="admin-dialogo__acciones">
+            <button type="button" class="btn btn--outline" data-cerrar-dialogo>Cancelar</button>
+            <button type="submit" class="btn btn--primary" value="guardar">Guardar cambios</button>
+          </div>
+        </form>
+      </dialog>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/admin_puntos.js') }}"></script>
 {% endblock %}
