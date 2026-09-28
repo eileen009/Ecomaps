@@ -4,8 +4,13 @@
 {% block migas %}Mi perfil{% endblock %}
 
 {% block contenido %}
-      <h1>Mi perfil</h1>
-      <p>Tu foto y los datos con los que inicias sesión en el panel.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Mi perfil</h1>
+          <p>Tu foto y los datos con los que inicias sesión en el panel.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--icono" aria-hidden="true"><svg width="52" height="52" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-escudo"/></svg></div>
+      </header>
 
       <!-- Mismas piezas que /perfil y /empresa: _avatar_editable.html + _form_cuenta.html + cuenta.js -->
       <section class="profile-card profile-card--resumen" style="margin:24px 0;">

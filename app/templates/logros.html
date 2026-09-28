@@ -3,7 +3,13 @@
 {% block migas %}<a href="{{ url_for('paginas.perfil') }}">Mi perfil</a> / <strong>Mis logros</strong>{% endblock %}
 
 {% block contenido %}
-<div class="cuenta-titulo"><h1>Mis puntos y logros</h1><p>Consulta tu progreso y los reconocimientos que puedes obtener reciclando.</p></div>
+<header class="pagina-banda">
+  <div class="pagina-banda__texto">
+    <h1>Mis puntos y logros</h1>
+    <p>Consulta tu progreso y los reconocimientos que puedes obtener reciclando.</p>
+  </div>
+  <div class="pagina-banda__arte pagina-banda__arte--medalla" aria-hidden="true">{% include 'ilustraciones/medalla.svg' %}</div>
+</header>
 <section class="section"><div class="container">
   <div class="points-banner">
     <div><span>Puntos acumulados</span><strong data-logros="puntos">–</strong><small data-logros="confirmadas">–</small></div>

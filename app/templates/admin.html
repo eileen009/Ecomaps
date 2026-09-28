@@ -4,20 +4,25 @@
 {% block migas %}Puntos de reciclaje{% endblock %}
 
 {% block contenido %}
-      <h1>Gestión de puntos de reciclaje</h1>
-      <p>Aprueba las propuestas, corrige la información y controla qué puntos se ven en el mapa.</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Gestión de puntos de reciclaje</h1>
+          <p>Aprueba las propuestas, corrige la información y controla qué puntos se ven en el mapa.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--mapa" aria-hidden="true">{% include 'ilustraciones/mapa_hero.svg' %}</div>
+      </header>
 
       <!-- Tarjetas resumen (GET /api/puntos/resumen) -->
       <div class="stats-cards" style="margin-bottom:24px;">
-        <div class="stat-card"><div class="stat-card__icon">📍</div><div class="stat-card__value" data-resumen="total">–</div><p class="stat-card__label">Puntos registrados</p></div>
-        <div class="stat-card"><div class="stat-card__icon">✅</div><div class="stat-card__value" data-resumen="activo">–</div><p class="stat-card__label">Activos (en el mapa)</p></div>
-        <div class="stat-card"><div class="stat-card__icon">🕒</div><div class="stat-card__value" data-resumen="pendiente">–</div><p class="stat-card__label">Pendientes de revisión</p></div>
-        <div class="stat-card"><div class="stat-card__icon">⚠️</div><div class="stat-card__value" data-resumen="reportado">–</div><p class="stat-card__label">Reportados</p></div>
+        <div class="stat-card"><div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-pin"/></svg></div><div class="stat-card__value" data-resumen="total">–</div><p class="stat-card__label">Puntos registrados</p></div>
+        <div class="stat-card"><div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-check"/></svg></div><div class="stat-card__value" data-resumen="activo">–</div><p class="stat-card__label">Activos (en el mapa)</p></div>
+        <div class="stat-card"><div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-reloj"/></svg></div><div class="stat-card__value" data-resumen="pendiente">–</div><p class="stat-card__label">Pendientes de revisión</p></div>
+        <div class="stat-card"><div class="stat-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-alerta"/></svg></div><div class="stat-card__value" data-resumen="reportado">–</div><p class="stat-card__label">Reportados</p></div>
       </div>
 
       <div class="admin-table-wrap">
         <div class="admin-toolbar">
-          <input type="search" id="buscar-punto" placeholder="🔍 Buscar por nombre o dirección..." aria-label="Buscar punto">
+          <input type="search" id="buscar-punto" placeholder="Buscar por nombre o dirección..." aria-label="Buscar punto">
           <select id="filtro-ciudad" aria-label="Filtrar por ciudad"><option value="">Todas las ciudades</option></select>
           <select id="filtro-estado" aria-label="Filtrar por estado">
             <option value="pendiente">Pendientes</option>

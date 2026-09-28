@@ -4,12 +4,17 @@
 {% block migas %}Usuarios{% endblock %}
 
 {% block contenido %}
-      <h1>Usuarios</h1>
-      <p>Crea, edita, suspende o elimina cuentas y asigna el rol de cada una (ciudadano, empresa o admin).</p>
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Usuarios</h1>
+          <p>Crea, edita, suspende o elimina cuentas y asigna el rol de cada una (ciudadano, empresa o admin).</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--icono" aria-hidden="true"><svg width="52" height="52" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-personas"/></svg></div>
+      </header>
 
       <div class="admin-table-wrap" style="margin-top:24px;">
         <div class="admin-toolbar">
-          <input type="search" id="buscar-usuario" placeholder="🔍 Buscar por nombre o correo..." aria-label="Buscar usuario">
+          <input type="search" id="buscar-usuario" placeholder="Buscar por nombre o correo..." aria-label="Buscar usuario">
           <select id="filtro-rol" aria-label="Filtrar por rol">
             <option value="">Todos los roles</option>
             <option value="ciudadano">Ciudadanos</option>

@@ -1,0 +1,21 @@
+<svg class="md" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g class="md-cinta">
+    <path d="M70 6h28l-8 66H62z" fill="#365004"/>
+    <path d="M102 6h28l8 66h-28z" fill="#8DA432"/>
+    <path d="M84 6h32v10H84z" fill="#2a3d03"/>
+  </g>
+  <g class="md-medalla">
+    <ellipse cx="100" cy="170" rx="44" ry="6" fill="#365004" opacity=".12"/>
+    <circle cx="100" cy="112" r="50" fill="#925E06"/>
+    <circle cx="100" cy="108" r="50" fill="#BF8B2E"/>
+    <circle cx="100" cy="108" r="39" fill="#D9A94A" stroke="#EDE383" stroke-width="3"/>
+    <path d="M83 126c0-18 11-30 34-32-2 22-14 32-32 32" fill="#FBFCF7"/>
+    <path d="M83 126c7-9 14-15 23-20" stroke="#8DA432" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M70 88a36 36 0 0 1 24-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".55"/>
+  </g>
+  <g fill="#EDE383">
+    <path class="md-brillo" d="M36 64l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+    <path class="md-brillo" style="--d:.6s" d="M164 48l2.4 6 6 2.4-6 2.4-2.4 6-2.4-6-6-2.4 6-2.4z" fill="#8DA432"/>
+    <path class="md-brillo" style="--d:1.2s" d="M160 132l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+  </g>
+</svg>

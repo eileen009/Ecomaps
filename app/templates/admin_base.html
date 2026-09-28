@@ -6,6 +6,10 @@
   <title>EcoMaps · {% block titulo %}Panel de administración{% endblock %}</title>
   <meta name="description" content="Panel de administración de EcoMaps: gestión de puntos de reciclaje, empresas, usuarios y estadísticas.">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/logo.png') }}">
+  <link rel="preload" href="{{ url_for('static', filename='fonts/bricolage-grotesque.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ url_for('static', filename='fonts/figtree.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/privado.css') }}">
 </head>
 <body class="admin-body" data-requiere-rol="admin">
 
@@ -24,21 +28,21 @@
       <div>
         <p class="admin__sidebar-label">Menú principal</p>
         <nav class="admin__nav">
-          <a href="{{ url_for('paginas.admin') }}" class="{{ 'is-active' if activo == 'puntos' else '' }}" title="Puntos de reciclaje"><span class="nav-ico" aria-hidden="true">📍</span><span class="nav-txt">Puntos de reciclaje</span> <span class="admin__nav-count" data-nav-pendientes hidden></span></a>
-          <a href="{{ url_for('paginas.admin_usuarios') }}" class="{{ 'is-active' if activo == 'usuarios' else '' }}" title="Usuarios"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Usuarios</span></a>
-          <a href="{{ url_for('paginas.admin_reportes') }}" class="{{ 'is-active' if activo == 'reportes' else '' }}" title="Reportes"><span class="nav-ico" aria-hidden="true">📈</span><span class="nav-txt">Reportes</span></a>
-          <a href="{{ url_for('paginas.admin_acciones') }}" class="{{ 'is-active' if activo == 'acciones' else '' }}" title="Aportes por confirmar"><span class="nav-ico" aria-hidden="true">🖼</span><span class="nav-txt">Aportes por confirmar</span></a>
-          <a href="{{ url_for('paginas.admin_empresas') }}" class="{{ 'is-active' if activo == 'empresas' else '' }}" title="Empresas y organizaciones"><span class="nav-ico" aria-hidden="true">🏢</span><span class="nav-txt">Empresas y organizaciones</span></a>
-          <a href="{{ url_for('paginas.admin_estadisticas') }}" class="{{ 'is-active' if activo == 'estadisticas' else '' }}" title="Estadísticas"><span class="nav-ico" aria-hidden="true">📉</span><span class="nav-txt">Estadísticas</span></a>
+          <a href="{{ url_for('paginas.admin') }}" class="{{ 'is-active' if activo == 'puntos' else '' }}" title="Puntos de reciclaje"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-pin"/></svg></span><span class="nav-txt">Puntos de reciclaje</span> <span class="admin__nav-count" data-nav-pendientes hidden></span></a>
+          <a href="{{ url_for('paginas.admin_usuarios') }}" class="{{ 'is-active' if activo == 'usuarios' else '' }}" title="Usuarios"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-personas"/></svg></span><span class="nav-txt">Usuarios</span></a>
+          <a href="{{ url_for('paginas.admin_reportes') }}" class="{{ 'is-active' if activo == 'reportes' else '' }}" title="Reportes"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-alerta"/></svg></span><span class="nav-txt">Reportes</span></a>
+          <a href="{{ url_for('paginas.admin_acciones') }}" class="{{ 'is-active' if activo == 'acciones' else '' }}" title="Aportes por confirmar"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-imagen"/></svg></span><span class="nav-txt">Aportes por confirmar</span></a>
+          <a href="{{ url_for('paginas.admin_empresas') }}" class="{{ 'is-active' if activo == 'empresas' else '' }}" title="Empresas y organizaciones"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-edificio"/></svg></span><span class="nav-txt">Empresas y organizaciones</span></a>
+          <a href="{{ url_for('paginas.admin_estadisticas') }}" class="{{ 'is-active' if activo == 'estadisticas' else '' }}" title="Estadísticas"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-grafica"/></svg></span><span class="nav-txt">Estadísticas</span></a>
         </nav>
       </div>
 
       <div>
         <p class="admin__sidebar-label">Sitio</p>
         <nav class="admin__nav">
-          <a href="{{ url_for('paginas.inicio') }}" title="Ver sitio público"><span class="nav-ico" aria-hidden="true">🌐</span><span class="nav-txt">Ver sitio público</span></a>
-          <a href="{{ url_for('paginas.mapa') }}" title="Mapa"><span class="nav-ico" aria-hidden="true">🗺</span><span class="nav-txt">Mapa</span></a>
-          <a href="{{ url_for('paginas.admin_perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Mi perfil</span></a>
+          <a href="{{ url_for('paginas.inicio') }}" title="Ver sitio público"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-globo"/></svg></span><span class="nav-txt">Ver sitio público</span></a>
+          <a href="{{ url_for('paginas.mapa') }}" title="Mapa"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-mapa"/></svg></span><span class="nav-txt">Mapa</span></a>
+          <a href="{{ url_for('paginas.admin_perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true"><svg width="19" height="19"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-usuario"/></svg></span><span class="nav-txt">Mi perfil</span></a>
         </nav>
       </div>
 
