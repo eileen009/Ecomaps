@@ -14,7 +14,7 @@
     <!-- ===== PANEL IZQUIERDO: marca / beneficios ===== -->
     <aside class="auth__side">
       <a href="{{ url_for('paginas.inicio') }}" class="logo logo--onlight">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="40" height="40">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="44" height="44">
         <span class="logo__text">EcoMaps</span>
       </a>
 
@@ -43,7 +43,7 @@
           <button type="button" class="tabs__btn" id="tab-registro" role="tab" aria-selected="false" aria-controls="panel-registro" data-tab="registro">Crear cuenta</button>
         </div>
 
-        <!-- ===== INICIAR SESIÓN (datos de ejemplo, sin backend) ===== -->
+        <!-- ===== INICIAR SESIÓN (POST /api/auth/login) ===== -->
         <section class="tabs__panel is-active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
           <h1>Bienvenido a EcoMaps</h1>
           <p class="auth__subtitle">Ingresa a tu cuenta para continuar</p>
@@ -60,27 +60,20 @@
               <button type="button" class="form__toggle-pass" data-toggle-password="login-password" aria-label="Mostrar u ocultar contraseña"><svg width="18" height="18" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-ojo"/></svg></button>
             </div>
 
-            <div class="form__row">
-              <label class="form__checkbox">
-                <input type="checkbox" name="recordarme">
-                Recordarme
-              </label>
-              <a href="#" class="form__link">¿Olvidaste tu contraseña?</a>
-            </div>
 
             <button type="submit" class="btn btn--primary btn--block">Iniciar sesión</button>
           </form>
 
+          {% if google_client_id %}
           <div class="auth__divider"><span>o</span></div>
-
-          <button type="button" class="btn btn--outline btn--block" data-demo-google>
-            <span class="auth__google-icon">G</span> Continuar con Google
-          </button>
+          <!-- Botón oficial de Google (lo dibuja la librería de Google en main.js) -->
+          <div class="auth__google" data-google-boton></div>
+          {% endif %}
 
           <p class="auth__switch">¿No tienes una cuenta? <a href="#registro" data-tab-link="registro">Crear cuenta</a></p>
         </section>
 
-        <!-- ===== CREAR CUENTA (datos de ejemplo, sin backend) ===== -->
+        <!-- ===== CREAR CUENTA (POST /api/auth/registro) ===== -->
         <section class="tabs__panel" id="panel-registro" role="tabpanel" aria-labelledby="tab-registro" hidden>
           <h1>Crea tu cuenta</h1>
           <p class="auth__subtitle">Regístrate y empieza a reciclar con EcoMaps</p>
@@ -100,19 +93,15 @@
               <button type="button" class="form__toggle-pass" data-toggle-password="registro-password" aria-label="Mostrar u ocultar contraseña"><svg width="18" height="18" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-ojo"/></svg></button>
             </div>
 
-            <label class="form__checkbox form__checkbox--terms">
-              <input type="checkbox" name="terminos" checked>
-              Acepto los <a href="#" class="form__link">términos y condiciones</a>
-            </label>
 
             <button type="submit" class="btn btn--primary btn--block">Crear cuenta</button>
           </form>
 
+          {% if google_client_id %}
           <div class="auth__divider"><span>o</span></div>
-
-          <button type="button" class="btn btn--outline btn--block" data-demo-google>
-            <span class="auth__google-icon">G</span> Continuar con Google
-          </button>
+          <!-- Botón oficial de Google (lo dibuja la librería de Google en main.js) -->
+          <div class="auth__google" data-google-boton></div>
+          {% endif %}
 
           <p class="auth__switch">¿Ya tienes una cuenta? <a href="#login" data-tab-link="login">Iniciar sesión</a></p>
         </section>
@@ -122,6 +111,11 @@
     </main>
   </div>
 
+  {% if google_client_id %}
+  <!-- Librería de Google: solo en esta página y solo si está configurado -->
+  <script>window.GOOGLE_CLIENT_ID = {{ google_client_id | tojson }};</script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  {% endif %}
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

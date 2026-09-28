@@ -49,20 +49,14 @@ class Usuario(db.Model):
         return check_password_hash(self.password_hash, password_plano)
 
     # ----- Gamificación: marco del avatar según el nivel -----
-    # Nada de tablas ni consultas extra para esto: es una regla fija y
-    # barata de calcular (código verde), no un dato que haya que guardar.
-    NIVELES_MARCO = (
-        (7, "oro"),
-        (5, "plata"),
-        (3, "bronce"),
-    )
+    # Hay 20 marcos (static/assets/img/marcos/nivel-01..20.webp), uno por
+    # nivel. Del nivel 20 en adelante se conserva el marco 20. Es una regla
+    # fija y barata de calcular (código verde): no se guarda en la BD.
+    TOTAL_MARCOS = 20
 
     @property
-    def marco_avatar(self) -> str:
-        for nivel_minimo, marco in self.NIVELES_MARCO:
-            if self.nivel >= nivel_minimo:
-                return marco
-        return "ninguno"
+    def marco_avatar(self) -> int:
+        return min(max(self.nivel or 1, 1), self.TOTAL_MARCOS)
 
     # ----- Serialización -----
     def to_dict(self) -> dict:

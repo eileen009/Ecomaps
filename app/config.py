@@ -53,6 +53,10 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "clave-de-desarrollo-no-usar-en-produccion")
     JWT_ACCESS_TOKEN_EXPIRES = 60 * 60 * 24  # 24 horas
 
+    # Inicio de sesión con Google (gratis). ID de cliente OAuth "Aplicación web"
+    # de Google Cloud. Vacío = el botón de Google no se muestra.
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+
     # ----- Subida de fotos (evidencia de reciclaje) -----
     # Límite de tamaño de subida: evita imágenes pesadas (código verde) y abuso.
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB

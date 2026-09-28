@@ -15,10 +15,10 @@
     <aside class="admin__sidebar">
       <div>
         <a href="{{ url_for('paginas.inicio') }}" class="logo" style="margin-bottom:2px;">
-          <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="30" height="30">
+          <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="42" height="42">
           <span class="logo__text">EcoMaps</span>
         </a>
-        <p class="admin__sidebar-sub" style="margin:0 0 0 40px; font-size:0.7rem; color:#A9C27C;">Panel admin</p>
+        <p class="admin__sidebar-sub" style="margin:0 0 0 50px; font-size:0.72rem; color:#A9C27C;">Panel admin</p>
       </div>
 
       <div>
@@ -26,12 +26,10 @@
         <nav class="admin__nav">
           <a href="{{ url_for('paginas.admin') }}" class="{{ 'is-active' if activo == 'puntos' else '' }}" title="Puntos de reciclaje"><span class="nav-ico" aria-hidden="true">📍</span><span class="nav-txt">Puntos de reciclaje</span> <span class="admin__nav-count" data-nav-pendientes hidden></span></a>
           <a href="{{ url_for('paginas.admin_usuarios') }}" class="{{ 'is-active' if activo == 'usuarios' else '' }}" title="Usuarios"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Usuarios</span></a>
-          <a href="#" title="Residuos"><span class="nav-ico" aria-hidden="true">🗑</span><span class="nav-txt">Residuos</span></a>
           <a href="{{ url_for('paginas.admin_reportes') }}" class="{{ 'is-active' if activo == 'reportes' else '' }}" title="Reportes"><span class="nav-ico" aria-hidden="true">📈</span><span class="nav-txt">Reportes</span></a>
           <a href="{{ url_for('paginas.admin_acciones') }}" class="{{ 'is-active' if activo == 'acciones' else '' }}" title="Aportes por confirmar"><span class="nav-ico" aria-hidden="true">🖼</span><span class="nav-txt">Aportes por confirmar</span></a>
           <a href="{{ url_for('paginas.admin_empresas') }}" class="{{ 'is-active' if activo == 'empresas' else '' }}" title="Empresas y organizaciones"><span class="nav-ico" aria-hidden="true">🏢</span><span class="nav-txt">Empresas y organizaciones</span></a>
           <a href="{{ url_for('paginas.admin_estadisticas') }}" class="{{ 'is-active' if activo == 'estadisticas' else '' }}" title="Estadísticas"><span class="nav-ico" aria-hidden="true">📉</span><span class="nav-txt">Estadísticas</span></a>
-          <a href="#" title="Configuración"><span class="nav-ico" aria-hidden="true">⚙</span><span class="nav-txt">Configuración</span></a>
         </nav>
       </div>
 
@@ -40,13 +38,16 @@
         <nav class="admin__nav">
           <a href="{{ url_for('paginas.inicio') }}" title="Ver sitio público"><span class="nav-ico" aria-hidden="true">🌐</span><span class="nav-txt">Ver sitio público</span></a>
           <a href="{{ url_for('paginas.mapa') }}" title="Mapa"><span class="nav-ico" aria-hidden="true">🗺</span><span class="nav-txt">Mapa</span></a>
+          <a href="{{ url_for('paginas.admin_perfil') }}" class="{{ 'is-active' if activo == 'perfil' else '' }}" title="Mi perfil"><span class="nav-ico" aria-hidden="true">👤</span><span class="nav-txt">Mi perfil</span></a>
         </nav>
       </div>
 
       <div class="admin__sidebar-user">
-        <img class="admin__avatar admin__avatar--img" data-perfil="foto-mini" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="" width="32" height="32">
+        <a href="{{ url_for('paginas.admin_perfil') }}" class="admin__avatar-link" title="Mi perfil">
+          <img class="admin__avatar admin__avatar--img" data-perfil="foto-mini" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="Mi perfil" width="32" height="32">
+        </a>
         <div>
-          <strong style="font-size:0.85rem; color:var(--blanco);" data-perfil="nombre-mini">Administrador</strong>
+          <a href="{{ url_for('paginas.admin_perfil') }}" class="admin__sidebar-nombre" data-perfil="nombre-mini">Administrador</a>
           <small>Administrador · <button type="button" class="link-btn" data-cerrar-sesion>Cerrar sesión</button></small>
         </div>
       </div>
@@ -59,8 +60,9 @@
         <button type="button" class="admin__toggle" data-toggle-sidebar aria-label="Mostrar u ocultar menú" aria-expanded="true"><span></span><span></span><span></span></button>
         <p class="admin__topbar-crumbs"><a href="{{ url_for('paginas.admin') }}">Panel</a> / <strong>{% block migas %}Dashboard{% endblock %}</strong></p>
         <div class="admin__topbar-right">
-          <span class="admin__bell">🔔<span class="admin__bell-dot">3</span></span>
-          <img class="admin__avatar admin__avatar--img" data-perfil="foto-mini" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="" width="32" height="32">
+          <a href="{{ url_for('paginas.admin_perfil') }}" class="admin__avatar-link" title="Mi perfil">
+            <img class="admin__avatar admin__avatar--img" data-perfil="foto-mini" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="Mi perfil" width="32" height="32">
+          </a>
         </div>
       </div>
 

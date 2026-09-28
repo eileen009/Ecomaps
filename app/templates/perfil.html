@@ -13,7 +13,7 @@
           <div class="profile-stats">
             <div><strong data-perfil="puntos">–</strong><small>Puntos</small></div>
             <div><strong data-perfil="nivel">–</strong><small>Nivel</small></div>
-            <div><strong data-perfil="marco">–</strong><small>Marco</small></div>
+            <div><strong data-perfil="marco">–</strong><small>Marcos</small></div>
           </div>
         </div>
       </section>
@@ -33,12 +33,10 @@
         <!-- Mis ganancias: marcos desbloqueados por nivel -->
         <section class="profile-panel" id="ganancias">
           <h3>🎁 Mis ganancias</h3>
-          <p class="profile-panel__nota">Marcos para tu foto de perfil que desbloqueas al subir de nivel.</p>
-          <ul class="ganancias">
-            <li data-ganancia="bronce"><span class="ganancias__aro ganancias__aro--bronce"></span><div><strong>Marco bronce</strong><small>Nivel 3</small></div></li>
-            <li data-ganancia="plata"><span class="ganancias__aro ganancias__aro--plata"></span><div><strong>Marco plata</strong><small>Nivel 5</small></div></li>
-            <li data-ganancia="oro"><span class="ganancias__aro ganancias__aro--oro"></span><div><strong>Marco oro</strong><small>Nivel 7</small></div></li>
-          </ul>
+          <p class="profile-panel__nota">Hay un marco para tu foto por cada nivel. Súbelo reciclando.</p>
+          <p class="profile-panel__nota" data-perfil="marco-siguiente"></p>
+          <!-- Los 20 marcos: se pintan en perfil.js (desbloqueados en color, el resto en gris) -->
+          <ul class="marcos-galeria" id="marcos-galeria"></ul>
         </section>
       </div>
 

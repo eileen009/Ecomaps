@@ -151,7 +151,13 @@ function initGuiaNav() {
       const activo = porId.get(entrada.target.id);
       if (activo) {
         activo.classList.add('is-activo');
-        activo.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reducirMovimiento ? 'auto' : 'smooth' });
+        // Solo desplaza la barra hacia los lados (scrollIntoView también movía
+        // la página hacia arriba/abajo en iPhone mientras la persona leía).
+        const barra = activo.parentElement;
+        barra.scrollTo({
+          left: activo.offsetLeft - (barra.clientWidth - activo.offsetWidth) / 2,
+          behavior: reducirMovimiento ? 'auto' : 'smooth',
+        });
       }
     });
   }, { rootMargin: '-45% 0px -50% 0px' });

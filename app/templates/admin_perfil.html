@@ -1,0 +1,25 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Mi perfil{% endblock %}
+{% block migas %}Mi perfil{% endblock %}
+
+{% block contenido %}
+      <h1>Mi perfil</h1>
+      <p>Tu foto y los datos con los que inicias sesión en el panel.</p>
+
+      <!-- Mismas piezas que /perfil y /empresa: _avatar_editable.html + _form_cuenta.html + cuenta.js -->
+      <section class="profile-card profile-card--resumen" style="margin:24px 0;">
+        {% include "_avatar_editable.html" %}
+        <div class="profile-card__datos">
+          <h2 data-perfil="nombre">Cargando…</h2>
+          <p data-perfil="correo">–</p>
+          <span class="rol-chip rol-chip--admin">Administrador</span>
+        </div>
+      </section>
+
+      {% with num=1 %}{% include "_form_cuenta.html" %}{% endwith %}
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/cuenta.js') }}"></script>
+{% endblock %}

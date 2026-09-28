@@ -1,9 +1,14 @@
-{# Foto de perfil editable (la maneja static/js/cuenta.js). Se incluye en perfil y empresa. #}
+{# Foto de perfil editable dentro del marco de su nivel (lo maneja static/js/cuenta.js).
+   Se incluye en /perfil, /empresa y /admin/perfil. #}
 <div class="profile-card__foto">
-  <label class="profile-avatar profile-avatar--editable" id="avatar" data-marco="ninguno" title="Cambiar foto de perfil">
-    <img class="profile-avatar__img" data-perfil="foto" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="Foto de perfil">
+  <div class="avatar-marco">
+    <label class="profile-avatar profile-avatar--editable" id="avatar" title="Cambiar foto de perfil">
+      <img class="profile-avatar__img" data-perfil="foto" src="{{ url_for('static', filename='assets/img/avatar-default.svg') }}" alt="Foto de perfil">
+      <input type="file" id="avatar-input" accept="image/jpeg,image/png,image/webp" aria-label="Subir foto de perfil">
+    </label>
+    <!-- Marco del nivel: encima de la foto, sin bloquear el clic -->
+    <img class="avatar-marco__marco" data-perfil="marco-img" src="{{ url_for('static', filename='assets/img/marcos/nivel-01.webp') }}" alt="" aria-hidden="true" width="190" height="190">
     <span class="profile-avatar__editar" aria-hidden="true">📷</span>
-    <input type="file" id="avatar-input" accept="image/jpeg,image/png,image/webp" aria-label="Subir foto de perfil">
-  </label>
+  </div>
   <p class="profile-avatar__ayuda" data-perfil="avatar-msg">Toca tu foto para cambiarla<br>(JPG, PNG o WEBP · máx. 5 MB)</p>
 </div>

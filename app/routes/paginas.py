@@ -3,7 +3,7 @@
 Separado de los blueprints de la API (auth, usuarios, etc.): este
 módulo solo renderiza páginas, no expone datos JSON.
 """
-from flask import Blueprint, render_template
+from flask import Blueprint, current_app, render_template
 
 from utils.estadisticas import obtener_generales
 
@@ -17,7 +17,7 @@ def inicio():
 
 @paginas_bp.get("/login")
 def login():
-    return render_template("login.html")
+    return render_template("login.html", google_client_id=current_app.config.get("GOOGLE_CLIENT_ID"))
 
 
 @paginas_bp.get("/mapa")
@@ -113,3 +113,8 @@ def formato_peso(kg):
 @paginas_bp.get("/admin/usuarios")
 def admin_usuarios():
     return render_template("admin_usuarios.html", activo="usuarios")
+
+
+@paginas_bp.get("/admin/perfil")
+def admin_perfil():
+    return render_template("admin_perfil.html", activo="perfil")

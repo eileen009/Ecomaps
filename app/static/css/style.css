@@ -1148,16 +1148,7 @@ button { font: inherit; cursor: pointer; }
 .admin__topbar-crumbs { font-size: 0.82rem; color: var(--texto-suave); }
 .admin__topbar-crumbs strong { color: var(--texto); }
 .admin__topbar-right { display: flex; align-items: center; gap: 16px; }
-.admin__bell { position: relative; font-size: 1.1rem; }
-.admin__bell-dot {
-  position: absolute; top: -4px; right: -8px;
-  background: var(--golden-brown);
-  color: var(--blanco);
-  font-size: 0.65rem;
-  min-width: 16px; height: 16px;
-  border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-}
+
 
 .admin__main h1 { color: var(--dark-moss-green); font-size: 1.5rem; margin: 0 0 4px; }
 .admin__main > p { color: var(--texto-suave); margin: 0 0 24px; }
@@ -1743,7 +1734,6 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 560px) {
   .search-bar { padding-left: 12px; }
   .search-bar__btn { padding-left: 14px; padding-right: 14px; }
-  .admin__topbar-right .admin__bell { display: none; }
   .admin__main h1 { font-size: 1.3rem; }
   .form-section { padding: 18px; }
   .profile-card--resumen { padding: 20px; }
@@ -1840,4 +1830,60 @@ tr.is-suspendido td:last-child { opacity: 1; }
 @media (max-width: 560px) {
   .admin__main .stats-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .admin__main .stat-card { padding: 14px; }
+}
+
+/* ===== Mapa: ventana del punto (popup) compacta + "Cómo llegar" ===== */
+.map-popup__nombre { margin: 0 0 4px; font-size: 1rem; line-height: 1.25; color: var(--dark-moss-green); padding-right: 14px; }
+.map-popup__meta { margin: 0 0 8px !important; color: var(--texto-suave); font-size: .8rem; line-height: 1.35; }
+.map-popup .map-point__tags { margin-bottom: 10px; }
+.map-popup .tag { font-size: .7rem; padding: 2px 8px; }
+.map-popup__acciones { display: flex; gap: 6px; }
+.map-popup__acciones .btn { flex: 1; padding: 8px 10px; font-size: .8rem; text-align: center; white-space: nowrap; }
+.map-popup .map-point__reportar { margin-top: 8px; font-size: .75rem; }
+@media (max-width: 400px) {
+  .map-popup__acciones { flex-direction: column; }
+}
+
+/* ===== Admin: acceso a "Mi perfil" desde la foto y el nombre ===== */
+.admin__avatar-link { display: inline-flex; border-radius: 50%; transition: box-shadow var(--transicion); }
+.admin__avatar-link:hover, .admin__avatar-link:focus-visible { box-shadow: 0 0 0 3px var(--apple-green); }
+.admin__sidebar-nombre { display: block; font-size: .85rem; font-weight: 700; color: var(--blanco); }
+.admin__sidebar-nombre:hover { text-decoration: underline; }
+
+/* Logo un poco más grande en los paneles (admin, cuenta, empresa) */
+.admin__sidebar .logo__img { width: 42px; height: 42px; }
+.admin__sidebar .logo__text { font-size: 1.3rem; }
+.admin.is-colapsado .admin__sidebar .logo__img { width: 38px; height: 38px; }
+
+/* Botón oficial de Google centrado en el login */
+.auth__google { display: flex; justify-content: center; min-height: 44px; }
+
+/* ===== Marcos de avatar por nivel (1..20, imágenes en assets/img/marcos) =====
+   El hueco transparente de cada marco ocupa el 58,7 % central de la imagen:
+   la foto va al 60 % y centrada, así queda justo debajo del aro. */
+.avatar-marco { position: relative; width: 190px; height: 190px; flex: none; }
+.avatar-marco__marco { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.avatar-marco .profile-avatar,
+.profile-card--resumen .avatar-marco .profile-avatar {
+  position: absolute; left: 20%; top: 20%; width: 60%; height: 60%;
+  margin: 0; box-shadow: none; z-index: 1;
+}
+.avatar-marco .profile-avatar__editar { z-index: 3; right: 18%; bottom: 18%; pointer-events: none; }
+.avatar-marco:hover .profile-avatar__img { filter: brightness(0.85); }
+@media (max-width: 560px) {
+  .avatar-marco { width: 170px; height: 170px; }
+}
+
+/* Galería "Mis ganancias": los 20 marcos */
+.marcos-galeria { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.marcos-galeria li { position: relative; display: flex; flex-direction: column; align-items: center; padding: 6px 2px 4px; border-radius: 12px; background: var(--fondo); }
+.marcos-galeria img { width: 100%; max-width: 72px; height: auto; aspect-ratio: 1; }
+.marcos-galeria span { font-size: .72rem; font-weight: 700; color: var(--texto-suave); }
+.marcos-galeria li.is-bloqueado img { filter: grayscale(1); opacity: .35; }
+.marcos-galeria li.is-desbloqueado { background: var(--fondo-alt); }
+.marcos-galeria li.is-actual { background: var(--flax); box-shadow: inset 0 0 0 2px var(--apple-green); }
+.marcos-galeria li.is-actual span { color: var(--dark-moss-green); }
+@media (max-width: 560px) {
+  .marcos-galeria { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .marcos-galeria span { font-size: .68rem; }
 }
