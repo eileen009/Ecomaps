@@ -157,7 +157,48 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Geolocalización del usuario (opcional, con permiso del navegador) =====
-  if ('geolocation' in navigator) {
+  // ===== Ubicación del usuario =====
+  // Antes se pedía sola al cargar la página: en el teléfono el navegador a
+  // veces no mostraba el permiso y fallaba en silencio. Ahora:
+  //  - si el permiso YA está concedido, se usa al entrar;
+  //  - si no, se pide al tocar "Mi ubicación" y se explica cualquier error.
+  const botonUbicarme = document.querySelector('[data-ubicarme]');
+  const msgUbicacion = document.querySelector('[data-ubicacion-msg]');
+  let temporizadorMsg;
+
+  function avisar(texto, esError = false, duracion = 6000) {
+    if (!msgUbicacion) return;
+    clearTimeout(temporizadorMsg);
+    msgUbicacion.textContent = texto;
+    msgUbicacion.classList.toggle('is-error', esError);
+    msgUbicacion.hidden = !texto;
+    if (texto && duracion) temporizadorMsg = setTimeout(() => { msgUbicacion.hidden = true; }, duracion);
+  }
+
+  function explicarError(error) {
+    const esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (error.code === 1) {
+      return esIOS
+        ? 'Permiso de ubicación bloqueado. En el iPhone: Ajustes › Privacidad › Localización › Safari → "Al usar la app". Luego recarga la página.'
+        : 'Permiso de ubicación bloqueado. Toca el candado junto a la dirección de la página › Permisos › Ubicación → Permitir, y recarga.';
+    }
+    if (error.code === 3) return 'Tu ubicación tardó demasiado. Revisa que el GPS esté encendido e inténtalo otra vez.';
+    return 'No se pudo obtener tu ubicación. Revisa que la localización del teléfono esté activada.';
+  }
+
+  function ubicarme({ silencioso = false } = {}) {
+    if (!('geolocation' in navigator)) {
+      if (!silencioso) avisar('Tu navegador no permite obtener la ubicación.', true);
+      return;
+    }
+    if (!window.isSecureContext) {
+      if (!silencioso) avisar('La ubicación solo funciona en una página segura (https). Usa ecomaps.onrender.com.', true, 0);
+      return;
+    }
+    if (!silencioso) {
+      avisar('Buscando tu ubicación…', false, 0);
+      if (botonUbicarme) botonUbicarme.disabled = true;
+    }
     navigator.geolocation.getCurrentPosition(
       (posicion) => {
         ubicacionUsuario = { lat: posicion.coords.latitude, lng: posicion.coords.longitude };
@@ -166,11 +207,28 @@ document.addEventListener('DOMContentLoaded', () => {
           .addTo(mapa)
           .bindPopup('Tu ubicación');
         mapa.setView([ubicacionUsuario.lat, ubicacionUsuario.lng], 14);
+        if (!silencioso) avisar('Listo: puntos ordenados por cercanía.', false, 3000);
+        if (botonUbicarme) botonUbicarme.disabled = false;
         cargarPuntos();
       },
-      () => { /* permiso denegado o no disponible: se usa el centro por defecto */ },
-      { timeout: 6000 }
+      (error) => {
+        if (botonUbicarme) botonUbicarme.disabled = false;
+        if (!silencioso) avisar(explicarError(error), true, 0);
+      },
+      // El GPS del teléfono puede tardar: 15 s de margen; una posición de
+      // hace menos de 1 minuto sirve (evita encender el GPS otra vez).
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
     );
+  }
+
+  if (botonUbicarme) botonUbicarme.addEventListener('click', () => ubicarme());
+  if (msgUbicacion) msgUbicacion.addEventListener('click', () => { msgUbicacion.hidden = true; });
+
+  // Al entrar: solo se usa sola si el permiso ya estaba concedido.
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: 'geolocation' })
+      .then((estado) => { if (estado.state === 'granted') ubicarme({ silencioso: true }); })
+      .catch(() => { /* navegador sin Permissions API para ubicación: se espera al botón */ });
   }
 
   // ===== Eventos de los filtros (una sola barra, sin duplicados) =====

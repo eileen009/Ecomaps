@@ -46,6 +46,10 @@
       <!-- Mapa real: OpenStreetMap vía Leaflet, sin necesidad de API key -->
       <div class="map-canvas">
         <div id="mapa-leaflet"></div>
+        <!-- Ubicación: se pide al tocar el botón (en iPhone/Android el permiso
+             solo aparece de forma fiable cuando lo pide un toque del usuario) -->
+        <button type="button" class="map-canvas__ubicarme" data-ubicarme aria-label="Usar mi ubicación">📍 Mi ubicación</button>
+        <p class="map-canvas__ubicacion-msg" data-ubicacion-msg role="status" hidden></p>
         <div class="map-canvas__ctas">
           <a href="{{ url_for('paginas.reportar') }}" class="btn btn--outline map-canvas__btn-reportar"><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-alerta"/></svg>Reportar problema</a>
           <a href="{{ url_for('paginas.proponer') }}" class="btn btn--primary"><svg width="16" height="16" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-mas"/></svg>Proponer punto</a>

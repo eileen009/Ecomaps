@@ -1887,3 +1887,24 @@ tr.is-suspendido td:last-child { opacity: 1; }
   .marcos-galeria { grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .marcos-galeria span { font-size: .68rem; }
 }
+
+/* ===== Mapa: botón "Mi ubicación" y aviso ===== */
+.map-canvas__ubicarme {
+  position: absolute; top: 12px; right: 12px; z-index: 1000;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--borde);
+  background: var(--blanco); color: var(--dark-moss-green);
+  font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
+}
+.map-canvas__ubicarme:disabled { opacity: .6; cursor: wait; }
+.map-canvas__ubicacion-msg {
+  position: absolute; top: 56px; left: 12px; right: 12px; z-index: 1000; margin: 0;
+  padding: 10px 14px; border-radius: 12px; background: var(--blanco);
+  box-shadow: 0 4px 14px rgba(0,0,0,.14); font-size: .85rem; color: var(--dark-moss-green); cursor: pointer;
+}
+.map-canvas__ubicacion-msg.is-error { background: #FBEDE8; color: #8A2A10; }
+
+/* Login en teléfono: nada puede ensanchar la columna del formulario */
+.auth > * { min-width: 0; }
+.auth__card { min-width: 0; }
+.auth__google { width: 100%; max-width: 100%; overflow: hidden; }
