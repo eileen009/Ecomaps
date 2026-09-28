@@ -30,11 +30,24 @@ class Config:
 
     # Conexión segura (SSL) para la base en la nube (Aiven).
     # En local se deja MYSQL_SSL_CA vacío y no se usa.
-    MYSQL_SSL_CA = os.getenv("MYSQL_SSL_CA", "")
+    MYSQL_SSL_CA = os.getenv("MYSQL_SSL_CA", "").strip()
     if MYSQL_SSL_CA:
-        SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {
-            "ssl": {"ca": os.path.join(os.path.dirname(os.path.abspath(__file__)), MYSQL_SSL_CA)}
-        }
+        # Busca el certificado en: la ruta tal cual, junto a este archivo
+        # (desarrollo local) y en /etc/secrets (Secret Files de Render).
+        _nombre = os.path.basename(MYSQL_SSL_CA)
+        _candidatos = [
+            MYSQL_SSL_CA,
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), MYSQL_SSL_CA),
+            os.path.join("/etc/secrets", _nombre),
+        ]
+        _ruta_ca = next((r for r in _candidatos if os.path.isfile(r)), None)
+        if _ruta_ca:
+            SQLALCHEMY_ENGINE_OPTIONS["connect_args"] = {"ssl": {"ca": _ruta_ca}}
+        else:
+            # Aviso claro en los logs en vez de un FileNotFoundError confuso.
+            _en_secrets = os.listdir("/etc/secrets") if os.path.isdir("/etc/secrets") else "no existe"
+            print(f"[config] No se encontró el certificado SSL. Probé: {_candidatos}. "
+                  f"Contenido de /etc/secrets: {_en_secrets}", flush=True)
 
     # ----- Autenticación -----
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "clave-de-desarrollo-no-usar-en-produccion")
