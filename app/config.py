@@ -57,6 +57,14 @@ class Config:
     # de Google Cloud. Vacío = el botón de Google no se muestra.
     GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 
+    # ----- Recuperar contraseña por correo (Brevo, plan gratis) -----
+    # Sin estas variables, en local el enlace se imprime en la terminal.
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY", "").strip()
+    CORREO_REMITENTE = os.getenv("CORREO_REMITENTE", "").strip()
+    # Dirección pública del sitio, sin "/" al final (ej. https://ecomaps.onrender.com).
+    # Obligatoria en producción: con ella se arma el enlace del correo.
+    APP_URL = os.getenv("APP_URL", "").strip()
+
     # ----- Subida de fotos (evidencia de reciclaje) -----
     # Límite de tamaño de subida: evita imágenes pesadas (código verde) y abuso.
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB

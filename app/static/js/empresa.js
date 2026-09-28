@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.hidden = false;
   if (misPuntos.length > 1) {
     const select = document.getElementById('punto-select');
-    select.innerHTML = misPuntos.map((p) => `<option value="${p.id}">${p.nombre}</option>`).join('');
+    select.innerHTML = misPuntos.map((p) => `<option value="${escaparHTML(p.id)}">${escaparHTML(p.nombre)}</option>`).join('');
     select.addEventListener('change', () => cargarPunto(misPuntos.find((p) => String(p.id) === select.value)));
     document.getElementById('empresa-selector').hidden = false;
   }

@@ -685,3 +685,13 @@ body.auth-body {
   .publico .guide-nav a { padding: 5px 14px 5px 6px; font-size: .8rem; }
   .publico .guide-nav a img { width: 22px; height: 22px; }
 }
+
+/* ===recuperar contraseña === */
+.auth__olvide { margin: -4px 0 4px; text-align: right; font-size: .88rem; }
+.recuperar__ok { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border-radius: 14px; background: var(--fondo-alt); color: var(--verde-oscuro); }
+.recuperar__ok svg { flex: none; color: var(--apple-green); }
+.recuperar__ok strong { display: block; font-family: var(--f-titulo); font-size: 1.1rem; margin-bottom: 4px; }
+.recuperar__ok p { margin: 0 0 14px; color: var(--texto-suave); line-height: 1.55; }
+[data-recuperar] h1 { color: var(--dark-moss-green); font-size: 1.9rem; letter-spacing: -0.03em; margin: 0 0 8px; }
+[data-recuperar] .auth__switch { margin-top: 22px; font-size: .86rem; color: var(--texto-suave); }
+

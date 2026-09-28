@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ 'Recuperar contraseña' if modo == 'pedir' else 'Crear contraseña nueva' }} | EcoMaps</title>
+  <meta name="robots" content="noindex">
+  {% include '_head_publico.html' %}
+</head>
+<body class="auth-body">
+  {% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+  <div class="auth">
+
+    <aside class="auth__side">
+      <a href="{{ url_for('paginas.inicio') }}" class="logo logo--onlight">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="EcoMaps" class="logo__img" width="44" height="44">
+        <span class="logo__text">EcoMaps</span>
+      </a>
+      <div class="auth__ilustracion">{% include 'ilustraciones/mapa_hero.svg' %}</div>
+      <div>
+        <h2 class="auth__side-title">Recupera tu acceso</h2>
+        <p class="auth__side-text">Tus puntos, tu nivel y tu historial siguen guardados. Solo necesitas una contraseña nueva.</p>
+      </div>
+    </aside>
+
+    <main class="auth__main">
+      <div class="auth__card">
+        <a href="{{ url_for('paginas.login') }}" class="auth__volver"><svg width="16" height="16" aria-hidden="true"><use href="{{ icono }}#i-flecha"/></svg>Volver a iniciar sesión</a>
+
+        {% if modo == 'pedir' %}
+        <!-- ===== Paso 1: pedir el enlace (POST /api/auth/recuperar) ===== -->
+        <section data-recuperar="pedir">
+          <h1>¿Olvidaste tu contraseña?</h1>
+          <p class="auth__subtitle">Escribe el correo de tu cuenta y te enviaremos un enlace para crear una nueva.</p>
+
+          <form class="form" data-form-recuperar novalidate>
+            <p class="form__error" data-form-error hidden></p>
+            <label for="recuperar-email">Correo electrónico</label>
+            <input type="email" id="recuperar-email" name="correo" placeholder="ana@ejemplo.com" autocomplete="email" required>
+            <button type="submit" class="btn btn--primary btn--block">Enviar enlace</button>
+          </form>
+
+          <div class="recuperar__ok" data-ok hidden>
+            <svg width="28" height="28" aria-hidden="true"><use href="{{ icono }}#i-check"/></svg>
+            <div>
+              <strong>Revisa tu correo</strong>
+              <p data-ok-texto></p>
+            </div>
+          </div>
+          <p class="auth__switch">¿Iniciaste sesión con Google? Puedes seguir entrando con Google, o crear aquí una contraseña para tu cuenta.</p>
+        </section>
+
+        {% else %}
+        <!-- ===== Paso 2: contraseña nueva (POST /api/auth/restablecer) ===== -->
+        <section data-recuperar="nueva">
+          <h1>Crea una contraseña nueva</h1>
+
+          {% if error_enlace %}
+          <p class="form__error">{{ error_enlace }}</p>
+          <a href="{{ url_for('paginas.recuperar') }}" class="btn btn--primary btn--block">Pedir un enlace nuevo</a>
+          {% else %}
+          <p class="auth__subtitle">Usa al menos 8 caracteres.</p>
+          <form class="form" data-form-restablecer data-token="{{ token }}" novalidate>
+            <p class="form__error" data-form-error hidden></p>
+
+            <label for="nueva-password">Contraseña nueva</label>
+            <div class="form__password">
+              <input type="password" id="nueva-password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
+              <button type="button" class="form__toggle-pass" data-toggle-password="nueva-password" aria-label="Mostrar u ocultar contraseña"><svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-ojo"/></svg></button>
+            </div>
+
+            <label for="confirmar-password">Repite la contraseña</label>
+            <div class="form__password">
+              <input type="password" id="confirmar-password" placeholder="Escríbela otra vez" minlength="8" autocomplete="new-password" required>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block">Guardar contraseña</button>
+          </form>
+
+          <div class="recuperar__ok" data-ok hidden>
+            <svg width="28" height="28" aria-hidden="true"><use href="{{ icono }}#i-check"/></svg>
+            <div>
+              <strong>Contraseña actualizada</strong>
+              <p data-ok-texto></p>
+              <a href="{{ url_for('paginas.login') }}" class="btn btn--primary">Iniciar sesión</a>
+            </div>
+          </div>
+          {% endif %}
+        </section>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/recuperar.js') }}"></script>
+</body>
+</html>

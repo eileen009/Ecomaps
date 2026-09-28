@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'admin-accion-card';
     div.innerHTML = `
-      <img src="${urlFoto(accion.foto_url)}" alt="Evidencia de reciclaje">
+      <img src="${escaparHTML(urlFoto(accion.foto_url))}" alt="Evidencia de reciclaje">
       <div class="admin-accion-card__body">
-        <h3>${accion.categoria} · ${accion.cantidad} ${accion.unidad}</h3>
-        <p>${accion.punto ? accion.punto : 'Sin punto asociado'}</p>
+        <h3>${escaparHTML(accion.categoria)} · ${escaparHTML(accion.cantidad)} ${escaparHTML(accion.unidad)}</h3>
+        <p>${accion.punto ? escaparHTML(accion.punto) : 'Sin punto asociado'}</p>
         <div class="admin-accion-card__acciones">
           <button type="button" class="btn btn--primary" data-confirmar>Confirmar</button>
           <button type="button" class="btn--rechazar" data-rechazar>Rechazar</button>

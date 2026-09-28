@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const tarjeta = (r) => `
     <article class="reporte-card" data-id="${r.id}">
       <div class="reporte-card__info">
-        <span class="estado-chip is-pendiente">${TIPO_REPORTE[r.tipo] || r.tipo}</span>
-        <h3>${r.punto || 'Punto eliminado'}</h3>
-        <p class="reporte-card__meta">📍 ${r.direccion || ''}${r.ciudad ? ', ' + r.ciudad : ''} · por ${r.usuario} · ${new Date(r.fecha).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
-        ${r.comentario ? `<p class="reporte-card__comentario">“${r.comentario.replace(/</g, '&lt;')}”</p>` : ''}
+        <span class="estado-chip is-pendiente">${TIPO_REPORTE[r.tipo] || escaparHTML(r.tipo)}</span>
+        <h3>${r.punto ? escaparHTML(r.punto) : 'Punto eliminado'}</h3>
+        <p class="reporte-card__meta">📍 ${escaparHTML(r.direccion)}${r.ciudad ? ', ' + escaparHTML(r.ciudad) : ''} · por ${escaparHTML(r.usuario)} · ${new Date(r.fecha).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</p>
+        ${r.comentario ? `<p class="reporte-card__comentario">“${escaparHTML(r.comentario)}”</p>` : ''}
       </div>
       <div class="reporte-card__acciones">${botones(r.estado)}</div>
     </article>`;
