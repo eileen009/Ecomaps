@@ -38,23 +38,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Escapa textos que escriben los usuarios (nombre, dirección...) antes de meterlos en HTML.
+  const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // "Cómo llegar": abre Google Maps con la ruta hasta el punto (en el celular abre la app).
+  // Si el navegador dio la ubicación, se usa como origen; si no, Google Maps la pide.
+  function urlComoLlegar(punto) {
+    const params = new URLSearchParams({ api: '1', destination: `${punto.latitud},${punto.longitud}` });
+    if (ubicacionUsuario) params.set('origin', `${ubicacionUsuario.lat},${ubicacionUsuario.lng}`);
+    return `https://www.google.com/maps/dir/?${params}`;
+  }
+
   function popupPunto(punto) {
     const materiales = (punto.materiales || [])
-      .map((m) => `<span class="tag">${m}</span>`)
+      .map((m) => `<span class="tag">${esc(m)}</span>`)
       .join(' ');
     const accion = sesion
-      ? `<a href="/actividad?punto=${punto.id}" class="btn btn--primary btn--block">Registrar que reciclé aquí</a>`
-      : `<a href="/login?next=/mapa" class="btn btn--outline btn--block">Inicia sesión para registrar</a>`;
+      ? `<a href="/actividad?punto=${punto.id}" class="btn btn--primary">Registrar aporte</a>`
+      : `<a href="/login?next=/mapa" class="btn btn--outline">Inicia sesión para registrar</a>`;
 
     return `
-      <div style="min-width:200px;">
-        <h3 style="margin:0 0 4px; font-size:0.95rem;">${punto.nombre}</h3>
-        <p style="margin:0 0 8px; color:var(--texto-suave); font-size:0.82rem;">${punto.direccion}${punto.horario ? ' · ' + punto.horario : ''}</p>
-        <div class="map-point__tags" style="margin-bottom:10px;">${materiales}</div>
-        ${accion}
+      <div class="map-popup">
+        <h3 class="map-popup__nombre">${esc(punto.nombre)}</h3>
+        <p class="map-popup__meta">${esc(punto.direccion)}${punto.horario ? '<br>' + esc(punto.horario) : ''}</p>
+        <div class="map-point__tags">${materiales}</div>
+        <div class="map-popup__acciones">
+          ${accion}
+          <a href="${urlComoLlegar(punto)}" class="btn btn--outline" target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
         <a href="/reportar?punto=${punto.id}" class="map-point__reportar">Reportar un problema con este punto</a>
       </div>`;
   }
+
+  // Deja espacio arriba (para que no se corte el nombre) y abajo (botones del mapa).
+  const OPCIONES_POPUP = {
+    maxWidth: 290,
+    minWidth: 220,
+    autoPanPaddingTopLeft: L.point(16, 16),
+    autoPanPaddingBottomRight: L.point(16, 80),
+  };
 
   function tarjetaLista(punto) {
     const materiales = (punto.materiales || [])
@@ -67,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const articulo = document.createElement('article');
     articulo.className = 'map-point';
     articulo.innerHTML = `
-      <div class="map-point__top"><h3>${punto.nombre}</h3></div>
-      <p class="map-point__meta">${distancia}${punto.horario ? ' · ' + punto.horario : ''}</p>
+      <div class="map-point__top"><h3>${esc(punto.nombre)}</h3></div>
+      <p class="map-point__meta">${esc(distancia)}${punto.horario ? ' · ' + esc(punto.horario) : ''}</p>
       <div class="map-point__tags">${materiales}</div>
       <div class="map-point__acciones">
         <button type="button" class="btn btn--outline" data-ver-mapa>Ver en el mapa</button>
@@ -76,10 +98,19 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     articulo.querySelector('[data-ver-mapa]').addEventListener('click', () => {
-      mapa.flyTo([punto.latitud, punto.longitud], 16);
-      capaPuntos.eachLayer((marcador) => {
-        if (marcador._puntoId === punto.id) marcador.openPopup();
+      // En el celular la lista queda arriba: primero se lleva la vista al mapa.
+      const rect = contenedor.getBoundingClientRect();
+      if (rect.top < 0 || rect.bottom > window.innerHeight) {
+        contenedor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      // El popup se abre cuando termina el movimiento: así puede reacomodarse
+      // y no queda cortado por arriba (antes se abría a mitad de la animación).
+      mapa.once('moveend', () => {
+        capaPuntos.eachLayer((marcador) => {
+          if (marcador._puntoId === punto.id) marcador.openPopup();
+        });
       });
+      mapa.flyTo([punto.latitud, punto.longitud], 16, { duration: 0.6 });
     });
     return articulo;
   }
@@ -111,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     puntos.forEach((punto) => {
       const marcador = L.marker([punto.latitud, punto.longitud], { icon: iconoPunto(false) })
-        .bindPopup(popupPunto(punto));
+        .bindPopup(popupPunto(punto), OPCIONES_POPUP);
       marcador._puntoId = punto.id;
       marcador.addTo(capaPuntos);
       if (listaEl) listaEl.appendChild(tarjetaLista(punto));

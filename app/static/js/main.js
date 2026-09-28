@@ -6,6 +6,13 @@ const CLAVE_SESION = 'ecomaps_sesion';
 
 // Ruta de una foto subida: las de Cloudinary ya son URL completas (https://...);
 // las locales son relativas a /static. Sin foto -> avatar por defecto.
+// Marco de avatar del nivel (1..20). `mini` = versión pequeña para galerías.
+const TOTAL_MARCOS = 20;
+function urlMarco(nivel, mini = false) {
+  const n = Math.min(Math.max(Number(nivel) || 1, 1), TOTAL_MARCOS);
+  return `/static/assets/img/marcos/nivel-${String(n).padStart(2, '0')}${mini ? '-mini' : ''}.webp`;
+}
+
 function urlFoto(ruta, porDefecto = '/static/assets/img/avatar-default.svg') {
   if (!ruta) return porDefecto;
   return /^https?:\/\//.test(ruta) ? ruta : `/static/${ruta}`;
@@ -26,11 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initLoginTabs();
   initPasswordToggle();
   initAuthForms();
-  initDemoForms();
-  initGoogleDemo();
+  initGoogleLogin();
   initScrollReveal();
   initMapQuickFilters();
-  initAdminNavigation();
 });
 
 // ===== Sesión (JWT guardado en localStorage tras iniciar sesión) =====
@@ -221,15 +226,7 @@ function initAuthForms() {
       const datos = await respuesta.json();
       if (!respuesta.ok) throw new Error(datos.error || 'No se pudo completar la solicitud.');
 
-      guardarSesion(datos.usuario, datos.access_token);
-      // Si venía de una página protegida vuelve ahí; si no, cada rol a su inicio.
-      // El admin siempre entra a su panel (salvo que viniera de otra página admin).
-      const siguiente = new URLSearchParams(window.location.search).get('next');
-      if (datos.usuario.rol === 'admin') {
-        window.location.href = siguiente && siguiente.startsWith('/admin') ? siguiente : '/admin';
-      } else {
-        window.location.href = siguiente || inicioPorRol(datos.usuario.rol);
-      }
+      entrarConSesion(datos);
     } catch (error) {
       if (errorEl) {
         errorEl.textContent = error.message;
@@ -262,36 +259,62 @@ function initAuthForms() {
   }
 }
 
-// ===== Formularios de demostración que aún no tienen backend propio =====
-function initDemoForms() {
-  const mensajes = {
-    perfil: 'Cambios guardados como demostración. Más adelante se conectarán con tu cuenta.',
-    reporte: 'Reporte enviado como demostración. Más adelante será almacenado para revisión.',
-  };
 
-  document.querySelectorAll('[data-demo-form]').forEach((form) => {
-    form.addEventListener('submit', (evento) => {
-      evento.preventDefault();
-      alert('Funcionalidad de ejemplo: todavía no está conectada al servidor.');
-    });
-  });
-
-  document.querySelectorAll('.demo-action-form').forEach((form) => {
-    form.addEventListener('submit', (evento) => {
-      evento.preventDefault();
-      const accion = form.dataset.demoAction;
-      alert(mensajes[accion] || 'Acción realizada en modo demostración.');
-    });
-  });
+// Guarda la sesión y lleva a cada rol a su inicio. Si venía de una página
+// protegida vuelve ahí; el admin siempre entra a su panel (salvo que viniera
+// de otra página admin). Lo usan el login normal y el de Google.
+function entrarConSesion(datos) {
+  guardarSesion(datos.usuario, datos.access_token);
+  const siguiente = new URLSearchParams(window.location.search).get('next');
+  if (datos.usuario.rol === 'admin') {
+    window.location.href = siguiente && siguiente.startsWith('/admin') ? siguiente : '/admin';
+  } else {
+    window.location.href = siguiente || inicioPorRol(datos.usuario.rol);
+  }
 }
 
-// ===== Inicio de sesión con Google: demo =====
-function initGoogleDemo() {
-  document.querySelectorAll('[data-demo-google]').forEach((boton) => {
-    boton.addEventListener('click', () => {
-      alert('Inicio de sesión con Google: pendiente de conectar.');
+// ===== Inicio de sesión con Google (Google Identity Services, gratis) =====
+// La librería de Google se carga solo en /login y solo si hay GOOGLE_CLIENT_ID.
+// Google entrega un token firmado; el backend lo verifica en /api/auth/google.
+function initGoogleLogin() {
+  const contenedores = document.querySelectorAll('[data-google-boton]');
+  if (!contenedores.length || !window.GOOGLE_CLIENT_ID) return;
+
+  const mostrarError = (mensaje) => {
+    document.querySelectorAll('[data-auth-form] [data-form-error]').forEach((el) => {
+      el.textContent = mensaje;
+      el.hidden = false;
     });
-  });
+  };
+
+  const alRecibirCredencial = async ({ credential }) => {
+    try {
+      const r = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential }),
+      });
+      const datos = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(datos.error || 'No se pudo iniciar sesión con Google.');
+      entrarConSesion(datos);
+    } catch (error) {
+      mostrarError(error.message);
+    }
+  };
+
+  const iniciar = () => {
+    google.accounts.id.initialize({ client_id: window.GOOGLE_CLIENT_ID, callback: alRecibirCredencial });
+    contenedores.forEach((el) => {
+      google.accounts.id.renderButton(el, {
+        type: 'standard', theme: 'outline', size: 'large', shape: 'pill',
+        text: 'continue_with', locale: 'es', width: Math.min(el.clientWidth || 360, 400),
+      });
+    });
+  };
+
+  // El script de Google carga con async: se espera a que esté listo.
+  if (window.google && google.accounts) iniciar();
+  else window.addEventListener('load', () => { if (window.google && google.accounts) iniciar(); });
 }
 
 // ===== Animaciones al hacer scroll =====
@@ -332,19 +355,6 @@ function initMapQuickFilters() {
     });
   });
 }
-
-// ===== Navegación del panel administrativo =====
-function initAdminNavigation() {
-  document.querySelectorAll('.admin__nav a').forEach((link) => {
-    link.addEventListener('click', (evento) => {
-      if (link.getAttribute('href') !== '#') return;
-      evento.preventDefault();
-      document.querySelectorAll('.admin__nav a').forEach((a) => a.classList.remove('is-active'));
-      link.classList.add('is-active');
-    });
-  });
-}
-
 
 
 // ===== Menú lateral colapsable (admin, cuenta, empresa) =====

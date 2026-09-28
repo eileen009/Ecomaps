@@ -669,3 +669,19 @@ body.auth-body {
 .publico .footer { margin-top: 90px; }
 .publico--inicio .footer { margin-top: 0; }
 .form-page__header-icon svg, .map-canvas__ctas svg, .ubicacion-acciones svg, .map-searchbar > svg { flex: none; }
+
+/* Logo un poco más grande en las páginas públicas y el login (no en los paneles) */
+.publico .logo__img, .auth-body .logo__img { width: 44px; height: 44px; }
+.publico .logo__text { font-size: 1.35rem; }
+@media (max-width: 560px) {
+  .publico .logo__img, .auth-body .logo__img { width: 40px; height: 40px; }
+  .publico .logo__text { font-size: 1.25rem; }
+}
+
+/* Guía en teléfono: las pestañas no se encogen (antes se montaban unas sobre otras) */
+.publico .guide-nav a { flex: none; }
+@media (max-width: 560px) {
+  .publico .guide-nav { gap: 8px; margin: 0 -16px 24px; padding: 10px 16px; }
+  .publico .guide-nav a { padding: 5px 14px 5px 6px; font-size: .8rem; }
+  .publico .guide-nav a img { width: 22px; height: 22px; }
+}

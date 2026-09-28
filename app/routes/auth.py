@@ -4,13 +4,17 @@ Endpoints:
     POST /api/auth/registro
     POST /api/auth/login
     POST /api/auth/logout
+    POST /api/auth/google     inicio de sesión / registro con Google
 """
-from flask import Blueprint, request, jsonify
+import secrets
+
+from flask import Blueprint, current_app, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 
 from extensions import db
 from models.usuario import Usuario
 from utils.validaciones import correo_valido, password_valida
+from utils.google_auth import verificar_token_google
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -78,3 +82,37 @@ def logout():
     # cliente (descartar el token). Este endpoint queda como punto
     # de extensión si más adelante se agrega una lista de revocación.
     return jsonify({"mensaje": "Sesión cerrada."}), 200
+
+
+@auth_bp.post("/google")
+def login_google():
+    """Recibe el token (credential) que entrega el botón de Google.
+    Si el correo ya tiene cuenta, inicia sesión; si no, la crea como ciudadano."""
+    client_id = current_app.config.get("GOOGLE_CLIENT_ID")
+    if not client_id:
+        return jsonify({"error": "El inicio de sesión con Google no está configurado."}), 503
+
+    token = (request.get_json(silent=True) or {}).get("credential", "")
+    try:
+        datos = verificar_token_google(token, client_id)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 401
+
+    correo = datos["email"].strip().lower()
+    usuario = Usuario.query.filter_by(correo=correo).first()
+    codigo = 200
+
+    if usuario is None:
+        nombre = (datos.get("name") or correo.split("@")[0]).strip()[:120]
+        usuario = Usuario(nombre=nombre, correo=correo, rol="ciudadano", foto_url=datos.get("picture"))
+        # Contraseña aleatoria que nadie conoce: la cuenta entra con Google.
+        # Si luego quiere entrar con correo y contraseña, un admin puede ponérsela.
+        usuario.set_password(secrets.token_urlsafe(32))
+        db.session.add(usuario)
+        db.session.commit()
+        codigo = 201
+    elif not usuario.activo:
+        return jsonify({"error": "Tu cuenta está suspendida. Escribe al equipo de EcoMaps."}), 403
+
+    token_app = create_access_token(identity=str(usuario.id), additional_claims={"rol": usuario.rol})
+    return jsonify({"usuario": usuario.to_dict(), "access_token": token_app}), codigo

@@ -7,7 +7,6 @@
 
 const AVATAR_DEFAULT = '/static/assets/img/avatar-default.svg';
 const MAX_FOTO_BYTES = 5 * 1024 * 1024; // igual que MAX_CONTENT_LENGTH del backend
-const MARCOS_VALIDOS = ['ninguno', 'bronce', 'plata', 'oro'];
 
 document.addEventListener('DOMContentLoaded', async () => {
   const sesion = obtenerSesion();
@@ -40,8 +39,8 @@ function aplicarUsuario(usuario, guardar = true) {
     img.src = src;
   });
 
-  const avatar = document.getElementById('avatar');
-  if (avatar) avatar.dataset.marco = MARCOS_VALIDOS.includes(usuario.marco_avatar) ? usuario.marco_avatar : 'ninguno';
+  const marco = document.querySelector('[data-perfil="marco-img"]');
+  if (marco) marco.src = urlMarco(usuario.marco_avatar || usuario.nivel);
 
   // Solo rellena el formulario si el usuario no lo está editando.
   const form = document.getElementById('form-cuenta');
