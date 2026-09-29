@@ -1,0 +1,68 @@
+/* =========================================================
+   EcoMaps · Invitación a empresas (mapa y perfil)
+   Plantilla: templates/_contacto_empresas.html
+   ========================================================= */
+.contacto-empresas {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 28px;
+  margin-top: 40px;
+  padding: 34px 40px;
+  border-radius: 24px;
+  background-color: var(--dark-moss-green, #365004);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23EDE383' stroke-opacity='.09' stroke-width='1.5'%3E%3Cpath d='M-20 60c80-40 160 30 240 0s150-50 240-10 140 20 160 0'/%3E%3Cpath d='M-20 100c80-40 160 30 240 0s150-50 240-10 140 20 160 0'/%3E%3Cpath d='M-20 140c90-30 150 40 250 10s140-60 230-20 130 30 160 0'/%3E%3Cpath d='M-20 180c90-30 150 40 250 10s140-60 230-20 130 30 160 0'/%3E%3Cpath d='M-20 220c70-50 170 20 250-5s160-40 230 0 120 20 160-10'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 600px 300px;
+  color: #D9E4C4;
+  box-shadow: 0 24px 40px -28px rgba(54, 80, 4, .8);
+}
+.contacto-empresas__icono {
+  display: grid; place-items: center;
+  width: 84px; height: 84px;
+  border-radius: 24px;
+  background: rgba(237, 227, 131, .14);
+  color: var(--flax, #EDE383);
+  transform: rotate(-5deg);
+}
+.contacto-empresas h2 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.contacto-empresas p { margin: 0; line-height: 1.6; max-width: 60ch; }
+.contacto-empresas p strong { color: var(--flax, #EDE383); }
+
+.contacto-empresas__botones { display: flex; flex-direction: column; gap: 10px; }
+.contacto-empresas__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  border: 2px solid var(--flax, #EDE383);
+  background: var(--flax, #EDE383);
+  color: var(--bistre, #351903);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform .2s ease, background .2s ease;
+}
+.contacto-empresas__btn:hover { transform: translateY(-2px); background: #F4EDA5; }
+.contacto-empresas__btn--linea { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .45); }
+.contacto-empresas__btn--linea:hover { background: rgba(255, 255, 255, .1); }
+.contacto-empresas__btn svg { flex: none; }
+
+/* En el mapa va dentro del ancho de la página */
+.contacto-empresas--mapa { margin: 56px auto 0; }
+
+@media (max-width: 900px) {
+  .contacto-empresas { grid-template-columns: auto minmax(0, 1fr); }
+  .contacto-empresas__botones { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .contacto-empresas { grid-template-columns: minmax(0, 1fr); padding: 26px 22px; gap: 18px; }
+  .contacto-empresas__icono { width: 64px; height: 64px; border-radius: 18px; }
+  .contacto-empresas__botones { flex-direction: column; }
+  .contacto-empresas__btn { width: 100%; white-space: normal; }
+}

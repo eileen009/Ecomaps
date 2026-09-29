@@ -43,6 +43,10 @@
       {% with num=1 %}{% include "_form_cuenta.html" %}{% endwith %}
 {% endblock %}
 
+{% with en_perfil=true %}
+  {% include '_contacto_empresas.html' %}
+{% endwith %}
+
 {% block script_extra %}
 <script src="{{ url_for('static', filename='js/cuenta.js') }}"></script>
 <script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
