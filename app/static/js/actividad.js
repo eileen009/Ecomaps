@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cuerpo.set('cantidad', document.getElementById('cantidad').value);
     cuerpo.set('unidad', document.getElementById('unidad').value);
     if (selectPunto.value) cuerpo.set('id_punto', selectPunto.value);
-    cuerpo.set('foto', document.getElementById('foto').files[0]);
-
+    // Se reduce antes de enviar: las fotos del celular suelen pasar el límite de 5 MB.
+    cuerpo.set('foto', await reducirFoto(document.getElementById('foto').files[0]));
     const boton = form.querySelector('button[type="submit"]');
     boton.disabled = true;
 

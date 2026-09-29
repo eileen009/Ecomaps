@@ -66,17 +66,17 @@ function initSubidaFoto() {
   };
 
   input.addEventListener('change', async () => {
-    const archivo = input.files[0];
-    if (!archivo) return;
+    const original = input.files[0];
+    if (!original) return;
 
     // Validación en el navegador: evita subir algo que el servidor va a rechazar.
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type)) {
-      mostrarMsg('La foto debe ser JPG, PNG o WEBP.', true);
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(original.type)) {      mostrarMsg('La foto debe ser JPG, PNG o WEBP.', true);
       input.value = '';
       return;
     }
-    if (archivo.size > MAX_FOTO_BYTES) {
-      mostrarMsg('La foto supera los 5 MB.', true);
+    // Se reduce antes de revisar el tamaño: así las fotos del celular sí entran.
+    const archivo = await reducirFoto(original);
+    if (archivo.size > MAX_FOTO_BYTES) {      mostrarMsg('La foto supera los 5 MB.', true);
       input.value = '';
       return;
     }
