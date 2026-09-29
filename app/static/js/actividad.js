@@ -60,7 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const datos = await respuesta.json();
       if (!respuesta.ok) throw new Error(datos.error || 'No se pudo registrar la actividad.');
 
-      alert('¡Listo! Tu aporte quedó registrado. Un administrador confirmará tus puntos al revisar la foto.');
+      await mostrarAviso({
+        titulo: '¡Aporte registrado!',
+        mensaje: 'Gracias por reciclar. Un administrador revisará la foto y confirmará tus puntos.',
+        boton: 'Ver mi perfil',
+      });
       window.location.href = '/perfil';
     } catch (error) {
       errorEl.textContent = error.message;

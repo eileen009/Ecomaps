@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       empresa.verificada = datos.verificada;
       pintar();
     } catch (error) {
-      alert(error.message);
+      mostrarAviso({ tipo: 'error', mensaje: error.message });
       boton.disabled = false;
     }
   });

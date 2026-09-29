@@ -1,0 +1,96 @@
+/* =========================================================
+   EcoMaps · Avisos (reemplazan las alertas del navegador)
+   Los crea mostrarAviso() / confirmarAccion() de main.js.
+   Se carga en todas las páginas: _head_publico.html,
+   admin_base.html y cuenta_base.html.
+   ========================================================= */
+.aviso {
+  width: min(400px, calc(100vw - 32px));
+  padding: 34px 30px 26px;
+  border: 0;
+  border-radius: 24px;
+  text-align: center;
+  color: var(--texto, #351903);
+  background:
+    radial-gradient(120% 70% at 50% 0%, #EEF3E2 0%, rgba(238, 243, 226, 0) 60%),
+    var(--blanco, #fff);
+  box-shadow: 0 30px 60px -20px rgba(53, 25, 3, .45);
+  overflow: visible;
+}
+.aviso::backdrop { background: rgba(53, 25, 3, .42); backdrop-filter: blur(4px); }
+
+.aviso__icono {
+  position: relative;
+  width: 84px; height: 84px;
+  margin: 0 auto 18px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--dark-moss-green, #365004);
+  color: var(--flax, #EDE383);
+  box-shadow: 0 0 0 8px #E7EFD3, 0 18px 30px -14px rgba(54, 80, 4, .7);
+}
+.aviso__icono svg { width: 52px; height: 52px; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.aviso__circulo { opacity: .35; stroke-width: 2.4; }
+
+.aviso--error .aviso__icono { background: #BF8B2E; color: var(--blanco, #fff); box-shadow: 0 0 0 8px #F6ECD8, 0 18px 30px -14px rgba(146, 94, 6, .7); }
+.aviso--peligro .aviso__icono { background: #C4552E; color: var(--blanco, #fff); box-shadow: 0 0 0 8px #FBE9E2, 0 18px 30px -14px rgba(162, 64, 31, .6); }
+.aviso--peligro .aviso__icono svg { stroke-width: 2.8; }
+
+.aviso__titulo {
+  margin: 0 0 8px;
+  font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  font-size: 1.55rem; line-height: 1.12; letter-spacing: -0.025em;
+  color: var(--dark-moss-green, #365004);
+}
+.aviso--error .aviso__titulo { color: var(--bistre, #351903); }
+.aviso--peligro .aviso__titulo { color: #8E3B2E; }
+.aviso__mensaje { margin: 0 auto 24px; max-width: 32ch; color: var(--texto-suave, #6b6358); line-height: 1.55; font-size: .98rem; }
+
+.aviso__botones { display: flex; gap: 10px; justify-content: center; }
+.aviso__botones .btn { min-width: 150px; justify-content: center; }
+.aviso__peligro { background: #C4552E; color: var(--blanco, #fff); border-color: #C4552E; }
+.aviso__peligro:hover { background: #A2401F; }
+
+/* Hojitas que brotan alrededor del ícono en los mensajes de éxito */
+.aviso--exito .aviso__icono::before,
+.aviso--exito .aviso__icono::after {
+  content: ""; position: absolute; width: 16px; height: 16px;
+  background: var(--apple-green, #8DA432);
+  border-radius: 0 100% 0 100%;
+  opacity: 0;
+}
+.aviso--exito .aviso__icono::before { left: -14px; top: 6px; transform: rotate(-30deg); }
+.aviso--exito .aviso__icono::after { right: -14px; top: 14px; transform: rotate(40deg) scaleX(-1); background: var(--flax, #EDE383); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .aviso[open] { animation: aviso-entrar .42s cubic-bezier(.2, .9, .3, 1.2) both; }
+  .aviso[open]::backdrop { animation: aviso-fondo .3s ease both; }
+  .aviso__icono { animation: aviso-icono .55s cubic-bezier(.3, 1.6, .5, 1) .08s both; }
+  .aviso__circulo, .aviso__trazo { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .aviso__circulo { animation: aviso-trazo .5s ease .2s forwards; }
+  .aviso__trazo { animation: aviso-trazo .45s cubic-bezier(.6, 0, .3, 1) .45s forwards; }
+  .aviso--exito .aviso__icono::before { animation: aviso-hoja-izq .7s cubic-bezier(.3, 1.4, .5, 1) .7s forwards; }
+  .aviso--exito .aviso__icono::after { animation: aviso-hoja-der .7s cubic-bezier(.3, 1.4, .5, 1) .8s forwards; }
+  .aviso--peligro .aviso__icono { animation: aviso-icono .55s cubic-bezier(.3, 1.6, .5, 1) .08s both, aviso-sacudir .5s ease .75s; }
+  .aviso__titulo, .aviso__mensaje, .aviso__botones { animation: aviso-subir .45s ease both; }
+  .aviso__titulo { animation-delay: .15s; }
+  .aviso__mensaje { animation-delay: .22s; }
+  .aviso__botones { animation-delay: .3s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aviso--exito .aviso__icono::before, .aviso--exito .aviso__icono::after { opacity: 1; }
+}
+@keyframes aviso-entrar { from { opacity: 0; transform: translateY(18px) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes aviso-fondo { from { opacity: 0; } to { opacity: 1; } }
+@keyframes aviso-icono { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes aviso-trazo { to { stroke-dashoffset: 0; } }
+@keyframes aviso-subir { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes aviso-hoja-izq { from { opacity: 0; transform: translate(14px, 10px) rotate(-30deg) scale(.3); } to { opacity: 1; transform: rotate(-30deg); } }
+@keyframes aviso-hoja-der { from { opacity: 0; transform: translate(-14px, 10px) rotate(40deg) scaleX(-1) scale(.3); } to { opacity: 1; transform: rotate(40deg) scaleX(-1); } }
+@keyframes aviso-sacudir { 20%, 60% { transform: rotate(-8deg); } 40%, 80% { transform: rotate(8deg); } }
+
+@media (max-width: 480px) {
+  .aviso { padding: 28px 20px 20px; }
+  .aviso__botones { flex-direction: column-reverse; }
+  .aviso__botones .btn { width: 100%; }
+}

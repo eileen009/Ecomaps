@@ -444,7 +444,6 @@ function initSidebarColapsable() {
   aplicarEstado();
 }
 
-/* === Sarith: seguridad XSS (B1) === */
 // Convierte los caracteres especiales de HTML en texto seguro.
 // Úsala con TODO dato que venga de la API o del usuario antes de meterlo
 // en un innerHTML o en un template string con etiquetas HTML.
@@ -455,4 +454,78 @@ function escaparHTML(texto) {
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ));
 }
-/* === Fin Sarith === */
+
+
+/* avisos con el diseño de EcoMaps (reemplazan alert y confirm) === */
+// mostrarAviso({ tipo, titulo, mensaje, boton })
+//   tipo: 'exito' | 'error'. Devuelve una promesa que se cumple al cerrar el aviso,
+//   así se puede esperar antes de redirigir:  await mostrarAviso({...});
+// confirmarAccion({ titulo, mensaje, boton, icono })   icono: 'peligro' (papelera) o 'pausa'
+//   Pregunta con "Cancelar" y el botón de acción. Devuelve true o false, como confirm().
+// Los textos se insertan con textContent: nunca se interpretan como HTML.
+const ICONOS_AVISO = {
+  exito: '<svg viewBox="0 0 52 52" aria-hidden="true"><circle class="aviso__circulo" cx="26" cy="26" r="23" pathLength="1"/><path class="aviso__trazo" d="M15 27l7.5 7.5L37.5 19" pathLength="1"/></svg>',
+  error: '<svg viewBox="0 0 52 52" aria-hidden="true"><circle class="aviso__circulo" cx="26" cy="26" r="23" pathLength="1"/><path class="aviso__trazo" d="M26 15v14" pathLength="1"/><circle cx="26" cy="37" r="2.6" fill="currentColor" stroke="none"/></svg>',
+  pausa: '<svg viewBox="0 0 52 52" aria-hidden="true"><circle class="aviso__circulo" cx="26" cy="26" r="23" pathLength="1"/><path class="aviso__trazo" d="M21 17v18M31 17v18" pathLength="1"/></svg>',
+  peligro: '<svg viewBox="0 0 52 52" aria-hidden="true"><circle class="aviso__circulo" cx="26" cy="26" r="23" pathLength="1"/><path class="aviso__trazo" d="M18 19h16M23 19v-3h6v3M20 19l1.5 17h9L32 19M24.5 23.5v8M27.5 23.5v8" pathLength="1"/></svg>',
+};
+
+function abrirAviso({ tipo, icono, titulo, mensaje, botones }) {
+  return new Promise((resolver) => {
+    const dialogo = document.createElement('dialog');
+    dialogo.className = `aviso aviso--${tipo}`;
+    dialogo.innerHTML = `
+      <div class="aviso__icono">${ICONOS_AVISO[icono || tipo] || ICONOS_AVISO.exito}</div>
+      <h2 class="aviso__titulo"></h2>
+      <p class="aviso__mensaje"></p>
+      <div class="aviso__botones"></div>`;
+    dialogo.querySelector('.aviso__titulo').textContent = titulo;
+    dialogo.querySelector('.aviso__mensaje').textContent = mensaje || '';
+
+    const zonaBotones = dialogo.querySelector('.aviso__botones');
+    botones.forEach(({ texto, valor, clase }) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `btn ${clase}`;
+      b.textContent = texto;
+      b.addEventListener('click', () => dialogo.close(valor));
+      zonaBotones.appendChild(b);
+    });
+
+    // Clic fuera de la tarjeta = cerrar sin confirmar.
+    dialogo.addEventListener('click', (e) => { if (e.target === dialogo) dialogo.close(''); });
+    dialogo.addEventListener('close', () => {
+      resolver(dialogo.returnValue);
+      dialogo.remove();
+    });
+
+    document.body.appendChild(dialogo);
+    dialogo.showModal();
+    zonaBotones.lastElementChild.focus();
+  });
+}
+
+function mostrarAviso({ tipo = 'exito', titulo, mensaje, boton = 'Entendido' } = {}) {
+  if (typeof HTMLDialogElement !== 'function') { alert(mensaje || titulo); return Promise.resolve(); }
+  return abrirAviso({
+    tipo,
+    titulo: titulo || (tipo === 'error' ? 'No se pudo completar' : '¡Listo!'),
+    mensaje,
+    botones: [{ texto: boton, valor: 'ok', clase: 'btn--primary' }],
+  }).then(() => undefined);
+}
+
+function confirmarAccion({ titulo, mensaje, boton = 'Confirmar', icono = 'peligro' } = {}) {
+  if (typeof HTMLDialogElement !== 'function') return Promise.resolve(confirm(mensaje || titulo));
+  return abrirAviso({
+    tipo: 'peligro',
+    icono,
+    titulo,
+    mensaje,
+    botones: [
+      { texto: 'Cancelar', valor: '', clase: 'btn--outline' },
+      { texto: boton, valor: 'si', clase: 'aviso__peligro' },
+    ],
+  }).then((valor) => valor === 'si');
+}
+
