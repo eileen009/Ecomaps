@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } else {
         const datos = await respuesta.json().catch(() => ({}));
-        alert(datos.error || 'No se pudo actualizar el aporte.');
+        mostrarAviso({ tipo: 'error', mensaje: datos.error || 'No se pudo actualizar el aporte.' });
       }
     };
 

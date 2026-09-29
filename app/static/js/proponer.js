@@ -197,7 +197,10 @@ async function enviarPropuesta(form, ubicacion) {
     const datos = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(datos.error || 'No se pudo enviar la propuesta.');
 
-    alert('¡Gracias! Tu propuesta quedó registrada. Un administrador la revisará antes de publicarla en el mapa.');
+    await mostrarAviso({
+      titulo: '¡Gracias por tu propuesta!',
+      mensaje: 'Quedó registrada. Un administrador la revisará antes de publicarla en el mapa.',
+    });
     window.location.href = sesion.usuario.rol === 'empresa' ? '/empresa' : '/mapa';
   } catch (e) {
     error(e.message);

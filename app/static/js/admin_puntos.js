@@ -111,7 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ estado: boton.dataset.estado }),
       });
     } else if (boton.dataset.eliminar !== undefined) {
-      if (!confirm(`¿Eliminar "${punto.nombre}"? También se borran sus reportes. Esta acción no se puede deshacer.`)) return;
+      if (!(await confirmarAccion({
+        titulo: '¿Eliminar este punto?',
+        mensaje: `Se eliminará "${punto.nombre}" junto con sus reportes. Esta acción no se puede deshacer.`,
+        boton: 'Eliminar punto',
+      }))) return;
       peticion = fetch(`/api/puntos/${id}`, { method: 'DELETE', headers });
     } else return;
 
@@ -119,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const r = await peticion;
     if (!r.ok) {
       const datos = await r.json().catch(() => ({}));
-      alert(datos.error || 'No se pudo completar la acción.');
+      mostrarAviso({ tipo: 'error', mensaje: datos.error || 'No se pudo completar la acción.' });
       boton.disabled = false;
       return;
     }

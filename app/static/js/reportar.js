@@ -66,7 +66,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       const datos = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(datos.error || 'No se pudo enviar el reporte.');
-      alert('¡Gracias! Tu reporte fue enviado y un administrador lo revisará.');
+      await mostrarAviso({
+        titulo: '¡Reporte enviado!',
+        mensaje: 'Gracias por avisarnos. Un administrador lo revisará para mantener el mapa al día.',
+        boton: 'Volver al mapa',
+      });
       window.location.href = '/mapa';
     } catch (e) {
       error(e.message);

@@ -75,14 +75,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let peticion;
     if (boton.dataset.suspender !== undefined || boton.dataset.reactivar !== undefined) {
       const activar = boton.dataset.reactivar !== undefined;
-      if (!activar && !confirm(`¿Suspender a ${u.nombre}? No podrá iniciar sesión hasta que la reactives.`)) return;
+      if (!activar && !(await confirmarAccion({
+        titulo: '¿Suspender esta cuenta?',
+        mensaje: `${u.nombre} no podrá iniciar sesión hasta que la reactives.`,
+        boton: 'Suspender',
+        icono: 'pausa',
+      }))) return;
       peticion = fetch(`/api/usuarios/${u.id}/activo`, {
         method: 'PATCH',
         headers: { ...headers, 'Content-Type': 'application/json' },
         body: JSON.stringify({ activo: activar }),
       });
     } else if (boton.dataset.eliminar !== undefined) {
-      if (!confirm(`¿Eliminar la cuenta de ${u.nombre}? Se borran también sus aportes. Esta acción no se puede deshacer.`)) return;
+      if (!(await confirmarAccion({
+        titulo: '¿Eliminar esta cuenta?',
+        mensaje: `Se eliminará la cuenta de ${u.nombre} y todos sus aportes. Esta acción no se puede deshacer.`,
+        boton: 'Eliminar cuenta',
+      }))) return;
       peticion = fetch(`/api/usuarios/${u.id}`, { method: 'DELETE', headers });
     } else return;
 
@@ -90,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const r = await peticion;
     if (!r.ok) {
       const datos = await r.json().catch(() => ({}));
-      alert(datos.error || 'No se pudo completar la acción.');
+      mostrarAviso({ tipo: 'error', mensaje: datos.error || 'No se pudo completar la acción.' });
       boton.disabled = false;
       return;
     }

@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.remove(); // cambió de estado: ya no pertenece a este filtro
       if (!lista.querySelector('.reporte-card')) lista.innerHTML = '<p class="map-layout__panel-vacio">No hay reportes en este estado.</p>';
     } else {
-      alert('No se pudo actualizar el reporte.');
+      mostrarAviso({ tipo: 'error', mensaje: 'No se pudo actualizar el reporte.' });
       boton.disabled = false;
     }
   });
