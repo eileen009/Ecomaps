@@ -75,6 +75,13 @@ def crear_app(config_class=Config):
     def error_interno(_error):
         return jsonify({"error": "Error interno del servidor."}), 500
 
+    
+    @app.errorhandler(413)
+    def archivo_muy_grande(_error):
+        # Si una foto supera MAX_CONTENT_LENGTH, se responde en JSON (no en HTML)
+        # para que la página muestre un mensaje claro.
+        return jsonify({"error": "La foto pesa más de 5 MB. Elige otra o tómala con menor resolución."}), 413
+
     return app
 
 

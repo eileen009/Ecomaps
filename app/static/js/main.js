@@ -529,3 +529,43 @@ function confirmarAccion({ titulo, mensaje, boton = 'Confirmar', icono = 'peligr
   }).then((valor) => valor === 'si');
 }
 
+
+/* === Sarith: reducir fotos antes de subirlas === */
+// Las fotos de la cámara del teléfono pesan 3-10 MB y el servidor acepta máximo 5 MB.
+// Esta función las reduce en el navegador (lado mayor de 1600 px, JPG al 82 %):
+// quedan en ~300-500 KB, se suben rápido con datos móviles y siguen viéndose nítidas.
+// Si algo falla (formato raro, navegador viejo), devuelve la foto original sin cambios.
+const LADO_MAXIMO_FOTO = 1600;
+
+async function reducirFoto(archivo) {
+  if (!archivo || !['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type)) return archivo;
+  if (archivo.size <= 900 * 1024) return archivo; // ya es liviana
+
+  try {
+    const url = URL.createObjectURL(archivo);
+    const img = await new Promise((ok, error) => {
+      const i = new Image();
+      i.onload = () => ok(i);
+      i.onerror = error;
+      i.src = url;
+    });
+    URL.revokeObjectURL(url);
+
+    const escala = Math.min(1, LADO_MAXIMO_FOTO / Math.max(img.naturalWidth, img.naturalHeight));
+    const lienzo = document.createElement('canvas');
+    lienzo.width = Math.round(img.naturalWidth * escala);
+    lienzo.height = Math.round(img.naturalHeight * escala);
+    const ctx = lienzo.getContext('2d');
+    ctx.fillStyle = '#fff'; // fondo blanco para PNG con transparencia
+    ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+    ctx.drawImage(img, 0, 0, lienzo.width, lienzo.height);
+
+    const blob = await new Promise((ok) => lienzo.toBlob(ok, 'image/jpeg', 0.82));
+    if (!blob || blob.size >= archivo.size) return archivo;
+    const nombre = (archivo.name || 'foto').replace(/\.[^.]+$/, '') + '.jpg';
+    return new File([blob], nombre, { type: 'image/jpeg' });
+  } catch (error) {
+    return archivo;
+  }
+}
+/* === Fin Sarith === */
