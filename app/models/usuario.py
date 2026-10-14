@@ -30,6 +30,10 @@ class Usuario(db.Model):
     # tokens dejan de valer (ver app.py, token_in_blocklist_loader).
     activo = db.Column(db.Boolean, nullable=False, default=True, server_default=db.true())
 
+    # El usuario marcó "soy una empresa": el equipo lo ve en /admin/usuarios y
+    # decide si le cambia el rol. Se apaga solo cuando el admin lo pasa a empresa.
+    solicitud_empresa = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+
     rol = db.Column(
         db.Enum("ciudadano", "empresa", "admin", name="rol_usuario"),
         nullable=False,
@@ -72,5 +76,6 @@ class Usuario(db.Model):
             "marco_avatar": self.marco_avatar,
             "verificada": bool(self.verificada),
             "activo": bool(self.activo),
+            "solicitud_empresa": bool(self.solicitud_empresa),
             "fecha_registro": self.fecha_registro.isoformat(),
         }

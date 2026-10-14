@@ -1,0 +1,20 @@
+{# Invitación para ciudadanos: "¿Tienes una empresa?". Se incluye en perfil.html.
+   Empieza oculta; perfil.js la muestra solo a ciudadanos que no la hayan descartado.
+   Quien la descarta puede volver a verla desde el menú ("¿Tienes una empresa?"). #}
+<section class="solicitud-empresa" id="empresa" aria-labelledby="titulo-solicitud-empresa" hidden>
+  <div class="solicitud-empresa__icono" aria-hidden="true">
+    <svg width="34" height="34"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-edificio"/></svg>
+  </div>
+
+  <div class="solicitud-empresa__texto">
+    <h2 id="titulo-solicitud-empresa">¿Tienes una empresa o centro de reciclaje?</h2>
+    <p data-solicitud="texto">Márcalo y el equipo de EcoMaps recibirá el aviso para convertir tu cuenta en una <strong>cuenta de empresa verificada</strong>: publicarás tu punto en el mapa y confirmarás los aportes que recibes.</p>
+    <p class="solicitud-empresa__enviada" data-solicitud="enviada" hidden>✔ Ya avisamos al equipo. Revisaremos tu cuenta y te cambiaremos el tipo de cuenta cuando esté lista.</p>
+  </div>
+
+  <div class="solicitud-empresa__botones">
+    <button type="button" class="solicitud-empresa__btn" data-solicitud-accion="si">Sí, soy una empresa</button>
+    <button type="button" class="solicitud-empresa__btn solicitud-empresa__btn--linea" data-solicitud-accion="cancelar" hidden>Retirar solicitud</button>
+    <button type="button" class="solicitud-empresa__btn solicitud-empresa__btn--linea" data-solicitud-accion="no">No soy una empresa</button>
+  </div>
+</section>
