@@ -486,3 +486,109 @@
   .admin-body .progreso__barra, .admin-body .progress span, .admin-body .leaderboard__bar span { transition: none; }
   .admin-body .stat-card, .admin-body .company-card, .admin-body .reporte-card, .admin-body .admin-accion-card, .admin-body .achievement-card { transition: none; }
 }
+
+
+/* =========================================================
+   Invitación "¿Tienes una empresa?" (perfil del ciudadano)
+   Plantilla: templates/_solicitud_empresa.html
+   ========================================================= */
+.solicitud-empresa {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  margin: 0 0 24px;
+  padding: 24px 28px;
+  border-radius: var(--radio-panel, 22px);
+  background: var(--dark-moss-green, #365004);
+  color: #D9E4C4;
+}
+.solicitud-empresa[hidden] { display: none; }
+.solicitud-empresa__icono {
+  display: grid; place-items: center;
+  width: 64px; height: 64px; border-radius: 18px;
+  background: rgba(237, 227, 131, .14);
+  color: var(--flax, #EDE383);
+}
+.solicitud-empresa h2 { margin: 0 0 6px; color: #fff; font-size: 1.2rem; line-height: 1.2; }
+.solicitud-empresa p { margin: 0; line-height: 1.55; max-width: 62ch; }
+.solicitud-empresa p strong { color: var(--flax, #EDE383); }
+.solicitud-empresa__enviada { color: var(--flax, #EDE383); font-weight: 600; }
+.solicitud-empresa__botones { display: flex; flex-direction: column; gap: 8px; }
+.solicitud-empresa__btn {
+  padding: 11px 20px; border-radius: 999px; cursor: pointer;
+  border: 2px solid var(--flax, #EDE383);
+  background: var(--flax, #EDE383); color: var(--bistre, #351903);
+  font: inherit; font-weight: 700; white-space: nowrap;
+}
+.solicitud-empresa__btn:hover { background: #F4EDA5; }
+.solicitud-empresa__btn:disabled { opacity: .6; cursor: wait; }
+.solicitud-empresa__btn--linea { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .45); }
+.solicitud-empresa__btn--linea:hover { background: rgba(255, 255, 255, .1); }
+@media (max-width: 900px) {
+  .solicitud-empresa { grid-template-columns: auto minmax(0, 1fr); }
+  .solicitud-empresa__botones { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .solicitud-empresa { grid-template-columns: minmax(0, 1fr); padding: 20px; gap: 14px; }
+  .solicitud-empresa__botones { flex-direction: column; }
+  .solicitud-empresa__btn { width: 100%; white-space: normal; }
+}
+
+/* Marca en la lista de usuarios del admin */
+.chip-solicitud {
+  display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 999px;
+  background: var(--flax, #EDE383); color: var(--bistre, #351903);
+  font-size: .68rem; font-weight: 700; vertical-align: middle;
+}
+
+/* =========================================================
+   Revisión de aportes: cantidad recibida y motivo de rechazo
+   ========================================================= */
+.accion-recibida { display: block; margin: 0 0 10px; font-size: .82rem; font-weight: 600; color: var(--bistre, #351903); }
+.accion-recibida input { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--borde, #D9D6C8); border-radius: 8px; font: inherit; }
+.accion-rechazo label { display: block; margin: 0 0 6px; font-size: .82rem; font-weight: 600; }
+.accion-rechazo label small { font-weight: 400; color: var(--texto-suave, #6b6358); }
+.accion-rechazo textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--borde, #D9D6C8); border-radius: 8px; font: inherit; resize: vertical; }
+.accion-rechazo .form__error { margin: 6px 0; }
+.accion-rechazo__sugeridos { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.accion-rechazo__sugeridos button {
+  padding: 5px 10px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--borde, #D9D6C8); background: var(--fondo-alt, #F3F1E6);
+  font: inherit; font-size: .74rem; color: var(--bistre, #351903); text-align: left;
+}
+.accion-rechazo__sugeridos button:hover { background: #E7EBD3; }
+.accion-rechazo .admin-accion-card__acciones { margin-top: 8px; }
+
+/* Historial del usuario: motivo del rechazo y botón del recibo */
+.activity-row__motivo { color: #8A2A10 !important; }
+.activity-row__recibo {
+  margin-top: 6px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--apple-green, #8DA432); background: #fff;
+  color: var(--dark-moss-green, #365004); font: inherit; font-size: .76rem; font-weight: 600;
+}
+.activity-row__recibo:hover { background: #EAF0DC; }
+
+/* =========================================================
+   Recibo digital (ventana + impresión)
+   ========================================================= */
+.recibo-dialogo { width: min(460px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 18px; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .5); }
+.recibo-dialogo::backdrop { background: rgba(53, 25, 3, .45); }
+.recibo { padding: 26px 28px 8px; background: #fff; }
+.recibo__cabecera { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 2px dashed var(--borde, #D9D6C8); }
+.recibo__cabecera strong { display: block; color: var(--dark-moss-green, #365004); font-size: 1.1rem; }
+.recibo__cabecera span { font-size: .8rem; color: var(--texto-suave, #6b6358); }
+.recibo__codigo { margin: 14px 0 6px; font-size: .95rem; }
+.recibo__codigo b { color: var(--golden-brown, #925E06); letter-spacing: .04em; }
+.recibo__datos { margin: 0; }
+.recibo__datos div { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; border-bottom: 1px solid #EFEDE3; }
+.recibo__datos dt { color: var(--texto-suave, #6b6358); font-size: .82rem; }
+.recibo__datos dd { margin: 0; font-weight: 600; text-align: right; font-size: .88rem; }
+.recibo__nota { margin: 14px 0 4px; font-size: .74rem; color: var(--texto-suave, #6b6358); }
+.recibo__acciones { display: flex; gap: 10px; padding: 14px 28px 22px; background: #fff; }
+.recibo__acciones .btn { flex: 1; }
+@media print {
+  body.imprimiendo-recibo > *:not(.recibo-dialogo) { display: none !important; }
+  body.imprimiendo-recibo .recibo-dialogo { position: static; width: 100%; box-shadow: none; }
+  body.imprimiendo-recibo .recibo__acciones { display: none; }
+}

@@ -5,10 +5,13 @@ Endpoints:
     POST  /api/acciones                  registrar un aporte (queda "pendiente")
     GET   /api/usuarios/me/acciones       historial propio
     GET   /api/acciones?estado=pendiente  listar para revisión (admin)
-    PATCH /api/acciones/<id>/estado       confirmar/rechazar y asignar puntos (admin, o la empresa dueña del punto)
+    PATCH /api/acciones/<id>/estado       confirmar (con cantidad recibida y recibo) o rechazar (con motivo)
+                                          — admin, o la empresa dueña del punto
     GET   /api/acciones/mi-punto          aportes pendientes en los puntos de la empresa
 """
 import os
+import secrets
+from datetime import datetime, timezone
 
 from flask import Blueprint, current_app, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
@@ -104,11 +107,41 @@ def revisar_accion(id_accion):
     if accion.estado != "pendiente":
         return jsonify({"error": "Esta acción ya fue revisada."}), 409
 
-    accion.estado = nuevo_estado
+    # ----- Se valida TODO antes de modificar nada -----
+    if nuevo_estado == "rechazada":
+        # Al rechazar es obligatorio explicar por qué (el usuario lo verá).
+        motivo = " ".join((datos.get("motivo") or "").split())
+        if len(motivo) < 5:
+            return jsonify({"error": "Escribe el motivo del rechazo (mínimo 5 caracteres)."}), 400
+        if len(motivo) > 255:
+            return jsonify({"error": "El motivo es muy largo (máximo 255 caracteres)."}), 400
+    else:
+        # Al confirmar, quien revisa indica lo que realmente recibió; si no lo
+        # cambia, se asume la cantidad declarada.
+        recibida = datos.get("cantidad_recibida")
+        if recibida in (None, ""):
+            recibida = float(accion.cantidad)
+        try:
+            recibida = round(float(recibida), 2)
+            if not 0 < recibida <= 99999:
+                raise ValueError
+        except (TypeError, ValueError):
+            return jsonify({"error": "La cantidad recibida no es válida."}), 400
 
-    if nuevo_estado == "confirmada":
-        puntos = max(PUNTOS_MINIMOS, round(float(accion.cantidad) * PUNTOS_POR_UNIDAD))
+    ahora = datetime.now(timezone.utc)
+    accion.estado = nuevo_estado
+    accion.id_revisor = int(get_jwt_identity())
+    accion.fecha_revision = ahora.replace(tzinfo=None)  # la BD guarda UTC sin zona
+
+    if nuevo_estado == "rechazada":
+        accion.motivo_rechazo = motivo
+    else:
+        accion.cantidad_recibida = recibida
+        # Los puntos se calculan sobre lo recibido, no sobre lo declarado.
+        puntos = max(PUNTOS_MINIMOS, round(recibida * PUNTOS_POR_UNIDAD))
         accion.puntos_otorgados = puntos
+        # Código del recibo: año-mes, id del aporte y 4 caracteres al azar (no se puede adivinar).
+        accion.recibo_codigo = f"ECO-{ahora:%y%m}-{accion.id:05d}-{secrets.token_hex(2).upper()}"
         usuario = Usuario.query.get(accion.id_usuario)
         if usuario:
             usuario.puntos_totales += puntos

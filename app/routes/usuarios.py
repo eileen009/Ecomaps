@@ -4,6 +4,8 @@ Endpoints:
     GET  /api/usuarios/me
     PUT  /api/usuarios/me
     POST  /api/usuarios/me/foto              (foto de perfil: usuarios, empresas y admin)
+    POST  /api/usuarios/me/solicitud-empresa  marca "soy una empresa" y avisa al equipo (ciudadano)
+    DELETE /api/usuarios/me/solicitud-empresa retira esa marca
     GET   /api/usuarios/empresas              empresas + nº de puntos (admin)
     PATCH /api/usuarios/<id>/verificada       dar/quitar sello "Empresa verificada" (admin)
 
@@ -18,6 +20,7 @@ import os
 
 from flask import Blueprint, current_app, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from markupsafe import escape
 
 from extensions import db
 from sqlalchemy import func
@@ -27,6 +30,7 @@ from models.punto_reciclaje import PuntoReciclaje
 from utils.auth_helpers import requiere_rol
 from utils.validaciones import correo_valido, password_valida
 from utils.archivos import extension_valida, guardar_foto, borrar_foto
+from utils.correo import enviar_correo
 
 usuarios_bp = Blueprint("usuarios", __name__, url_prefix="/api/usuarios")
 
@@ -79,6 +83,41 @@ def subir_foto_perfil():
     carpeta = os.path.join(current_app.static_folder, "uploads", "perfiles")
     usuario.foto_url = guardar_foto(foto, carpeta)
 
+    db.session.commit()
+    return jsonify(usuario.to_dict()), 200
+
+
+@usuarios_bp.post("/me/solicitud-empresa")
+@jwt_required()
+def solicitar_ser_empresa():
+    """El ciudadano marca "soy una empresa": queda guardado (el admin lo ve en
+    /admin/usuarios) y se avisa por correo al equipo, una sola vez."""
+    usuario = Usuario.query.get_or_404(int(get_jwt_identity()))
+    if usuario.rol != "ciudadano":
+        return jsonify({"error": "Tu cuenta ya no es de ciudadano."}), 400
+
+    ya_enviada = usuario.solicitud_empresa
+    usuario.solicitud_empresa = True
+    db.session.commit()
+
+    if not ya_enviada:
+        nombre, correo = escape(usuario.nombre), escape(usuario.correo)
+        enviar_correo(
+            current_app.config["CORREO_EQUIPO"], "Equipo EcoMaps",
+            "Nueva solicitud de cuenta de empresa en EcoMaps",
+            f"<p><b>{nombre}</b> ({correo}) marcó que es una empresa o centro de reciclaje.</p>"
+            "<p>Revisa su cuenta en el panel admin &gt; Usuarios y, si corresponde, cámbiale el rol a empresa.</p>",
+            f"{usuario.nombre} ({usuario.correo}) marcó que es una empresa. "
+            "Revisa su cuenta en el panel admin > Usuarios.",
+        )
+    return jsonify(usuario.to_dict()), 200
+
+
+@usuarios_bp.delete("/me/solicitud-empresa")
+@jwt_required()
+def retirar_solicitud_empresa():
+    usuario = Usuario.query.get_or_404(int(get_jwt_identity()))
+    usuario.solicitud_empresa = False
     db.session.commit()
     return jsonify(usuario.to_dict()), 200
 
@@ -216,6 +255,8 @@ def editar_usuario(id_usuario):
             setattr(usuario, campo, limpios[campo])
     if "password" in limpios:
         usuario.set_password(limpios["password"])
+    if usuario.rol == "empresa":
+        usuario.solicitud_empresa = False  # ya se atendió la solicitud
     db.session.commit()
     return jsonify(usuario.to_dict()), 200
 

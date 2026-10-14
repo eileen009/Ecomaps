@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<tr data-id="${u.id}" class="${u.activo ? '' : 'is-suspendido'}">
         <td><div class="admin-usuario">
           <img src="${esc(urlFoto(u.foto_url))}" alt="" width="34" height="34" onerror="this.onerror=null;this.src='${AVATAR_POR_DEFECTO}'">
-          <div><span class="admin-table__point">${esc(u.nombre)}${soyYo ? ' <small>(tú)</small>' : ''}${u.verificada ? ' <span title="Empresa verificada">✔</span>' : ''}</span>
+          <div><span class="admin-table__point">${esc(u.nombre)}${soyYo ? ' <small>(tú)</small>' : ''}${u.verificada ? ' <span title="Empresa verificada">✔</span>' : ''}${u.solicitud_empresa ? ' <span class="chip-solicitud" title="Marcó que es una empresa: revisa su cuenta y cámbiale el rol">Quiere ser empresa</span>' : ''}</span>
           <span class="admin-table__id">${esc(u.correo)}</span></div></div></td>
         <td><span class="rol-chip rol-chip--${u.rol}">${ROL_TEXTO[u.rol] || u.rol}</span></td>
         <td><span class="status-dot ${u.activo ? 'status-dot--activo' : 'status-dot--reportado'}">${u.activo ? 'Activo' : 'Suspendido'}</span></td>

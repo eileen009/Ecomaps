@@ -64,6 +64,8 @@ class Config:
     # Dirección pública del sitio, sin "/" al final (ej. https://ecomaps.onrender.com).
     # Obligatoria en producción: con ella se arma el enlace del correo.
     APP_URL = os.getenv("APP_URL", "").strip()
+    # Correo del equipo: recibe el aviso cuando alguien marca "soy una empresa".
+    CORREO_EQUIPO = os.getenv("CORREO_EQUIPO", "ecoomaps@gmail.com").strip()
 
     # ----- Subida de fotos (evidencia de reciclaje) -----
     # Límite de tamaño de subida: evita imágenes pesadas (código verde) y abuso.
