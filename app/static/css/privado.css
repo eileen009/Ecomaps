@@ -573,3 +573,16 @@
 .accion-recibo-adjunto { margin: 6px 0 10px; font-size: .85rem; }
 .accion-recibo-adjunto a { color: var(--dark-moss-green, #365004); font-weight: 600; }
 .accion-recibo-adjunto--vacio { color: var(--texto-suave, #6b6358); }
+
+/* Elegir el marco de la foto (los desbloqueados son botones) */
+.marco-opcion { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; font: inherit; border-radius: 12px; }
+.marco-opcion:focus-visible { outline: 2px solid var(--apple-green, #8DA432); outline-offset: 2px; }
+.marcos-galeria li.is-desbloqueado:hover { box-shadow: inset 0 0 0 2px var(--apple-green, #8DA432); }
+.marco-automatico { margin-top: 12px; padding: 6px 14px; border-radius: 999px; cursor: pointer; border: 1px solid var(--apple-green, #8DA432); background: #fff; color: var(--dark-moss-green, #365004); font: inherit; font-size: .8rem; font-weight: 600; }
+.marco-automatico:hover { background: #EAF0DC; }
+
+/* Campo del recibo en "Registrar aporte": mismo estilo que el resto del formulario */
+#foto-recibo { width: 100%; padding: 10px 12px; border: 1.5px dashed var(--apple-green, #8DA432); border-radius: 14px; background: #F7F9EE; color: var(--bistre, #351903); font: inherit; font-size: .9rem; cursor: pointer; }
+#foto-recibo:hover { background: #EEF3E2; }
+#foto-recibo::file-selector-button { margin-right: 12px; padding: 8px 16px; border: 0; border-radius: 999px; background: var(--dark-moss-green, #365004); color: #fff; font: inherit; font-weight: 600; cursor: pointer; transition: background .2s ease; }
+#foto-recibo::file-selector-button:hover { background: #4a6e07; }

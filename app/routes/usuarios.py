@@ -87,6 +87,23 @@ def subir_foto_perfil():
     return jsonify(usuario.to_dict()), 200
 
 
+@usuarios_bp.patch("/me/marco")
+@jwt_required()
+def elegir_marco():
+    """Elegir qué marco desbloqueado llevar en la foto. {"marco": 10} o {"marco": null}
+    para volver al marco de su nivel."""
+    usuario = Usuario.query.get_or_404(int(get_jwt_identity()))
+    datos = request.get_json(silent=True) or {}
+    marco = datos.get("marco")
+
+    if marco is not None:
+        if isinstance(marco, bool) or not isinstance(marco, int) or not 1 <= marco <= usuario.marco_maximo:
+            return jsonify({"error": "Solo puedes elegir un marco que ya desbloqueaste."}), 400
+    usuario.marco_elegido = marco
+    db.session.commit()
+    return jsonify(usuario.to_dict()), 200
+
+
 @usuarios_bp.post("/me/solicitud-empresa")
 @jwt_required()
 def solicitar_ser_empresa():

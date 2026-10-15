@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `rol` enum('ciudadano','empresa','admin') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ciudadano',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `solicitud_empresa` tinyint(1) NOT NULL DEFAULT '0',
+  `marco_elegido` smallint DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_usuario_correo` (`correo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
