@@ -3,8 +3,9 @@
 // Se usa en /admin/acciones (todos los pendientes) y en /empresa
 // (solo los de sus puntos). El listado sale de data-endpoint.
 //
-// Confirmar: quien revisa indica la cantidad que REALMENTE recibió y se
-//            emite un recibo digital (no se depende solo de la foto).
+// Confirmar: quien revisa indica la cantidad que REALMENTE recibió. Si el
+//            usuario adjuntó el recibo que le dio el punto, se muestra aquí
+//            como respaldo extra (no se depende solo de la foto).
 // Rechazar:  es obligatorio escribir el motivo; el usuario lo verá.
 // =========================================================
 
@@ -30,13 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="admin-accion-card__body">
         <h3>${escaparHTML(accion.categoria)} · declarado: ${escaparHTML(accion.cantidad)} ${escaparHTML(accion.unidad)}</h3>
         <p>${accion.punto ? escaparHTML(accion.punto) : 'Sin punto asociado'}</p>
+        ${accion.foto_recibo_url
+          ? `<p class="accion-recibo-adjunto"><a href="${escaparHTML(urlFoto(accion.foto_recibo_url))}" target="_blank" rel="noopener">Ver recibo adjunto por el usuario</a></p>`
+          : '<p class="accion-recibo-adjunto accion-recibo-adjunto--vacio">El usuario no adjuntó recibo.</p>'}
 
         <div data-bloque-confirmar>
           <label class="accion-recibida">Cantidad recibida (${escaparHTML(accion.unidad)})
             <input type="number" min="0.01" max="99999" step="0.01" value="${escaparHTML(accion.cantidad)}" data-recibida>
           </label>
           <div class="admin-accion-card__acciones">
-            <button type="button" class="btn btn--primary" data-confirmar>Confirmar y emitir recibo</button>
+            <button type="button" class="btn btn--primary" data-confirmar>Confirmar aporte</button>
             <button type="button" class="btn--rechazar" data-rechazar>Rechazar</button>
           </div>
         </div>
@@ -81,9 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!contenedor.querySelector('.admin-accion-card')) {
           contenedor.innerHTML = '<p class="map-layout__panel-vacio">No hay aportes pendientes por revisar.</p>';
         }
-        if (estado === 'confirmada' && revisada.recibo) {
-          mostrarAviso({ titulo: 'Aporte confirmado', mensaje: `Se emitió el recibo ${revisada.recibo.codigo}.` });
-        }
+        if (estado === 'confirmada') mostrarAviso({ titulo: 'Aporte confirmado', mensaje: `Se otorgaron ${revisada.puntos_otorgados} puntos.` });
         return;
       }
       botones.forEach((b) => { b.disabled = false; });
