@@ -560,35 +560,16 @@
 .accion-rechazo__sugeridos button:hover { background: #E7EBD3; }
 .accion-rechazo .admin-accion-card__acciones { margin-top: 8px; }
 
-/* Historial del usuario: motivo del rechazo y botón del recibo */
+/* Historial del usuario: motivo del rechazo y enlace al recibo adjunto */
 .activity-row__motivo { color: #8A2A10 !important; }
 .activity-row__recibo {
-  margin-top: 6px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
-  border: 1px solid var(--apple-green, #8DA432); background: #fff;
-  color: var(--dark-moss-green, #365004); font: inherit; font-size: .76rem; font-weight: 600;
+  display: inline-block; margin-top: 6px; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid var(--apple-green, #8DA432); background: #fff; text-decoration: none;
+  color: var(--dark-moss-green, #365004); font-size: .76rem; font-weight: 600;
 }
 .activity-row__recibo:hover { background: #EAF0DC; }
 
-/* =========================================================
-   Recibo digital (ventana + impresión)
-   ========================================================= */
-.recibo-dialogo { width: min(460px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: 18px; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .5); }
-.recibo-dialogo::backdrop { background: rgba(53, 25, 3, .45); }
-.recibo { padding: 26px 28px 8px; background: #fff; }
-.recibo__cabecera { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 2px dashed var(--borde, #D9D6C8); }
-.recibo__cabecera strong { display: block; color: var(--dark-moss-green, #365004); font-size: 1.1rem; }
-.recibo__cabecera span { font-size: .8rem; color: var(--texto-suave, #6b6358); }
-.recibo__codigo { margin: 14px 0 6px; font-size: .95rem; }
-.recibo__codigo b { color: var(--golden-brown, #925E06); letter-spacing: .04em; }
-.recibo__datos { margin: 0; }
-.recibo__datos div { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; border-bottom: 1px solid #EFEDE3; }
-.recibo__datos dt { color: var(--texto-suave, #6b6358); font-size: .82rem; }
-.recibo__datos dd { margin: 0; font-weight: 600; text-align: right; font-size: .88rem; }
-.recibo__nota { margin: 14px 0 4px; font-size: .74rem; color: var(--texto-suave, #6b6358); }
-.recibo__acciones { display: flex; gap: 10px; padding: 14px 28px 22px; background: #fff; }
-.recibo__acciones .btn { flex: 1; }
-@media print {
-  body.imprimiendo-recibo > *:not(.recibo-dialogo) { display: none !important; }
-  body.imprimiendo-recibo .recibo-dialogo { position: static; width: 100%; box-shadow: none; }
-  body.imprimiendo-recibo .recibo__acciones { display: none; }
-}
+/* Recibo que adjunta el usuario (lo ve quien revisa el aporte) */
+.accion-recibo-adjunto { margin: 6px 0 10px; font-size: .85rem; }
+.accion-recibo-adjunto a { color: var(--dark-moss-green, #365004); font-weight: 600; }
+.accion-recibo-adjunto--vacio { color: var(--texto-suave, #6b6358); }

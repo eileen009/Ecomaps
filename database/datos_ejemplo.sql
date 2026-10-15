@@ -189,7 +189,7 @@ INSERT INTO `punto_material` (`id_punto`, `id_categoria`) VALUES
   (25, 2),
   (25, 3);
 
-INSERT INTO `accion_reciclaje` (`id`, `id_usuario`, `id_categoria`, `id_punto`, `cantidad`, `unidad`, `foto_url`, `estado`, `puntos_otorgados`, `fecha`, `motivo_rechazo`, `cantidad_recibida`, `recibo_codigo`, `fecha_revision`, `id_revisor`) VALUES
+INSERT INTO `accion_reciclaje` (`id`, `id_usuario`, `id_categoria`, `id_punto`, `cantidad`, `unidad`, `foto_url`, `estado`, `puntos_otorgados`, `fecha`, `motivo_rechazo`, `cantidad_recibida`, `foto_recibo_url`, `fecha_revision`, `id_revisor`) VALUES
   (1, 10, 1, 1, 2.20, 'kg', 'https://res.cloudinary.com/dv4p8rmeo/image/upload/f_auto,q_auto/v1790629132/ecomaps/acciones/15cd3603529a4c6eb151fb5b75549f83.jpg', 'pendiente', 0, '2026-09-28 20:58:54', NULL, NULL, NULL, NULL, NULL),
   (2, 10, 4, 1, 1.50, 'kg', 'https://res.cloudinary.com/dv4p8rmeo/image/upload/f_auto,q_auto/v1790629247/ecomaps/acciones/6d836e0bdd6e43d1ba25b0b23e7760e2.jpg', 'pendiente', 0, '2026-09-28 21:00:48', NULL, NULL, NULL, NULL, NULL),
   (3, 4, 4, 1, 20.00, 'kg', 'https://res.cloudinary.com/dv4p8rmeo/image/upload/f_auto,q_auto/v1790653009/ecomaps/acciones/ac14e815014c42dfa6cae25a01ea8b6e.webp', 'confirmada', 200, '2026-09-29 03:36:50', NULL, NULL, NULL, NULL, NULL),

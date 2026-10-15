@@ -5,12 +5,11 @@ Endpoints:
     POST  /api/acciones                  registrar un aporte (queda "pendiente")
     GET   /api/usuarios/me/acciones       historial propio
     GET   /api/acciones?estado=pendiente  listar para revisión (admin)
-    PATCH /api/acciones/<id>/estado       confirmar (con cantidad recibida y recibo) o rechazar (con motivo)
+    PATCH /api/acciones/<id>/estado       confirmar (con cantidad recibida) o rechazar (con motivo)
                                           — admin, o la empresa dueña del punto
     GET   /api/acciones/mi-punto          aportes pendientes en los puntos de la empresa
 """
 import os
-import secrets
 from datetime import datetime, timezone
 
 from flask import Blueprint, current_app, request, jsonify
@@ -38,6 +37,7 @@ def registrar_accion():
     unidad = (request.form.get("unidad") or "kg").strip()
     id_punto = request.form.get("id_punto", type=int)
     foto = request.files.get("foto")
+    foto_recibo = request.files.get("foto_recibo")  # opcional: recibo/factura que dio el punto
 
     if not categoria_nombre:
         return jsonify({"error": "Indica qué material reciclaste."}), 400
@@ -54,6 +54,10 @@ def registrar_accion():
     if not extension_valida(foto.filename):
         return jsonify({"error": "La foto debe ser JPG, PNG o WEBP."}), 400
 
+    tiene_recibo = foto_recibo is not None and foto_recibo.filename != ""
+    if tiene_recibo and not extension_valida(foto_recibo.filename):
+        return jsonify({"error": "La foto del recibo debe ser JPG, PNG o WEBP."}), 400
+
     categoria = CategoriaResiduo.query.filter(
         CategoriaResiduo.nombre.ilike(categoria_nombre)
     ).first()
@@ -62,6 +66,7 @@ def registrar_accion():
 
     carpeta = os.path.join(current_app.static_folder, "uploads", "acciones")
     foto_url = guardar_foto(foto, carpeta)
+    foto_recibo_url = guardar_foto(foto_recibo, carpeta) if tiene_recibo else None
 
     accion = AccionReciclaje(
         id_usuario=int(get_jwt_identity()),
@@ -70,6 +75,7 @@ def registrar_accion():
         cantidad=cantidad,
         unidad=unidad,
         foto_url=foto_url,
+        foto_recibo_url=foto_recibo_url,
         estado="pendiente",
     )
     db.session.add(accion)
@@ -140,8 +146,6 @@ def revisar_accion(id_accion):
         # Los puntos se calculan sobre lo recibido, no sobre lo declarado.
         puntos = max(PUNTOS_MINIMOS, round(recibida * PUNTOS_POR_UNIDAD))
         accion.puntos_otorgados = puntos
-        # Código del recibo: año-mes, id del aporte y 4 caracteres al azar (no se puede adivinar).
-        accion.recibo_codigo = f"ECO-{ahora:%y%m}-{accion.id:05d}-{secrets.token_hex(2).upper()}"
         usuario = Usuario.query.get(accion.id_usuario)
         if usuario:
             usuario.puntos_totales += puntos
