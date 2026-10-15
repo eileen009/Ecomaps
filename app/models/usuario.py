@@ -34,6 +34,10 @@ class Usuario(db.Model):
     # decide si le cambia el rol. Se apaga solo cuando el admin lo pasa a empresa.
     solicitud_empresa = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
 
+    # Marco del avatar que el usuario eligió llevar (1..20). None = el de su nivel.
+    # Solo puede elegir uno ya desbloqueado (<= su nivel); se valida al leerlo.
+    marco_elegido = db.Column(db.SmallInteger, nullable=True)
+
     rol = db.Column(
         db.Enum("ciudadano", "empresa", "admin", name="rol_usuario"),
         nullable=False,
@@ -54,13 +58,21 @@ class Usuario(db.Model):
 
     # ----- Gamificación: marco del avatar según el nivel -----
     # Hay 20 marcos (static/assets/img/marcos/nivel-01..20.webp), uno por
-    # nivel. Del nivel 20 en adelante se conserva el marco 20. Es una regla
-    # fija y barata de calcular (código verde): no se guarda en la BD.
+    # nivel. Del nivel 20 en adelante se desbloquean todos. El máximo se calcula
+    # (barato, código verde); solo la elección del usuario se guarda en la BD.
     TOTAL_MARCOS = 20
 
     @property
-    def marco_avatar(self) -> int:
+    def marco_maximo(self) -> int:
+        """Último marco desbloqueado según el nivel."""
         return min(max(self.nivel or 1, 1), self.TOTAL_MARCOS)
+
+    @property
+    def marco_avatar(self) -> int:
+        """Marco que lleva puesto: el elegido si sigue desbloqueado, si no el más alto."""
+        if self.marco_elegido and 1 <= self.marco_elegido <= self.marco_maximo:
+            return self.marco_elegido
+        return self.marco_maximo
 
     # ----- Serialización -----
     def to_dict(self) -> dict:
@@ -74,6 +86,7 @@ class Usuario(db.Model):
             "rol": self.rol,
             "foto_url": self.foto_url,
             "marco_avatar": self.marco_avatar,
+            "marco_maximo": self.marco_maximo,
             "verificada": bool(self.verificada),
             "activo": bool(self.activo),
             "solicitud_empresa": bool(self.solicitud_empresa),

@@ -33,10 +33,11 @@
         <!-- Mis ganancias: marcos desbloqueados por nivel -->
         <section class="profile-panel" id="ganancias">
           <h3><svg class="icono-titulo" width="20" height="20" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-regalo"/></svg>Mis ganancias</h3>
-          <p class="profile-panel__nota">Hay un marco para tu foto por cada nivel. Súbelo reciclando.</p>
+          <p class="profile-panel__nota">Hay un marco para tu foto por cada nivel. Súbelo reciclando y <b>toca cualquiera de los desbloqueados para usarlo</b>, aunque sea uno de nivel más bajo.</p>
           <p class="profile-panel__nota" data-perfil="marco-siguiente"></p>
           <!-- Los 20 marcos: se pintan en perfil.js (desbloqueados en color, el resto en gris) -->
           <ul class="marcos-galeria" id="marcos-galeria"></ul>
+          <button type="button" class="marco-automatico" data-marco-automatico>Usar siempre el de mi nivel</button>
         </section>
       </div>
 

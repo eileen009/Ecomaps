@@ -6,20 +6,21 @@
 // Se carga solo en /perfil.
 // =========================================================
 
-let galeriaPintada = 0; // nivel con el que se pintó la galería (evita repintar igual)
+let galeriaPintada = ''; // estado con el que se pintó la galería (evita repintar igual)
 
 document.addEventListener('usuario-actualizado', ({ detail: usuario }) => {
   const $ = (clave) => document.querySelector(`[data-perfil="${clave}"]`);
   const puntos = usuario.puntos_totales ?? 0;
   const nivel = usuario.nivel ?? 1;
-  const marco = Math.min(nivel, TOTAL_MARCOS);
+  const marco = Math.min(nivel, TOTAL_MARCOS);            // último marco desbloqueado
+  const puesto = usuario.marco_avatar || marco;            // el que lleva en la foto
   const { avance, faltan } = progresoNivel(puntos);
 
   $('puntos').textContent = puntos.toLocaleString('es-CO');
   $('puntos-2').textContent = puntos.toLocaleString('es-CO');
   $('nivel').textContent = nivel;
   $('marco').textContent = `${marco}/${TOTAL_MARCOS}`;
-  $('marco-badge').textContent = `🏅 Marco nivel ${marco}`;
+  $('marco-badge').textContent = `🏅 Marco nivel ${puesto}`;
 
   $('progreso').setAttribute('aria-valuenow', avance);
   $('progreso-barra').style.width = `${avance}%`;
@@ -29,23 +30,46 @@ document.addEventListener('usuario-actualizado', ({ detail: usuario }) => {
     ? `Siguiente marco: nivel ${marco + 1} (te faltan ${faltan} puntos).`
     : '¡Desbloqueaste todos los marcos!';
 
-  if (galeriaPintada !== marco) pintarGaleria(marco);
+  const clave = `${marco}-${puesto}`;
+  if (galeriaPintada !== clave) pintarGaleria(marco, puesto);
 });
 
-function pintarGaleria(marcoActual) {
+// Galería: los desbloqueados son botones para elegir qué marco llevar en la foto.
+function pintarGaleria(maximo, puesto) {
   const galeria = document.getElementById('marcos-galeria');
   if (!galeria) return;
   galeria.innerHTML = Array.from({ length: TOTAL_MARCOS }, (_, i) => {
     const n = i + 1;
-    const estado = n === marcoActual ? 'is-actual' : (n < marcoActual ? 'is-desbloqueado' : 'is-bloqueado');
-    const texto = n === marcoActual ? 'Tu marco' : (n < marcoActual ? 'Desbloqueado' : 'Bloqueado');
+    const estado = n === puesto ? 'is-actual' : (n <= maximo ? 'is-desbloqueado' : 'is-bloqueado');
+    const texto = n === puesto ? 'Es el que llevas' : (n <= maximo ? 'Toca para usarlo' : 'Bloqueado');
     // loading="lazy": las miniaturas solo se descargan cuando se ven (código verde)
-    return `<li class="${estado}" title="Marco nivel ${n} · ${texto}">
-      <img src="${urlMarco(n, true)}" alt="Marco nivel ${n}" width="72" height="72" loading="lazy">
-      <span>${n}</span></li>`;
+    const img = `<img src="${urlMarco(n, true)}" alt="Marco nivel ${n}" width="72" height="72" loading="lazy"><span>${n}</span>`;
+    return n <= maximo
+      ? `<li class="${estado}" title="Marco nivel ${n} · ${texto}"><button type="button" class="marco-opcion" data-marco="${n}" aria-pressed="${n === puesto}" aria-label="Usar el marco del nivel ${n}">${img}</button></li>`
+      : `<li class="${estado}" title="Marco nivel ${n} · ${texto}">${img}</li>`;
   }).join('');
-  galeriaPintada = marcoActual;
+  galeriaPintada = `${maximo}-${puesto}`;
 }
+
+// Elegir el marco: se guarda en la cuenta y se repinta todo con la respuesta.
+async function elegirMarco(marco) {
+  const sesion = obtenerSesion();
+  if (!sesion) return;
+  const r = await fetch('/api/usuarios/me/marco', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sesion.token}` },
+    body: JSON.stringify({ marco }),
+  }).catch(() => null);
+  const datos = r ? await r.json().catch(() => ({})) : {};
+  if (r && r.ok) aplicarUsuario(datos);
+  else mostrarAviso({ tipo: 'error', mensaje: datos.error || 'No se pudo cambiar el marco.' });
+}
+
+document.addEventListener('click', (e) => {
+  const boton = e.target.closest('[data-marco]');
+  if (boton) elegirMarco(Number(boton.dataset.marco));
+  if (e.target.closest('[data-marco-automatico]')) elegirMarco(null);
+});
 
 
 // =========================================================
