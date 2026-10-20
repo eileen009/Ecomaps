@@ -7,7 +7,8 @@ dueña del punto) lo confirma o lo rechaza:
 - Si lo confirma, indica la cantidad que REALMENTE recibió y se otorgan los
   puntos sobre esa cantidad. Para que la confirmación no dependa solo de la
   foto (que podría ser sacada de internet), quien aporta puede adjuntar la
-  foto del recibo o factura que le entregó el punto (campo opcional).
+  foto del recibo o factura que le entregó el punto (campo obligatorio
+  al registrar; los aportes antiguos pueden no tenerla).
 - Si lo rechaza, debe escribir el motivo, que el usuario verá en su historial.
 """
 from datetime import datetime, timezone
