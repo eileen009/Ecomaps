@@ -1,0 +1,179 @@
+/* =========================================================
+   EcoMaps · Página "¿Qué es esto?" (clasificador por foto)
+   Se carga solo en /clasificar, después de publico.css.
+   ========================================================= */
+
+.clasif__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* ----- Panel de foto ----- */
+.clasif__foto,
+.clasif__resultado {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-panel);
+  box-shadow: var(--sombra);
+  padding: 22px;
+}
+.clasif__foto { display: flex; flex-direction: column; gap: 16px; }
+
+.clasif__zona {
+  position: relative;
+  display: grid; place-items: center;
+  min-height: 340px; flex: 1;
+  border: 2px dashed #BFCB9C;
+  border-radius: var(--radio-tarjeta);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(141, 164, 50, .16), transparent 55%),
+    var(--fondo-alt);
+  overflow: hidden; cursor: pointer;
+  transition: border-color var(--transicion), background var(--transicion), transform var(--transicion);
+}
+.clasif__zona:hover,
+.clasif__zona.is-arrastrando { border-color: var(--apple-green); transform: translateY(-1px); }
+.clasif__zona.is-arrastrando { background: #E6EFCB; }
+.clasif__zona img#vista { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+
+.clasif__zona-vacia { display: grid; justify-items: center; gap: 6px; padding: 24px; text-align: center; }
+.clasif__zona-vacia strong { font-family: var(--f-titulo); font-size: 1.25rem; color: var(--dark-moss-green); }
+.clasif__zona-vacia small { color: var(--texto-suave); font-size: .92rem; }
+.clasif__zona-icono {
+  display: grid; place-items: center;
+  width: 76px; height: 76px; margin-bottom: 8px;
+  border-radius: 50%;
+  background: var(--dark-moss-green); color: var(--flax);
+  box-shadow: 0 0 0 10px rgba(141, 164, 50, .18);
+}
+.clasif__zona-icono svg { stroke: currentColor; }
+
+/* Línea de escaneo mientras analiza */
+.clasif__escaner { display: none; }
+.clasif__zona.is-analizando .clasif__escaner {
+  display: block; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--apple-green), transparent);
+  box-shadow: 0 0 18px 4px rgba(141, 164, 50, .55);
+  animation: clasif-escaneo 1.4s ease-in-out infinite alternate;
+}
+@keyframes clasif-escaneo { from { top: 4%; } to { top: 96%; } }
+
+.clasif__acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+.clasif__acciones .btn { cursor: pointer; }
+.clasif__privacidad {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0; font-size: .84rem; color: var(--texto-suave);
+}
+.clasif__privacidad svg { flex: none; color: var(--apple-green); }
+
+/* ----- Panel de resultado ----- */
+.clasif__resultado { display: flex; flex-direction: column; }
+.clasif__estado { display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.clasif__estado[hidden] { display: none; }
+
+.clasif__etiqueta {
+  margin: 0; font-size: .75rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--golden-brown);
+}
+
+/* Estado inicial */
+.clasif__pasos { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.clasif__pasos li { display: flex; align-items: center; gap: 14px; color: var(--texto-suave); line-height: 1.45; }
+.clasif__pasos li span {
+  flex: none; display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--dark-moss-green); color: var(--flax);
+  font-family: var(--f-titulo); font-weight: 700; font-size: .95rem;
+}
+.clasif__clases { margin-top: auto; padding-top: 18px; border-top: 1px solid var(--borde); }
+.clasif__clases ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 12px 0 0; padding: 0; }
+.clasif__clases li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 8px; border-radius: 999px;
+  background: var(--fondo-alt); font-weight: 600; font-size: .92rem;
+}
+
+/* Cargando */
+.clasif__estado#estado-cargando { align-items: center; justify-content: center; text-align: center; min-height: 260px; }
+.clasif__spinner {
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 5px solid var(--fondo-alt); border-top-color: var(--apple-green);
+  animation: clasif-giro .9s linear infinite;
+}
+@keyframes clasif-giro { to { transform: rotate(360deg); } }
+.clasif__cargando-txt { margin: 0; color: var(--texto-suave); font-weight: 600; }
+
+/* Resultado */
+.clasif__material { display: flex; align-items: center; gap: 18px; }
+.clasif__material-img {
+  display: grid; place-items: center; flex: none;
+  width: 112px; height: 112px; border-radius: 28px;
+}
+.clasif__material h3 {
+  margin: 0 0 8px; font-family: var(--f-titulo);
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem); line-height: 1; color: var(--dark-moss-green);
+}
+.clasif__caneca {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px 6px 10px; border-radius: 999px;
+  background: var(--fondo-alt); font-size: .88rem; font-weight: 600;
+}
+.clasif__caneca i { width: 16px; height: 16px; border-radius: 5px; background: #fff; border: 2px solid #C9CFBF; }
+.clasif__caneca--verde i { background: #4E8A2A; border-color: #4E8A2A; }
+.clasif__caneca--negra i { background: #2B2B2B; border-color: #2B2B2B; }
+
+.clasif__confianza-cab { display: flex; justify-content: space-between; font-size: .9rem; color: var(--texto-suave); margin-bottom: 8px; }
+.clasif__confianza-cab strong { color: var(--dark-moss-green); font-family: var(--f-titulo); font-size: 1.15rem; }
+.clasif__barra { height: 12px; border-radius: 999px; background: var(--fondo-alt); overflow: hidden; }
+.clasif__barra i {
+  display: block; height: 100%; width: 0; border-radius: inherit;
+  background: linear-gradient(90deg, var(--apple-green), var(--dark-moss-green));
+  transition: width .7s cubic-bezier(.2, .8, .2, 1);
+}
+
+.clasif__consejo {
+  margin: 0; padding: 14px 16px; border-radius: 14px;
+  background: #FBF6D6; border-left: 4px solid var(--flax);
+  color: var(--bistre); line-height: 1.5; font-size: .95rem;
+}
+.clasif__ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; }
+
+/* Duda */
+.clasif__titulo-duda { margin: 0; font-family: var(--f-titulo); font-size: 1.9rem; color: var(--dark-moss-green); }
+.clasif__texto { margin: 0; color: var(--texto-suave); }
+.clasif__opciones { display: grid; gap: 12px; }
+.clasif__opcion {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  padding: 12px 16px 12px 12px; border-radius: var(--radio-tarjeta);
+  border: 1.5px solid var(--borde); background: var(--blanco); color: var(--texto);
+  transition: border-color var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+}
+.clasif__opcion:hover { border-color: var(--apple-green); transform: translateY(-2px); box-shadow: var(--sombra); }
+.clasif__opcion-img { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; flex: none; }
+.clasif__opcion strong { display: block; font-family: var(--f-titulo); font-size: 1.2rem; color: var(--dark-moss-green); }
+.clasif__opcion small { color: var(--texto-suave); }
+
+/* Error */
+.clasif__aviso {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 18px; border-radius: var(--radio-tarjeta);
+  background: #FBF1DC; border: 1px solid #E8D3A0; color: var(--bistre);
+}
+.clasif__aviso svg { flex: none; color: var(--golden-brown); margin-top: 2px; }
+.clasif__aviso h3 { margin: 0 0 4px; font-family: var(--f-titulo); font-size: 1.15rem; }
+.clasif__aviso p { margin: 0; color: var(--texto-suave); line-height: 1.5; }
+
+@media (max-width: 860px) {
+  .clasif__grid { grid-template-columns: 1fr; }
+  .clasif__zona { min-height: 260px; }
+}
+@media (max-width: 480px) {
+  .clasif__material { flex-direction: column; align-items: flex-start; }
+  .clasif__clases ul { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clasif__zona.is-analizando .clasif__escaner, .clasif__spinner { animation: none; }
+  .clasif__barra i { transition: none; }
+}

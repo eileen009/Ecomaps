@@ -36,6 +36,12 @@ def guia():
     return render_template("guia.html")
 
 
+@paginas_bp.get("/clasificar")
+def clasificar():
+    # Página estática: el modelo corre en el navegador (TensorFlow.js).
+    return render_template("clasificar.html")
+
+
 @paginas_bp.get("/proponer")
 def proponer():
     return render_template("proponer.html")

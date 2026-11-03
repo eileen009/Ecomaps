@@ -52,3 +52,6 @@ Thumbs.db
 # Fotos subidas por usuarios (evidencia de reciclaje): no son código
 app/static/uploads/*
 !app/static/uploads/**/.gitkeep
+
+# Dataset de imágenes para entrenar el modelo (pesado, se regenera con ml/preparar_dataset.py)
+ml/dataset/
