@@ -8,7 +8,7 @@
     </a>
 
     <nav class="nav" id="menu-principal" aria-label="Navegación principal">
-      {% for endpoint, texto in [('paginas.inicio', 'Inicio'), ('paginas.mapa', 'Mapa'), ('paginas.guia', 'Guía de reciclaje'), ('paginas.estadisticas', 'Estadísticas'), ('paginas.ods12', 'ODS 12')] %}
+      {% for endpoint, texto in [('paginas.inicio', 'Inicio'), ('paginas.mapa', 'Mapa'), ('paginas.guia', 'Guía de reciclaje'), ('paginas.clasificar', '¿Qué es esto?'), ('paginas.estadisticas', 'Estadísticas'), ('paginas.ods12', 'ODS 12')] %}
       <a href="{{ url_for(endpoint) }}" class="nav__link{% if seccion == endpoint %} nav__link--active{% endif %}"{% if seccion == endpoint %} aria-current="page"{% endif %}>{{ texto }}</a>
       {% endfor %}
     </nav>

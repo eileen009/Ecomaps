@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Qué es esto? | EcoMaps</title>
+  <meta name="description" content="Toma una foto de un residuo y EcoMaps te dice de qué material es y en qué caneca va.">
+  {% include '_head_publico.html' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/clasificar.css') }}">
+</head>
+{% set icono = url_for('static', filename='assets/img/iconos.svg') %}
+{% set mat = url_for('static', filename='assets/img/materiales/') %}
+<body class="publico">
+
+  {% include '_header_publico.html' %}
+
+  <section class="cabecera-pagina cabecera-pagina--con-imagen">
+    <div class="container">
+      <div>
+        <p class="breadcrumb"><a href="{{ url_for('paginas.inicio') }}">Inicio</a> › ¿Qué es esto?</p>
+        <h1>Apunta, fotografía y sabrás dónde va</h1>
+        <p>Sube una foto de tu residuo. Nuestro modelo identifica el material y te dice en qué caneca va y dónde llevarlo.</p>
+      </div>
+      <div class="guia-materiales" aria-hidden="true">
+        {% for m in ['plastico', 'vidrio', 'papel', 'metal'] %}<img src="{{ mat }}{{ m }}.svg" alt="" style="--i:{{ loop.index0 }}">{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <main class="container clasif" style="padding-bottom:120px;">
+    <div class="clasif__grid">
+
+      <!-- ===== Foto ===== -->
+      <section class="clasif__foto" aria-labelledby="t-foto">
+        <h2 id="t-foto" class="visually-hidden">Foto del residuo</h2>
+
+        <label class="clasif__zona" for="foto" id="zona-foto">
+          <img id="vista" alt="Foto del residuo seleccionada" hidden>
+          <span class="clasif__zona-vacia" id="zona-vacia">
+            <span class="clasif__zona-icono"><svg width="34" height="34" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg></span>
+            <strong>Toma o sube una foto</strong>
+            <small>Arrastra una imagen aquí o toca para elegirla</small>
+          </span>
+          <span class="clasif__escaner" aria-hidden="true" hidden></span>
+        </label>
+        <input type="file" id="foto" accept="image/*" capture="environment" class="visually-hidden">
+
+        <div class="clasif__acciones">
+          <label for="foto" class="btn btn--primary">
+            <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg>
+            <span id="txt-boton">Elegir foto</span>
+          </label>
+          <button type="button" class="btn btn--ghost" id="btn-limpiar" hidden>Probar otra</button>
+        </div>
+
+        <p class="clasif__privacidad">
+          <svg width="16" height="16" aria-hidden="true"><use href="{{ icono }}#i-escudo"/></svg>
+          La foto se analiza en tu dispositivo: no se sube a ningún servidor.
+        </p>
+      </section>
+
+      <!-- ===== Resultado ===== -->
+      <section class="clasif__resultado" aria-labelledby="t-res" aria-live="polite">
+        <h2 id="t-res" class="visually-hidden">Resultado</h2>
+
+        <!-- Estado inicial -->
+        <div class="clasif__estado" id="estado-inicio">
+          <p class="clasif__etiqueta">Cómo funciona</p>
+          <ol class="clasif__pasos">
+            <li><span>1</span> Toma una foto del residuo sobre un fondo liso.</li>
+            <li><span>2</span> El modelo lo clasifica en segundos.</li>
+            <li><span>3</span> Te mostramos la caneca y los puntos que lo reciben.</li>
+          </ol>
+          <div class="clasif__clases">
+            <p class="clasif__etiqueta">Materiales que reconoce</p>
+            <ul>
+              {% for id, nombre in [('plastico','Plástico'), ('vidrio','Vidrio'), ('papel','Papel y cartón'), ('metal','Metal')] %}
+              <li><img src="{{ mat }}{{ id }}.svg" alt="" width="34" height="34">{{ nombre }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Analizando -->
+        <div class="clasif__estado" id="estado-cargando" hidden>
+          <div class="clasif__spinner" aria-hidden="true"></div>
+          <p class="clasif__cargando-txt" id="txt-cargando">Analizando tu foto…</p>
+        </div>
+
+        <!-- Resultado seguro -->
+        <div class="clasif__estado" id="estado-resultado" hidden>
+          <p class="clasif__etiqueta">Creemos que es</p>
+          <div class="clasif__material">
+            <div class="clasif__material-img" id="res-tinte"><img id="res-img" src="" alt="" width="84" height="84"></div>
+            <div>
+              <h3 id="res-nombre">Plástico</h3>
+              <span class="clasif__caneca" id="res-caneca"><i></i><span>Caneca blanca</span></span>
+            </div>
+          </div>
+
+          <div class="clasif__confianza">
+            <div class="clasif__confianza-cab"><span>Confianza</span><strong id="res-pct">0 %</strong></div>
+            <div class="clasif__barra" role="img" aria-label="Nivel de confianza"><i id="res-barra"></i></div>
+          </div>
+
+          <p class="clasif__consejo" id="res-consejo"></p>
+
+          <div class="clasif__ctas">
+            <a class="btn btn--primary" id="res-mapa" href="{{ url_for('paginas.mapa') }}">
+              <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-pin"/></svg>
+              Ver puntos que lo reciben
+            </a>
+            <a class="btn btn--outline" href="{{ url_for('paginas.guia') }}#plastico" id="res-guia">Cómo prepararlo</a>
+          </div>
+        </div>
+
+        <!-- Confianza baja: el usuario elige -->
+        <div class="clasif__estado" id="estado-duda" hidden>
+          <p class="clasif__etiqueta">No estamos seguros</p>
+          <h3 class="clasif__titulo-duda">¿Cuál se parece más?</h3>
+          <p class="clasif__texto">La foto no es del todo clara. Elige la opción correcta y seguimos.</p>
+          <div class="clasif__opciones" id="duda-opciones"></div>
+        </div>
+
+        <!-- Error / modelo no disponible -->
+        <div class="clasif__estado" id="estado-error" hidden>
+          <div class="clasif__aviso">
+            <svg width="26" height="26" aria-hidden="true"><use href="{{ icono }}#i-alerta"/></svg>
+            <div>
+              <h3 id="err-titulo">No pudimos analizar la foto</h3>
+              <p id="err-texto">Intenta de nuevo con otra imagen.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cta-interna">
+      <div>
+        <h2>¿Ya sabes qué es?</h2>
+        <p>Consulta la guía para alistarlo bien antes de llevarlo.</p>
+      </div>
+      <a href="{{ url_for('paginas.guia') }}" class="btn btn--claro">Ir a la guía</a>
+    </div>
+  </main>
+
+  {% include '_footer_publico.html' %}
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/publico.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/clasificar.js') }}"></script>
+</body>
+</html>
