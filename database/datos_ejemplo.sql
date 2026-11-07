@@ -17,15 +17,15 @@ INSERT INTO `usuario` (`id`, `nombre`, `correo`, `password_hash`, `nivel`, `punt
   (12, 'Usuario 12', 'usuario12@example.com', 'scrypt:32768:8:1$qxbQ70X6M2BtA46H$dd944c30e33b7f1f117ab622503b01e693cc67388c45cb2c8da0c347963c8cd8ea9f7d04640493f47e9209cfa6cd6b2bc87cd9a78be009315dc7dbfc11e6261b', 1, 0, NULL, 0, 1, 'ciudadano', '2026-09-29 14:19:42', 0),
   (13, 'usuario EcoMaps', 'usuario@ecomaps.com', 'scrypt:32768:8:1$EJRCc66o4IWbpCQN$8bbf758184928cf8cf436c167ffee4bbe9d270724fae2fd14c5cfef353262cdd6dfee776223b7e3500886246d00b78858699f0923d309d91124a9982e91931f5', 1, 0, NULL, 0, 1, 'ciudadano', '2026-10-14 22:30:43', 0);
 
-INSERT INTO `categoria_residuo` (`id`, `nombre`, `icono`, `descripcion_corta`) VALUES
-  (1, 'Plástico', NULL, NULL),
-  (2, 'Vidrio', '????', NULL),
-  (3, 'Papel', '????', NULL),
-  (4, 'Cartón', NULL, NULL),
-  (5, 'Metal', '????', NULL),
-  (6, 'Orgánico', NULL, NULL),
-  (7, 'Electrónico', NULL, NULL),
-  (8, 'Baterías', NULL, NULL);
+INSERT INTO `categoria_residuo` (`id`, `nombre`, `icono`, `descripcion_corta`, `clase_modelo`, `caneca`) VALUES
+  (1, 'Plástico', NULL, NULL, 'plastico', 'blanca'),
+  (2, 'Vidrio', '????', NULL, 'vidrio', 'blanca'),
+  (3, 'Papel', '????', NULL, 'papel_carton', 'blanca'),
+  (4, 'Cartón', NULL, NULL, 'papel_carton', 'blanca'),
+  (5, 'Metal', '????', NULL, 'metal', 'blanca'),
+  (6, 'Orgánico', NULL, NULL, 'organico', 'verde'),
+  (7, 'Electrónico', NULL, NULL, NULL, 'blanca'),
+  (8, 'Baterías', NULL, NULL, NULL, 'blanca');
 
 INSERT INTO `punto_reciclaje` (`id`, `nombre`, `direccion`, `ciudad`, `latitud`, `longitud`, `horario`, `telefono_contacto`, `email_contacto`, `estado`, `creado_por`, `fecha_creacion`) VALUES
   (1, 'RECICOL R&C', 'Calle 29 # 41 - 64', 'Perímetro Urbano Montería', 8.7397072, -75.8582740, 'Lun-Jue 07:00-17:30; Sáb 07:00-13:00', '315 649 3385', 'info@recicol.com', 'activo', 2, '2026-09-28 01:35:40'),

@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="admin-accion-card__body">
         <h3>${escaparHTML(accion.categoria)} · declarado: ${escaparHTML(accion.cantidad)} ${escaparHTML(accion.unidad)}</h3>
         <p>${accion.punto ? escaparHTML(accion.punto) : 'Sin punto asociado'}</p>
+        ${accion.requiere_revision ? `<p class="accion-revisar" role="status" style="background:#FBF1DC;color:#6B4A12;border:1px solid #E8D3A0;border-radius:10px;padding:6px 10px;"><strong>Revisar:</strong> ${
+          accion.categoria_detectada
+            ? `la foto parece ${escaparHTML(accion.categoria_detectada)} (${Math.round((accion.confianza_deteccion || 0) * 100)} %)`
+            : 'el modelo no pudo confirmar el material de la foto'}</p>` : ''}
         ${accion.foto_recibo_url
           ? `<p class="accion-recibo-adjunto"><a href="${escaparHTML(urlFoto(accion.foto_recibo_url))}" target="_blank" rel="noopener">Ver recibo adjunto por el usuario</a></p>`
           : '<p class="accion-recibo-adjunto accion-recibo-adjunto--vacio">El usuario no adjuntó recibo.</p>'}

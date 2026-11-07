@@ -25,8 +25,11 @@ CREATE TABLE IF NOT EXISTS `categoria_residuo` (
   `nombre` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
   `icono` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `descripcion_corta` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `clase_modelo` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'nombre de la clase en metadata.json (varias categorías pueden compartirla)',
+  `caneca` enum('blanca','negra','verde') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'blanca',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_categoria_nombre` (`nombre`)
+  UNIQUE KEY `uk_categoria_nombre` (`nombre`),
+  KEY `idx_categoria_clase_modelo` (`clase_modelo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `punto_reciclaje` (
@@ -75,16 +78,41 @@ CREATE TABLE IF NOT EXISTS `accion_reciclaje` (
   `foto_recibo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_revision` datetime DEFAULT NULL,
   `id_revisor` int DEFAULT NULL,
+  `categoria_detectada_id` int DEFAULT NULL,
+  `confianza_deteccion` decimal(5,4) DEFAULT NULL,
+  `requiere_revision` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_accion_categoria` (`id_categoria`),
+  KEY `fk_accion_detectada` (`categoria_detectada_id`),
   KEY `fk_accion_punto` (`id_punto`),
   KEY `idx_accion_estado` (`estado`),
   KEY `idx_accion_usuario` (`id_usuario`),
   KEY `fk_accion_revisor` (`id_revisor`),
   CONSTRAINT `fk_accion_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categoria_residuo` (`id`),
+  CONSTRAINT `fk_accion_detectada` FOREIGN KEY (`categoria_detectada_id`) REFERENCES `categoria_residuo` (`id`),
   CONSTRAINT `fk_accion_punto` FOREIGN KEY (`id_punto`) REFERENCES `punto_reciclaje` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_accion_revisor` FOREIGN KEY (`id_revisor`) REFERENCES `usuario` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_accion_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `clasificaciones` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `usuario_id` int DEFAULT NULL,
+  `clase_predicha` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `confianza` decimal(5,4) NOT NULL,
+  `clase_confirmada` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'lo que eligió o corrigió el usuario',
+  `texto_otro` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '«Ninguna de estas»: lo que escribió el usuario',
+  `categoria_predicha_id` int DEFAULT NULL,
+  `categoria_confirmada_id` int DEFAULT NULL,
+  `imagen_url` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'solo si el usuario acepta compartirla para reentrenar',
+  `version_modelo` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `creado_en` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_clasif_usuario` (`usuario_id`),
+  CONSTRAINT `chk_clasif_confianza` CHECK ((`confianza` between 0 and 1)),
+  CONSTRAINT `fk_clasif_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_clasif_cat_pred` FOREIGN KEY (`categoria_predicha_id`) REFERENCES `categoria_residuo` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_clasif_cat_conf` FOREIGN KEY (`categoria_confirmada_id`) REFERENCES `categoria_residuo` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `reporte` (

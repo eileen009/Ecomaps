@@ -25,6 +25,7 @@ from utils.archivos import extension_valida, guardar_foto
 
 acciones_bp = Blueprint("acciones", __name__, url_prefix="/api/acciones")
 
+UMBRAL_REVISION = 0.6  # RF-06: si el modelo duda de la foto, el aporte se marca para revisión
 PUNTOS_POR_UNIDAD = 10  # código verde: fórmula simple, nada de cálculos pesados
 PUNTOS_MINIMOS = 5
 
@@ -69,7 +70,29 @@ def registrar_accion():
     foto_url = guardar_foto(foto, carpeta)
     foto_recibo_url = guardar_foto(foto_recibo, carpeta)
 
+    # ----- Prevalidación (RF-06) -----
+    # El navegador clasifica la foto de evidencia y manda la clase y la confianza.
+    # Como esa predicción corre en el cliente y podría alterarse, NO bloquea nada:
+    # solo marca el aporte para que quien lo revisa lo mire primero.
+    detectada = None
+    confianza_det = request.form.get("confianza_deteccion", type=float)
+    clase_detectada = (request.form.get("categoria_detectada") or "").strip()
+    if clase_detectada:
+        detectada = CategoriaResiduo.query.filter_by(clase_modelo=clase_detectada).order_by(CategoriaResiduo.id).first()
+    if confianza_det is not None and not 0 <= confianza_det <= 1:
+        confianza_det = None
+    if detectada is None:
+        # Clase sin categoría en el catálogo (p. ej. «no_aprovechable») o sin resultado del modelo.
+        # Si el modelo sí corrió y vio otra cosa, igual se revisa.
+        requiere_revision = bool(clase_detectada) or confianza_det is not None
+    else:
+        misma_clase = categoria.clase_modelo is not None and categoria.clase_modelo == detectada.clase_modelo
+        requiere_revision = (not misma_clase) or (confianza_det is not None and confianza_det < UMBRAL_REVISION)
+
     accion = AccionReciclaje(
+        categoria_detectada_id=detectada.id if detectada else None,
+        confianza_deteccion=confianza_det if (detectada or clase_detectada) else None,
+        requiere_revision=requiere_revision,
         id_usuario=int(get_jwt_identity()),
         id_categoria=categoria.id,
         id_punto=id_punto,
@@ -90,7 +113,7 @@ def registrar_accion():
 def listar_acciones():
     estado = request.args.get("estado", default="pendiente", type=str)
     # Índice en "estado": solo trae lo que el admin va a revisar, no toda la tabla.
-    acciones = AccionReciclaje.query.filter_by(estado=estado).order_by(AccionReciclaje.fecha.desc()).all()
+    acciones = AccionReciclaje.query.filter_by(estado=estado).order_by(AccionReciclaje.requiere_revision.desc(), AccionReciclaje.fecha.desc()).all()
     return jsonify([a.to_dict() for a in acciones]), 200
 
 
@@ -186,7 +209,7 @@ def acciones_de_mis_puntos():
             AccionReciclaje.estado == "pendiente",
             AccionReciclaje.id_usuario != id_empresa,
         )
-        .order_by(AccionReciclaje.fecha.desc())
+        .order_by(AccionReciclaje.requiere_revision.desc(), AccionReciclaje.fecha.desc())
         .all()
     )
     return jsonify([a.to_dict() for a in acciones]), 200

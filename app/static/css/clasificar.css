@@ -140,6 +140,32 @@
 }
 .clasif__ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; }
 
+/* Puntos cercanos (RF-05) */
+.clasif__puntos { display: grid; gap: 10px; padding-top: 16px; border-top: 1px solid var(--borde); }
+.clasif__puntos-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: punto; }
+.clasif__puntos-lista li {
+  counter-increment: punto; display: grid; gap: 2px; position: relative;
+  padding: 10px 14px 10px 46px; border: 1px solid var(--borde); border-radius: 14px; background: var(--blanco);
+}
+.clasif__puntos-lista li::before {
+  content: counter(punto); position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--apple-green); color: var(--blanco); font-weight: 700; font-size: .85rem;
+}
+.clasif__puntos-lista strong { color: var(--dark-moss-green); }
+.clasif__puntos-lista span, .clasif__puntos-lista small { color: var(--texto-suave); }
+.clasif__puntos-mapa { height: 240px; border-radius: 14px; overflow: hidden; border: 1px solid var(--borde); z-index: 0; }
+
+/* Corregir / «Ninguna de estas» */
+.clasif__corregir { margin: 0; font-size: .95rem; }
+.clasif__enlace { background: none; border: 0; padding: 0; font: inherit; color: var(--dark-moss-green); text-decoration: underline; cursor: pointer; }
+.clasif__form-otro { display: grid; gap: 12px; }
+.clasif__form-otro input {
+  width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--borde);
+  font: inherit; color: var(--texto); background: var(--blanco);
+}
+.clasif__form-otro input:focus { outline: 2px solid var(--apple-green); border-color: var(--apple-green); }
+
 /* Duda */
 .clasif__titulo-duda { margin: 0; font-family: var(--f-titulo); font-size: 1.9rem; color: var(--dark-moss-green); }
 .clasif__texto { margin: 0; color: var(--texto-suave); }

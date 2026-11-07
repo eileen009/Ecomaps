@@ -22,7 +22,7 @@
         <p>Sube una foto de tu residuo. Nuestro modelo identifica el material y te dice en qué caneca va y dónde llevarlo.</p>
       </div>
       <div class="guia-materiales" aria-hidden="true">
-        {% for m in ['plastico', 'vidrio', 'papel', 'metal'] %}<img src="{{ mat }}{{ m }}.svg" alt="" style="--i:{{ loop.index0 }}">{% endfor %}
+        {% for m in ['plastico', 'vidrio', 'papel', 'metal', 'organico'] %}<img src="{{ mat }}{{ m }}.svg" alt="" style="--i:{{ loop.index0 }}">{% endfor %}
       </div>
     </div>
   </section>
@@ -74,7 +74,7 @@
           <div class="clasif__clases">
             <p class="clasif__etiqueta">Materiales que reconoce</p>
             <ul>
-              {% for id, nombre in [('plastico','Plástico'), ('vidrio','Vidrio'), ('papel','Papel y cartón'), ('metal','Metal')] %}
+              {% for id, nombre in [('plastico','Plástico'), ('vidrio','Vidrio'), ('papel','Papel y cartón'), ('metal','Metal'), ('organico','Orgánico'), ('no_aprovechable','No aprovechable')] %}
               <li><img src="{{ mat }}{{ id }}.svg" alt="" width="34" height="34">{{ nombre }}</li>
               {% endfor %}
             </ul>
@@ -111,6 +111,14 @@
               Ver puntos que lo reciben
             </a>
             <a class="btn btn--outline" href="{{ url_for('paginas.guia') }}#plastico" id="res-guia">Cómo prepararlo</a>
+          </div>
+
+          <!-- RF-05: los 3 puntos más cercanos que reciben el material -->
+          <div class="clasif__puntos" id="res-puntos" hidden>
+            <p class="clasif__etiqueta">Dónde llevarlo</p>
+            <p class="clasif__texto" id="puntos-aviso" aria-live="polite"></p>
+            <ol class="clasif__puntos-lista" id="puntos-lista"></ol>
+            <div class="clasif__puntos-mapa" id="puntos-mapa" hidden role="region" aria-label="Mapa de los puntos cercanos"></div>
           </div>
         </div>
 

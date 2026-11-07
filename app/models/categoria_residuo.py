@@ -12,6 +12,9 @@ class CategoriaResiduo(db.Model):
     nombre = db.Column(db.String(60), nullable=False, unique=True, index=True)
     icono = db.Column(db.String(10), nullable=True)  # emoji o clase de ícono
     descripcion_corta = db.Column(db.String(160), nullable=True)
+    # Clase del clasificador (metadata.json). Papel y Cartón comparten «papel_carton».
+    clase_modelo = db.Column(db.String(30), nullable=True, index=True)
+    caneca = db.Column(db.Enum("blanca", "negra", "verde", name="caneca"), nullable=False, default="blanca")
 
     def to_dict(self) -> dict:
         return {
@@ -19,4 +22,6 @@ class CategoriaResiduo(db.Model):
             "nombre": self.nombre,
             "icono": self.icono,
             "descripcion_corta": self.descripcion_corta,
+            "clase_modelo": self.clase_modelo,
+            "caneca": self.caneca,
         }

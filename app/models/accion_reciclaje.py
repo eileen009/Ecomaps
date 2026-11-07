@@ -41,9 +41,18 @@ class AccionReciclaje(db.Model):
     fecha_revision = db.Column(db.DateTime, nullable=True)
     id_revisor = db.Column(db.Integer, db.ForeignKey("usuario.id", ondelete="SET NULL"), nullable=True)
 
+    # ----- Prevalidación con el clasificador (RF-06) -----
+    # Lo que el modelo vio en la foto de evidencia. Solo marca el aporte para
+    # revisión: la confirmación final la sigue haciendo la empresa o el admin.
+    categoria_detectada_id = db.Column(db.Integer, db.ForeignKey("categoria_residuo.id"), nullable=True)
+    confianza_deteccion = db.Column(db.Numeric(5, 4), nullable=True)
+    requiere_revision = db.Column(db.Boolean, nullable=False, default=False)
+
     fecha = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
-    categoria = db.relationship("CategoriaResiduo", lazy="joined")
+    # Hay dos llaves a categoria_residuo (declarada y detectada): se indica cuál usa cada relación.
+    categoria = db.relationship("CategoriaResiduo", foreign_keys=[id_categoria], lazy="joined")
+    categoria_detectada = db.relationship("CategoriaResiduo", foreign_keys=[categoria_detectada_id], lazy="joined")
     punto = db.relationship("PuntoReciclaje", lazy="joined")
     # Hay dos llaves a usuario (quien aporta y quien revisa): se indica cuál usa esta relación.
     revisor = db.relationship("Usuario", foreign_keys=[id_revisor], lazy="joined")
@@ -63,4 +72,7 @@ class AccionReciclaje(db.Model):
             "cantidad_recibida": float(self.cantidad_recibida) if self.cantidad_recibida is not None else None,
             "foto_recibo_url": self.foto_recibo_url,
             "fecha": self.fecha.isoformat(),
+            "categoria_detectada": self.categoria_detectada.nombre if self.categoria_detectada else None,
+            "confianza_deteccion": float(self.confianza_deteccion) if self.confianza_deteccion is not None else None,
+            "requiere_revision": bool(self.requiere_revision),
         }

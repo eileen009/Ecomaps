@@ -7,6 +7,8 @@
 
 const CLF_BASE = '/static/modelo/v1/';
 const CLF_UMBRAL = 0.7; // RF-04: por debajo se le pide elegir al usuario
+const CLF_VERSION = 'v1'; // versión del modelo; se guarda con cada clasificación (RF-07)
+const CLF_LEAFLET = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/';
 
 // Los nombres de clase deben coincidir con `labels` de metadata.json (los escribe el cuaderno).
 const CLF_MATERIALES = {
@@ -17,7 +19,11 @@ const CLF_MATERIALES = {
   papel_carton: { nombre: 'Papel y cartón', svg: 'papel',    tinte: '#F3E7D3', caneca: 'blanca', residuo: 'Papel', guia: 'papel',
                   consejo: 'Debe estar seco y limpio: el papel mojado o con grasa ya no se procesa.' },
   metal:        { nombre: 'Metal',          svg: 'metal',    tinte: '#EBEDF0', caneca: 'blanca', residuo: 'Metal', guia: 'metal',
-                  consejo: 'Enjuaga las latas y vacía por completo los aerosoles antes de entregarlos.' }
+                  consejo: 'Enjuaga las latas y vacía por completo los aerosoles antes de entregarlos.' },
+  organico:     { nombre: 'Orgánico',       svg: 'organico', tinte: '#F6E4D9', caneca: 'verde',  residuo: 'Orgánico', guia: 'organico',
+                  consejo: 'Sepáralo de lo seco: sin bolsas plásticas ni mezclado con otros residuos, sirve para compostar.' },
+  no_aprovechable: { nombre: 'No aprovechable', svg: 'no_aprovechable', tinte: '#E6E7EA', caneca: 'negra', residuo: null, guia: 'codigo-colores',
+                  consejo: 'Va a la caneca negra: envolturas sucias, servilletas usadas, icopor. Ningún punto de reciclaje lo recibe.' }
 };
 const CLF_CANECAS = { blanca: 'Caneca blanca', verde: 'Caneca verde', negra: 'Caneca negra' };
 const CLF_ESTADOS = ['inicio', 'cargando', 'resultado', 'duda', 'otro', 'gracias', 'error'];
@@ -25,11 +31,17 @@ const CLF_ESTADOS = ['inicio', 'cargando', 'resultado', 'duda', 'otro', 'gracias
 let clfModelo = null;       // modelo de TensorFlow.js
 let clfEtiquetas = null;   // nombres de clase, en el mismo orden que la salida del modelo
 let clfPromesaModelo = null;
+let clfCtx = null;          // última foto: { pred, conf, id } (id = fila en /api/clasificaciones)
+let clfTurno = 0;           // descarta respuestas de una foto anterior (puntos cercanos)
+let clfMapa = null;         // mapa Leaflet de los puntos cercanos
 
 const clfEl = (id) => document.getElementById(id);
 
 function clfMostrarEstado(nombre) {
-  CLF_ESTADOS.forEach((e) => { clfEl(`estado-${e}`).hidden = e !== nombre; });
+  CLF_ESTADOS.forEach((e) => {
+    const el = clfEl(`estado-${e}`);
+    if (el) el.hidden = e !== nombre;   // si falta alguno en la página, no se rompe el resto
+  });
 }
 
 function clfCargarScript(src) {
@@ -84,9 +96,12 @@ function mostrarResultado(clase, confianza) {
   clfEl('res-pct').textContent = `${pct} %`;
   clfEl('res-barra').style.width = `${pct}%`;
   clfEl('res-consejo').textContent = info.consejo;
-  clfEl('res-mapa').href = `/mapa?residuo=${encodeURIComponent(info.residuo)}`;
+  const btnMapa = clfEl('res-mapa');
+  btnMapa.hidden = !info.residuo;
+  if (info.residuo) btnMapa.href = `/mapa?residuo=${encodeURIComponent(info.residuo)}`;
   clfEl('res-guia').href = `/guia#${info.guia}`;
   clfMostrarEstado('resultado');
+  clfCargarPuntos(clase);
 }
 
 // Muestra opciones para que la persona elija. `opciones` = [{ className, probability? }].
@@ -104,7 +119,7 @@ function clfMostrarOpciones(opciones, textoTitulo) {
       <span><strong></strong><small>${detalle}</small></span>`;
     b.querySelector('strong').textContent = info.nombre;
     // Si la persona elige sin dato del modelo, queda confirmado por ella (100 %).
-    b.addEventListener('click', () => mostrarResultado(a.className, a.probability ?? 1));
+    b.addEventListener('click', () => clfElegir(a.className, a.probability));
     cont.appendChild(b);
   });
   clfEl('duda-titulo').textContent = textoTitulo;
@@ -121,9 +136,134 @@ function pedirCorreccion() {
   clfMostrarOpciones(Object.keys(CLF_MATERIALES).map((c) => ({ className: c })), '¿Qué material es?');
 }
 
-// «Ninguna de estas»: texto libre. RF-07 (guardar la corrección en MySQL) se conecta aquí
-// cuando exista el endpoint /api/clasificaciones.
+// ---------- RF-07: guardar la clasificación y la corrección de la persona ----------
+function clfCabeceras() {
+  const h = { 'Content-Type': 'application/json' };
+  try {
+    const sesion = typeof obtenerSesion === 'function' ? obtenerSesion() : null;
+    if (sesion && sesion.token) h.Authorization = `Bearer ${sesion.token}`;
+  } catch (e) { /* sin sesión: se guarda como anónimo */ }
+  return h;
+}
+
+// Guardar es secundario: si falla, la persona igual ve su resultado.
+async function clfGuardar(extra) {
+  if (!clfCtx) return;
+  try {
+    if (clfCtx.id) {
+      await fetch(`/api/clasificaciones/${clfCtx.id}`, { method: 'PATCH', headers: clfCabeceras(), body: JSON.stringify(extra) });
+    } else {
+      const r = await fetch('/api/clasificaciones', {
+        method: 'POST', headers: clfCabeceras(),
+        body: JSON.stringify({ clase_predicha: clfCtx.pred, confianza: clfCtx.conf, version_modelo: CLF_VERSION, ...extra })
+      });
+      if (r.ok) clfCtx.id = (await r.json()).id;
+    }
+  } catch (e) { /* sin red: no se pierde nada importante */ }
+}
+
+// La persona elige una clase (confianza baja o «no era correcto»).
+function clfElegir(clase, probabilidad) {
+  clfGuardar({ clase_confirmada: clase });
+  mostrarResultado(clase, probabilidad ?? 1);
+}
+
+// ---------- RF-05: los 3 puntos más cercanos que reciben el material ----------
+function clfUbicacion() {
+  return new Promise((ok) => {
+    if (!navigator.geolocation) return ok(null);
+    navigator.geolocation.getCurrentPosition(
+      (p) => ok({ lat: p.coords.latitude, lng: p.coords.longitude }),
+      () => ok(null),                       // sin permiso o sin señal: el servidor usa el centro de Montería
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  });
+}
+
+async function clfCargarLeaflet() {
+  if (window.L) return;
+  if (!document.querySelector('link[data-leaflet]')) {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = `${CLF_LEAFLET}leaflet.min.css`; css.dataset.leaflet = '1';
+    document.head.appendChild(css);
+  }
+  await clfCargarScript(`${CLF_LEAFLET}leaflet.min.js`);
+}
+
+function clfDistancia(m) {
+  return m < 1000 ? `${m} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
+}
+
+async function clfPintarMapa(centro, puntos, conUbicacion) {
+  try { await clfCargarLeaflet(); } catch (e) { return; }  // sin mapa, la lista basta
+  const caja = clfEl('puntos-mapa');
+  caja.hidden = false;
+  if (clfMapa) { clfMapa.remove(); clfMapa = null; }
+  clfMapa = L.map(caja, { scrollWheelZoom: false }).setView([centro.lat, centro.lng], 14);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(clfMapa);
+  const limites = [[centro.lat, centro.lng]];
+  if (conUbicacion) L.circleMarker([centro.lat, centro.lng], { radius: 8, color: '#2f6f9f', fillOpacity: 0.9 }).addTo(clfMapa).bindTooltip('Tú');
+  puntos.forEach((p, i) => {
+    const etiqueta = document.createElement('span');
+    etiqueta.textContent = `${i + 1}. ${p.nombre}`;
+    L.marker([p.latitud, p.longitud]).addTo(clfMapa).bindPopup(etiqueta);
+    limites.push([p.latitud, p.longitud]);
+  });
+  if (limites.length > 1) clfMapa.fitBounds(limites, { padding: [30, 30], maxZoom: 16 });
+  setTimeout(() => clfMapa && clfMapa.invalidateSize(), 150);
+}
+
+async function clfCargarPuntos(clase) {
+  const turno = ++clfTurno;
+  const bloque = clfEl('res-puntos');
+  const lista = clfEl('puntos-lista');
+  const aviso = clfEl('puntos-aviso');
+  const info = CLF_MATERIALES[clase];
+  lista.replaceChildren();
+  clfEl('puntos-mapa').hidden = true;
+  if (clfMapa) { clfMapa.remove(); clfMapa = null; }
+
+  if (!info || !info.residuo) {            // «no aprovechable»: ningún punto lo recibe
+    bloque.hidden = true;
+    return;
+  }
+  bloque.hidden = false;
+  aviso.textContent = 'Buscando los puntos más cercanos…';
+
+  const pos = await clfUbicacion();
+  if (turno !== clfTurno) return;
+  const q = new URLSearchParams({ clase });
+  if (pos) { q.set('lat', pos.lat); q.set('lng', pos.lng); }
+  try {
+    const r = await fetch(`/api/puntos-cercanos?${q}`);
+    if (!r.ok) throw new Error('error');
+    const datos = await r.json();
+    if (turno !== clfTurno) return;
+
+    if (!datos.puntos.length) {
+      aviso.textContent = 'No hay puntos registrados para este material.';
+      return;
+    }
+    aviso.textContent = datos.ubicacion_aproximada
+      ? 'No tenemos tu ubicación: te mostramos los puntos más cercanos al centro de Montería.'
+      : 'Los más cercanos a ti:';
+    datos.puntos.forEach((p) => {
+      const li = document.createElement('li');
+      const nombre = document.createElement('strong'); nombre.textContent = p.nombre;
+      const dir = document.createElement('span'); dir.textContent = p.direccion;
+      const dist = document.createElement('small'); dist.textContent = `${clfDistancia(p.distancia_m)}${datos.ubicacion_aproximada ? ' del centro' : ''}`;
+      li.append(nombre, dir, dist);
+      lista.appendChild(li);
+    });
+    clfPintarMapa(datos.centro, datos.puntos, !datos.ubicacion_aproximada);
+  } catch (e) {
+    if (turno === clfTurno) aviso.textContent = 'No pudimos cargar los puntos cercanos. Puedes verlos en el mapa.';
+  }
+}
+
+// «Ninguna de estas»: texto libre. Se guarda como corrección (RF-07).
 function clfEnviarOtro(texto) {
+  clfGuardar({ texto_otro: texto });
   clfEl('gracias-texto').textContent = `Anotamos «${texto}». Aún no reconocemos ese material; revisa la guía para saber cómo manejarlo.`;
   clfMostrarEstado('gracias');
 }
@@ -135,6 +275,7 @@ function clfMostrarError(titulo, texto) {
 }
 
 function clfLimpiar() {
+  clfTurno++; clfCtx = null;
   const vista = clfEl('vista');
   if (vista.src.startsWith('blob:')) URL.revokeObjectURL(vista.src);
   vista.hidden = true; vista.removeAttribute('src');
@@ -163,10 +304,16 @@ async function clfProcesarArchivo(archivo) {
   try {
     await vista.decode();
     const r = await clasificarImagen(vista);
-    if (r.confianza < CLF_UMBRAL) pedirConfirmacion(r);
-    else mostrarResultado(r.clase, r.confianza);
+    clfCtx = { pred: r.clase, conf: r.confianza, id: null };
+    if (r.confianza < CLF_UMBRAL) {
+      pedirConfirmacion(r);
+    } else {
+      mostrarResultado(r.clase, r.confianza);
+      clfGuardar({});                        // RF-07: queda registrada; si la persona corrige, se actualiza
+    }
   } catch (e) {
     // Lo más probable: aún no se han copiado los archivos del modelo a static/modelo/v1/.
+    console.error('[clasificador]', e);
     clfMostrarError('El modelo aún no está disponible', 'No pudimos cargar el modelo de clasificación. Intenta de nuevo en un momento.');
   } finally {
     clfEl('zona-foto').classList.remove('is-analizando');
@@ -179,11 +326,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!input) return;
 
   input.addEventListener('change', (e) => clfProcesarArchivo(e.target.files[0]));
-  clfEl('btn-limpiar').addEventListener('click', clfLimpiar);
-  clfEl('btn-otra-foto').addEventListener('click', clfLimpiar);
-  clfEl('btn-corregir').addEventListener('click', pedirCorreccion);
-  clfEl('btn-ninguna').addEventListener('click', () => { clfEl('txt-otro').value = ''; clfMostrarEstado('otro'); clfEl('txt-otro').focus(); });
-  clfEl('form-otro').addEventListener('submit', (e) => {
+  const al = (id, evento, fn) => { const el = clfEl(id); if (el) el.addEventListener(evento, fn); };
+  al('btn-limpiar', 'click', clfLimpiar);
+  al('btn-otra-foto', 'click', clfLimpiar);
+  al('btn-corregir', 'click', pedirCorreccion);
+  al('btn-ninguna', 'click', () => { clfEl('txt-otro').value = ''; clfMostrarEstado('otro'); clfEl('txt-otro').focus(); });
+  al('form-otro', 'submit', (e) => {
     e.preventDefault();
     const t = clfEl('txt-otro').value.trim();
     if (t) clfEnviarOtro(t);

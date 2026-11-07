@@ -1,0 +1,14 @@
+{
+  "labels": [
+    "metal",
+    "no_aprovechable",
+    "organico",
+    "papel_carton",
+    "plastico",
+    "vidrio"
+  ],
+  "imageSize": 224,
+  "preprocess": "x/127.5 - 1",
+  "umbral": 0.7,
+  "version": "v1"
+}
