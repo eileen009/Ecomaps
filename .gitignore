@@ -55,3 +55,6 @@ app/static/uploads/*
 
 # Dataset de imágenes para entrenar el modelo (pesado, se regenera con ml/preparar_dataset.py)
 ml/dataset/
+
+# Paquetes comprimidos (por ejemplo el .zip que descarga Colab): no van al repositorio
+*.zip
