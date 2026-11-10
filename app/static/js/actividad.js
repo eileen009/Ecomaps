@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initFotoDropzone();
   pintarResumenYHistorial();
+  document.getElementById('material').addEventListener('change', () => pintarAvisoFoto());
   const selectPunto = document.getElementById('punto');
   const parametros = new URLSearchParams(window.location.search);
   const puntoPreseleccionado = parametros.get('punto');
@@ -52,6 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (archivoRecibo) cuerpo.set('foto_recibo', await reducirFoto(archivoRecibo));
     const boton = form.querySelector('button[type="submit"]');
     boton.disabled = true;
+    // Revisión automática: si el modelo ya analizó la foto, se envía lo que vio (nunca bloquea el envío).
+    const detectada = await esperarPrevalidacion(6000);
+    if (detectada) {
+      cuerpo.set('categoria_detectada', detectada.clase);
+      cuerpo.set('confianza_deteccion', detectada.confianza.toFixed(4));
+    }
 
     try {
       const respuesta = await fetch('/api/acciones', {
@@ -107,8 +114,10 @@ function initFotoDropzone() {
       input.value = '';
       zona.querySelectorAll('.foto-dropzone__preview, .foto-dropzone__quitar').forEach((el) => el.remove());
       zona.insertAdjacentHTML('afterbegin', iconoOriginal + textoOriginal);
+      prevalidarFoto(null);
     });
     zona.appendChild(quitar);
+    prevalidarFoto(archivo);
   };
 
   input.addEventListener('change', () => mostrarPreview(input.files[0]));
@@ -176,4 +185,96 @@ async function pintarResumenYHistorial() {
       <div><strong>${escaparHTML(a.categoria || 'Material')} · ${escaparHTML(a.cantidad)} ${escaparHTML(a.unidad)}</strong><small>${escaparHTML(lugar)} · ${fecha}</small>${motivo}${recibo}</div>
       <span class="estado-chip ${estado.clase}">${estado.texto}</span><b>${puntosTxt}</b></article>`;
   }).join('');
+}
+
+
+// ===== Revisión automática de la foto =====
+// El modelo de /clasificar corre en el navegador (clasificarImagen() de clasificar.js).
+// Aquí solo se compara lo que ve con el material que eligió la persona: si no coincide, se le avisa
+// y el aporte llega marcado para que el administrador lo mire primero. Nunca impide enviar.
+const PREV_UMBRAL = 0.6;   // el servidor usa el mismo valor
+const PREV_CLASE_DE_MATERIAL = { 'plástico': 'plastico', 'vidrio': 'vidrio', 'papel': 'papel_carton', 'cartón': 'papel_carton', 'metal': 'metal', 'orgánico': 'organico' };
+const PREV_NOMBRE = { plastico: 'plástico', vidrio: 'vidrio', papel_carton: 'papel o cartón', metal: 'metal', organico: 'orgánico', no_aprovechable: 'un residuo no aprovechable' };
+const PREV_SVG = { plastico: 'plastico', vidrio: 'vidrio', papel_carton: 'papel', metal: 'metal', organico: 'organico', no_aprovechable: 'no_aprovechable' };
+const prevalidacion = { turno: 0, promesa: null, resultado: null, analizando: false };
+
+function prevalidarFoto(archivo) {
+  const turno = ++prevalidacion.turno;
+  prevalidacion.resultado = null;
+  prevalidacion.promesa = null;
+  if (!archivo || typeof clasificarImagen !== 'function') {
+    prevalidacion.analizando = false;
+    pintarAvisoFoto();
+    return;
+  }
+  prevalidacion.analizando = true;
+  pintarAvisoFoto();
+  prevalidacion.promesa = (async () => {
+    const url = URL.createObjectURL(archivo);
+    try {
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      const r = await clasificarImagen(img);
+      if (turno === prevalidacion.turno) prevalidacion.resultado = { clase: r.clase, confianza: r.confianza };
+    } catch (e) {
+      console.warn('[revisión de foto]', e);   // sin modelo o sin red: el aporte se envía igual
+    } finally {
+      URL.revokeObjectURL(url);
+      if (turno === prevalidacion.turno) { prevalidacion.analizando = false; pintarAvisoFoto(); }
+    }
+    return turno === prevalidacion.turno ? prevalidacion.resultado : null;
+  })();
+}
+
+// Espera el resultado, pero nunca más de `ms`: enviar el aporte no debe depender del modelo.
+async function esperarPrevalidacion(ms) {
+  if (prevalidacion.resultado) return prevalidacion.resultado;
+  if (!prevalidacion.promesa) return null;
+  return Promise.race([prevalidacion.promesa, new Promise((ok) => setTimeout(() => ok(null), ms))]);
+}
+
+function pintarAvisoFoto() {
+  const caja = document.getElementById('foto-analisis');
+  if (!caja) return;
+  caja.className = 'foto-analisis';
+  caja.replaceChildren();
+  if (prevalidacion.analizando) {
+    caja.classList.add('foto-analisis--carga');
+    caja.textContent = 'Revisando la foto…';
+    caja.hidden = false;
+    return;
+  }
+  const r = prevalidacion.resultado;
+  if (!r) { caja.hidden = true; return; }
+
+  const material = (document.getElementById('material').value || '').trim().toLowerCase();
+  const esperada = PREV_CLASE_DE_MATERIAL[material];
+  const nombre = PREV_NOMBRE[r.clase] || r.clase;
+  const pct = Math.round(r.confianza * 100);
+  let texto, tono;
+  if (r.confianza < PREV_UMBRAL) {
+    texto = 'No pudimos identificar bien el material en la foto. Puedes enviarla igual: un administrador la revisará.';
+    tono = 'warn';
+  } else if (r.clase === 'no_aprovechable') {
+    texto = 'La foto parece un residuo no aprovechable. Puedes enviarla igual: un administrador la revisará.';
+    tono = 'warn';
+  } else if (esperada && esperada !== r.clase) {
+    texto = `La foto parece ${nombre} (${pct} %), pero elegiste ${material}. Puedes enviarla igual: un administrador la revisará.`;
+    tono = 'warn';
+  } else if (esperada) {
+    texto = `La foto coincide con lo que elegiste: parece ${nombre} (${pct} %).`;
+    tono = 'ok';
+  } else {
+    texto = `La foto parece ${nombre} (${pct} %).`;
+    tono = 'ok';
+  }
+  caja.classList.add(`foto-analisis--${tono}`);
+  const ico = document.createElement('img');
+  ico.src = `/static/assets/img/materiales/${PREV_SVG[r.clase] || 'plastico'}.svg`;
+  ico.alt = '';
+  const t = document.createElement('span');
+  t.textContent = texto;
+  caja.append(ico, t);
+  caja.hidden = false;
 }

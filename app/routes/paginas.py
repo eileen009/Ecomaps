@@ -67,6 +67,12 @@ def admin_acciones():
     return render_template("admin_acciones.html", activo="acciones")
 
 
+@paginas_bp.get("/admin/evaluar-modelo")
+def admin_evaluar_modelo():
+    # RF-08: la evaluación corre en el navegador del admin (TensorFlow.js); aquí solo se sirve la página.
+    return render_template("admin_evaluar_modelo.html", activo="evaluar")
+
+
 @paginas_bp.get("/actividad")
 def actividad():
     return render_template("actividad.html", activo="actividad")

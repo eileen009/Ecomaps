@@ -56,7 +56,10 @@ function clfCargarScript(src) {
 // Carga TensorFlow.js y el modelo una sola vez; las siguientes fotos reutilizan el mismo.
 function clfCargarModelo() {
   clfPromesaModelo ??= (async () => {
-    await clfCargarScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
+    if (!window.tf) {
+      try { await clfCargarScript('/static/vendor/tf-4.22.0.min.js'); } catch (e) { /* se usa el CDN */ }
+    }
+    if (!window.tf) await clfCargarScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
     const [modelo, meta] = await Promise.all([
       tf.loadLayersModel(`${CLF_BASE}model.json`),
       fetch(`${CLF_BASE}metadata.json`).then((r) => { if (!r.ok) throw new Error('sin metadata'); return r.json(); })
@@ -323,7 +326,7 @@ async function clfProcesarArchivo(archivo) {
 document.addEventListener('DOMContentLoaded', () => {
   const input = clfEl('foto');
   const zona = clfEl('zona-foto');
-  if (!input) return;
+  if (!input || !zona) return;   // en /actividad solo se reutiliza clasificarImagen()
 
   input.addEventListener('change', (e) => clfProcesarArchivo(e.target.files[0]));
   const al = (id, evento, fn) => { const el = clfEl(id); if (el) el.addEventListener(evento, fn); };

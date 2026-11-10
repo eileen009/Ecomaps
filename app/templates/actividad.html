@@ -24,6 +24,7 @@
         <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
       </label>
       <p class="form__foto-hint">Un administrador la revisa antes de confirmar tus puntos.</p>
+      <div class="foto-analisis" id="foto-analisis" role="status" aria-live="polite" hidden></div>
       <label for="foto-recibo">Recibo o factura que te dieron en el punto</label>
       <input id="foto-recibo" type="file" accept="image/png, image/jpeg, image/webp" required>
       <p class="form__foto-hint">Pídele al punto el recibo o factura de tu entrega y súbelo: es obligatorio para confirmar tu aporte.</p>
@@ -36,4 +37,4 @@
 <div class="activity-list" id="historial"><p class="profile-panel__nota">Cargando tu historial…</p></div></div></section>
 {% endblock %}
 
-{% block script_extra %}<script src="{{ url_for('static', filename='js/actividad.js') }}"></script>{% endblock %}
+{% block script_extra %}<script src="{{ url_for('static', filename='js/clasificar.js') }}"></script><script src="{{ url_for('static', filename='js/actividad.js') }}"></script>{% endblock %}

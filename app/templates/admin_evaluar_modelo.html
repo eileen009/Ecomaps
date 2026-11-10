@@ -1,0 +1,124 @@
+{% extends "admin_base.html" %}
+
+{% block titulo %}Evaluar el modelo{% endblock %}
+{% block migas %}Evaluar el modelo{% endblock %}
+
+{% block estilos %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_evaluar.css') }}">
+{% endblock %}
+
+{% block contenido %}
+      {% set ico = url_for('static', filename='assets/img/iconos.svg') %}
+      <header class="pagina-banda">
+        <div class="pagina-banda__texto">
+          <h1>Evaluar el modelo</h1>
+          <p>Mide qué tan bien reconoce el clasificador los residuos usando fotos que no vio durante el entrenamiento.</p>
+        </div>
+        <div class="pagina-banda__arte pagina-banda__arte--materiales" aria-hidden="true"><img src="{{ url_for('static', filename='assets/img/materiales/') }}plastico.svg" alt="" style="--i:0"><img src="{{ url_for('static', filename='assets/img/materiales/') }}metal.svg" alt="" style="--i:1"><img src="{{ url_for('static', filename='assets/img/materiales/') }}vidrio.svg" alt="" style="--i:2"></div>
+      </header>
+
+      <section class="ev-panel">
+        <label class="ev-zona" for="ev-carpeta" id="ev-zona">
+          <input type="file" id="ev-carpeta" webkitdirectory multiple>
+          <span class="ev-zona__ico" aria-hidden="true"><svg width="28" height="28"><use href="{{ ico }}#i-imagen"/></svg></span>
+          <strong>Elige la carpeta con las fotos de prueba</strong>
+          <span class="ev-zona__texto">Dentro debe haber una carpeta por material, con estos nombres: metal, no_aprovechable, organico, papel_carton, plastico y vidrio. Las fotos se analizan en tu navegador y no se envían a ningún sitio.</span>
+          <span class="btn btn--outline ev-zona__btn">Buscar carpeta</span>
+        </label>
+
+        <div id="ev-conteo" hidden>
+          <div class="ev-chips" id="ev-chips"></div>
+          <p class="ev-aviso" id="ev-conteo-aviso" hidden></p>
+          <div class="ev-acciones">
+            <button type="button" class="btn btn--primary" id="ev-evaluar" disabled>Evaluar el modelo</button>
+            <span class="ev-modelo" id="ev-modelo-info"></span>
+          </div>
+        </div>
+
+        <div id="ev-progreso" hidden aria-live="polite">
+          <div class="ev-barra"><div class="ev-barra__relleno" id="ev-barra"></div></div>
+          <p class="ev-progreso-txt" id="ev-progreso-txt">Preparando el modelo…</p>
+        </div>
+
+        <p class="ev-error" id="ev-error" role="alert" hidden></p>
+      </section>
+
+      <div id="ev-resultados" hidden>
+
+        <section class="ev-resumen" aria-label="Resumen de la evaluación">
+          <div class="ev-anillo-card">
+            <div class="ev-anillo" aria-hidden="true">
+              <svg viewBox="0 0 120 120" width="150" height="150">
+                <circle cx="60" cy="60" r="52" class="ev-anillo__fondo"/>
+                <circle cx="60" cy="60" r="52" class="ev-anillo__valor" id="ev-anillo" transform="rotate(-90 60 60)"/>
+              </svg>
+              <strong id="ev-exactitud">—</strong>
+            </div>
+            <div>
+              <h2>Exactitud</h2>
+              <p id="ev-exactitud-txt">—</p>
+            </div>
+          </div>
+
+          <div class="ev-datos">
+            <div class="ev-dato">
+              <span class="ev-dato__ico"><svg width="20" height="20" aria-hidden="true"><use href="{{ ico }}#i-imagen"/></svg></span>
+              <div><strong id="ev-total">—</strong><span>fotos de prueba</span></div>
+            </div>
+            <div class="ev-dato">
+              <span class="ev-dato__ico ev-dato__ico--ambar"><svg width="20" height="20" aria-hidden="true"><use href="{{ ico }}#i-alerta"/></svg></span>
+              <div><strong id="ev-dudosas">—</strong><span>con confianza baja; la página le preguntaría al usuario</span></div>
+            </div>
+            <div class="ev-dato">
+              <span class="ev-dato__ico ev-dato__ico--azul"><svg width="20" height="20" aria-hidden="true"><use href="{{ ico }}#i-reloj"/></svg></span>
+              <div><strong id="ev-tiempo">—</strong><span>por foto, en este equipo</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ev-panel">
+          <div class="ev-titulo">
+            <div>
+              <h2>Matriz de confusión</h2>
+              <p>Cada fila es el material real y cada columna lo que respondió el modelo. Lo ideal es que todo quede en la diagonal.</p>
+            </div>
+          </div>
+          <div class="ev-scroll"><table class="ev-matriz" id="ev-matriz"></table></div>
+          <p class="ev-nota" id="ev-confusiones"></p>
+        </section>
+
+        <section class="ev-panel">
+          <div class="ev-titulo">
+            <div>
+              <h2>Resultado por material</h2>
+              <p><b>Precisión:</b> de lo que el modelo llamó así, cuánto lo era. <b>Exhaustividad:</b> de las fotos de ese material, cuántas encontró.</p>
+            </div>
+          </div>
+          <div class="ev-clases" id="ev-clases"></div>
+        </section>
+
+        <section class="ev-panel">
+          <details class="ev-detalle" id="ev-detalle">
+            <summary><span id="ev-errores-titulo">Fotos mal clasificadas</span></summary>
+            <ul class="ev-errores" id="ev-errores"></ul>
+            <p class="ev-nota" id="ev-errores-nota"></p>
+          </details>
+        </section>
+
+        <section class="ev-panel ev-guardar">
+          <div>
+            <h2>Guardar resultados</h2>
+            <p>Para adjuntarlos al informe de evaluación.</p>
+          </div>
+          <div class="ev-acciones">
+            <button type="button" class="btn btn--primary" id="ev-bajar-png">Matriz (imagen)</button>
+            <button type="button" class="btn btn--outline" id="ev-bajar-json">Informe (JSON)</button>
+            <button type="button" class="btn btn--outline" id="ev-bajar-csv">Matriz (CSV)</button>
+          </div>
+        </section>
+      </div>
+{% endblock %}
+
+{% block script_extra %}
+<script src="{{ url_for('static', filename='js/admin_evaluar_modelo.js') }}"></script>
+{% endblock %}
