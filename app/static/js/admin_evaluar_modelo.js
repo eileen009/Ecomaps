@@ -6,7 +6,8 @@
 // Las fotos no se suben a ningún servidor.
 // =========================================================
 (() => {
-  const BASE = '/static/modelo/v1/';
+  const BASES = ['/static/modelo/v1/', '/static/modelo/v2/']; // se promedian los dos modelos
+  const BASE = BASES[0]; // metadata común
   const TFJS_LOCAL = '/static/vendor/tf-4.22.0.min.js';
   const TFJS_CDN = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js';
   const IMG_MAT = '/static/assets/img/materiales/';
@@ -56,21 +57,25 @@
       if (!window.tf) {
         try { await cargarScript(TFJS_LOCAL); } catch { await cargarScript(TFJS_CDN); }
       }
-      const [m, md] = await Promise.all([
-        tf.loadLayersModel(`${BASE}model.json`),
+      const [ms, md] = await Promise.all([
+        Promise.all(BASES.map((b) => tf.loadLayersModel(`${b}model.json`))),
         fetch(`${BASE}metadata.json`).then((r) => { if (!r.ok) throw new Error('No se encontró metadata.json'); return r.json(); })
       ]);
-      modelo = m; meta = md;
-      el.modeloInfo.textContent = `Modelo ${md.version || 'v1'}`;
-      return m;
+      modelo = { predict: (x) => tf.tidy(() => tf.addN(ms.map((m) => m.predict(x))).div(ms.length)) };
+      meta = { ...md, version: 'v1+v2 (combinado)' };
+      el.modeloInfo.textContent = `Modelo ${meta.version}`;
+      return modelo;
     })().catch((e) => { promesaModelo = null; throw e; });
     return promesaModelo;
   }
 
   // ---------- Selección de carpeta ----------
   function normalizar(nombre) {
-    const n = nombre.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim().replace(/[\s-]+/g, '_');
-    return ALIAS[n] || n;
+    const n = nombre.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    if (ALIAS[n]) return ALIAS[n];
+    // Cualquier nombre que mencione papel o cartón (p. ej. «Papel y cartón», «papel-carton», «Cartones»).
+    if (/papel|carton|paper|cardboard/.test(n)) return 'papel_carton';
+    return n;
   }
 
   function mostrarError(texto) {

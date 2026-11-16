@@ -5,18 +5,22 @@ Aquí solo se atienden dos cosas:
 
     GET  /api/puntos-cercanos?clase=&lat=&lng=   los 3 puntos activos más cercanos que reciben ese material
     POST /api/clasificaciones                    guarda lo que predijo el modelo y lo que confirmó la persona
+                                                 (exige `acepta_foto`: la persona debe haber respondido Sí o No)
+    POST /api/clasificaciones/<id>/foto          guarda la foto, solo si la persona aceptó compartirla
     PATCH /api/clasificaciones/<id>              la persona corrige su resultado (hasta 30 min después)
 """
+import os
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 from sqlalchemy import text
 
 from extensions import db
 from models.categoria_residuo import CategoriaResiduo
 from models.clasificacion import Clasificacion
+from utils.archivos import extension_valida, guardar_foto
 
 clasificador_bp = Blueprint("clasificador", __name__, url_prefix="/api")
 
@@ -93,6 +97,10 @@ def registrar_clasificacion():
     except (TypeError, ValueError):
         return jsonify({"error": "La confianza debe estar entre 0 y 1."}), 400
 
+    # Consentimiento: es obligatorio responder (true = Sí, false = No). Sin respuesta no se guarda nada.
+    if not isinstance(datos.get("acepta_foto"), bool):
+        return jsonify({"error": "Indica si aceptas compartir la foto (sí o no)."}), 400
+
     confirmada = datos.get("clase_confirmada") or None
     if confirmada is not None and confirmada not in CLASES_VALIDAS:
         return jsonify({"error": "Clase confirmada no válida."}), 400
@@ -164,3 +172,49 @@ def corregir_clasificacion(id_clasificacion):
         registro.texto_otro = texto
     db.session.commit()
     return jsonify({"id": registro.id}), 200
+
+
+def _es_imagen(archivo):
+    """Revisa el contenido (no solo el nombre): JPEG, PNG o WebP."""
+    cabecera = archivo.stream.read(12)
+    archivo.stream.seek(0)
+    return (cabecera[:3] == b"\xff\xd8\xff"
+            or cabecera[:8] == b"\x89PNG\r\n\x1a\n"
+            or (cabecera[:4] == b"RIFF" and cabecera[8:12] == b"WEBP"))
+
+
+@clasificador_bp.post("/clasificaciones/<int:id_clasificacion>/foto")
+def subir_foto_clasificacion(id_clasificacion):
+    """Guarda la foto para reentrenar el modelo. La página solo la envía si la persona dijo «Sí».
+
+    Misma regla que la corrección: poco después de crearla y, si la clasificación
+    tenía dueño, únicamente ese usuario. Una clasificación tiene una sola foto.
+    """
+    registro = db.session.get(Clasificacion, id_clasificacion)
+    if registro is None:
+        return jsonify({"error": "Recurso no encontrado."}), 404
+
+    ahora = datetime.now(timezone.utc).replace(tzinfo=None)
+    if ahora - registro.creado_en > VENTANA_CORRECCION:
+        return jsonify({"error": "Ya no se puede agregar la foto a esta clasificación."}), 409
+
+    usuario_id = None
+    try:
+        verify_jwt_in_request(optional=True)
+        identidad = get_jwt_identity()
+        usuario_id = int(identidad) if identidad else None
+    except Exception:
+        usuario_id = None
+    if registro.usuario_id is not None and registro.usuario_id != usuario_id:
+        return jsonify({"error": "No puedes agregar la foto a esta clasificación."}), 403
+    if registro.imagen_url:
+        return jsonify({"error": "Esta clasificación ya tiene foto."}), 409
+
+    foto = request.files.get("foto")
+    if not foto or not foto.filename or not extension_valida(foto.filename) or not _es_imagen(foto):
+        return jsonify({"error": "La foto debe ser JPG, PNG o WEBP."}), 400
+
+    carpeta = os.path.join(current_app.static_folder, "uploads", "clasificaciones")
+    registro.imagen_url = guardar_foto(foto, carpeta)
+    db.session.commit()
+    return jsonify({"id": registro.id}), 201

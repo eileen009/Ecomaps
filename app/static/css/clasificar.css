@@ -62,6 +62,20 @@
 
 .clasif__acciones { display: flex; gap: 10px; flex-wrap: wrap; }
 .clasif__acciones .btn { cursor: pointer; }
+.clasif__acciones .btn:disabled { opacity: .5; cursor: not-allowed; }
+.clasif__consent {
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 0; padding: 12px 14px; border: 1px solid var(--borde); border-radius: 14px;
+}
+.clasif__consent legend { padding: 0 6px; font-weight: 700; font-size: .92rem; }
+.clasif__opcion {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 8px 10px; border: 1px solid var(--borde); border-radius: 10px; font-size: .9rem;
+}
+.clasif__opcion input { accent-color: var(--apple-green); flex: none; }
+.clasif__opcion:has(input:checked) { border-color: var(--apple-green); background: var(--fondo-alt); }
+.clasif__consent:disabled .clasif__opcion { cursor: default; opacity: .7; }
+.clasif__ayuda { margin: 0; font-size: .84rem; color: var(--texto-suave); min-height: 1.2em; }
 .clasif__privacidad {
   display: flex; align-items: center; gap: 8px;
   margin: 0; font-size: .84rem; color: var(--texto-suave);

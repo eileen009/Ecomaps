@@ -1,11 +1,14 @@
 // =========================================================
 // EcoMaps · Clasificador de residuos por foto (RF-01 a RF-04)
 // El modelo (MobileNetV2 entrenado en ml/entrenar_modelo.ipynb → TensorFlow.js) corre en el navegador:
-// la foto no se sube a ningún servidor. Las librerías pesadas solo se
+// la foto solo se sube si la persona responde «Sí» a compartirla para mejorar el modelo
+// (siempre debe responder Sí o No antes de analizar). Las librerías pesadas solo se
 // descargan cuando la persona elige su primera foto (código verde).
 // =========================================================
 
-const CLF_BASE = '/static/modelo/v1/';
+// Se usan dos modelos (v1 y v2) y se promedian sus probabilidades: lo que uno falla, el otro lo compensa.
+const CLF_BASES = ['/static/modelo/v1/', '/static/modelo/v2/'];
+const CLF_BASE = CLF_BASES[0]; // metadata (etiquetas) común a ambos
 const CLF_UMBRAL = 0.7; // RF-04: por debajo se le pide elegir al usuario
 const CLF_VERSION = 'v1'; // versión del modelo; se guarda con cada clasificación (RF-07)
 const CLF_LEAFLET = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/';
@@ -31,7 +34,10 @@ const CLF_ESTADOS = ['inicio', 'cargando', 'resultado', 'duda', 'otro', 'gracias
 let clfModelo = null;       // modelo de TensorFlow.js
 let clfEtiquetas = null;   // nombres de clase, en el mismo orden que la salida del modelo
 let clfPromesaModelo = null;
-let clfCtx = null;          // última foto: { pred, conf, id } (id = fila en /api/clasificaciones)
+let clfCtx = null;          // última foto: { pred, conf, id, acepta, archivo } (id = fila en /api/clasificaciones)
+let clfArchivo = null;      // foto elegida que espera ser analizada
+let clfAcepta = null;       // consentimiento para reentrenar: true = Sí, false = No, null = sin responder
+let clfAnalizando = false;
 let clfTurno = 0;           // descarta respuestas de una foto anterior (puntos cercanos)
 let clfMapa = null;         // mapa Leaflet de los puntos cercanos
 
@@ -60,13 +66,14 @@ function clfCargarModelo() {
       try { await clfCargarScript('/static/vendor/tf-4.22.0.min.js'); } catch (e) { /* se usa el CDN */ }
     }
     if (!window.tf) await clfCargarScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
-    const [modelo, meta] = await Promise.all([
-      tf.loadLayersModel(`${CLF_BASE}model.json`),
+    const [modelos, meta] = await Promise.all([
+      Promise.all(CLF_BASES.map((b) => tf.loadLayersModel(`${b}model.json`))),
       fetch(`${CLF_BASE}metadata.json`).then((r) => { if (!r.ok) throw new Error('sin metadata'); return r.json(); })
     ]);
     clfEtiquetas = meta.labels;
-    clfModelo = modelo;
-    return modelo;
+    // "Modelo" combinado: promedia la salida softmax de los dos (mismo orden de clases).
+    clfModelo = { predict: (x) => tf.tidy(() => tf.addN(modelos.map((m) => m.predict(x))).div(modelos.length)) };
+    return clfModelo;
   })().catch((e) => { clfPromesaModelo = null; throw e; });
   return clfPromesaModelo;
 }
@@ -151,18 +158,46 @@ function clfCabeceras() {
 
 // Guardar es secundario: si falla, la persona igual ve su resultado.
 async function clfGuardar(extra) {
-  if (!clfCtx) return;
+  const ctx = clfCtx;
+  if (!ctx) return;
   try {
-    if (clfCtx.id) {
-      await fetch(`/api/clasificaciones/${clfCtx.id}`, { method: 'PATCH', headers: clfCabeceras(), body: JSON.stringify(extra) });
+    if (ctx.id) {
+      await fetch(`/api/clasificaciones/${ctx.id}`, { method: 'PATCH', headers: clfCabeceras(), body: JSON.stringify(extra) });
     } else {
       const r = await fetch('/api/clasificaciones', {
         method: 'POST', headers: clfCabeceras(),
-        body: JSON.stringify({ clase_predicha: clfCtx.pred, confianza: clfCtx.conf, version_modelo: CLF_VERSION, ...extra })
+        body: JSON.stringify({ clase_predicha: ctx.pred, confianza: ctx.conf, version_modelo: CLF_VERSION, acepta_foto: ctx.acepta, ...extra })
       });
-      if (r.ok) clfCtx.id = (await r.json()).id;
+      if (r.ok) {
+        ctx.id = (await r.json()).id;
+        clfSubirFoto(ctx);
+      }
     }
   } catch (e) { /* sin red: no se pierde nada importante */ }
+}
+
+// Solo si la persona dijo «Sí»: la foto se reduce (máx. 512 px, JPEG) y se envía para reentrenar el modelo.
+async function clfFotoReducida(archivo) {
+  const LADO = 512;
+  const bmp = await createImageBitmap(archivo);
+  const k = Math.min(1, LADO / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  bmp.close?.();
+  return new Promise((ok) => c.toBlob(ok, 'image/jpeg', 0.85));
+}
+
+async function clfSubirFoto(ctx) {
+  if (!ctx.acepta || !ctx.id || !ctx.archivo || ctx.fotoEnviada) return;
+  ctx.fotoEnviada = true;
+  try {
+    const blob = await clfFotoReducida(ctx.archivo);
+    if (!blob) return;
+    const cab = clfCabeceras(); delete cab['Content-Type'];   // el navegador pone el de multipart
+    const datos = new FormData(); datos.append('foto', blob, 'foto.jpg');
+    await fetch(`/api/clasificaciones/${ctx.id}/foto`, { method: 'POST', headers: cab, body: datos });
+  } catch (e) { /* secundario: el resultado ya se mostró */ }
 }
 
 // La persona elige una clase (confianza baja o «no era correcto»).
@@ -277,8 +312,26 @@ function clfMostrarError(titulo, texto) {
   clfMostrarEstado('error');
 }
 
+// ---------- Consentimiento: hay que responder Sí o No antes de analizar ----------
+function clfReiniciarConsentimiento() {
+  clfAcepta = null;
+  document.querySelectorAll('input[name="consentimiento"]').forEach((r) => { r.checked = false; });
+  const caja = clfEl('consentimiento');
+  if (caja) caja.disabled = false;
+}
+
+function clfActualizarBoton() {
+  const btn = clfEl('btn-analizar');
+  if (!btn) return;
+  btn.disabled = clfAnalizando || !clfArchivo || clfAcepta === null;
+  const ayuda = clfEl('ayuda-analizar');
+  if (!ayuda) return;
+  if (clfArchivo) ayuda.textContent = clfAcepta === null ? 'Responde Sí o No para poder analizar tu foto.' : '';
+  else ayuda.textContent = clfEl('vista').hidden ? 'Elige una foto para empezar.' : '';
+}
+
 function clfLimpiar() {
-  clfTurno++; clfCtx = null;
+  clfTurno++; clfCtx = null; clfArchivo = null;
   const vista = clfEl('vista');
   if (vista.src.startsWith('blob:')) URL.revokeObjectURL(vista.src);
   vista.hidden = true; vista.removeAttribute('src');
@@ -286,13 +339,17 @@ function clfLimpiar() {
   clfEl('btn-limpiar').hidden = true;
   clfEl('txt-boton').textContent = 'Elegir foto';
   clfEl('foto').value = '';
+  clfReiniciarConsentimiento();
   clfMostrarEstado('inicio');
+  clfActualizarBoton();
 }
 
-async function clfProcesarArchivo(archivo) {
+// Elegir la foto solo la muestra; no se analiza ni se envía nada hasta que respondan Sí o No.
+function clfElegirArchivo(archivo) {
   if (!archivo || !archivo.type.startsWith('image/')) {
     return clfMostrarError('Archivo no válido', 'Elige una imagen (JPG, PNG o WebP).');
   }
+  clfTurno++; clfCtx = null;
   const vista = clfEl('vista');
   if (vista.src.startsWith('blob:')) URL.revokeObjectURL(vista.src);
   vista.src = URL.createObjectURL(archivo);
@@ -300,6 +357,20 @@ async function clfProcesarArchivo(archivo) {
   clfEl('zona-vacia').hidden = true;
   clfEl('btn-limpiar').hidden = false;
   clfEl('txt-boton').textContent = 'Cambiar foto';
+  clfArchivo = archivo;
+  clfReiniciarConsentimiento();      // cada foto necesita su propia respuesta
+  clfMostrarEstado('inicio');
+  clfActualizarBoton();
+}
+
+async function clfAnalizar() {
+  if (!clfArchivo || clfAcepta === null || clfAnalizando) return;   // sin Sí/No no se analiza
+  const archivo = clfArchivo, acepta = clfAcepta, turno = clfTurno;
+  clfAnalizando = true; clfArchivo = null;
+  const caja = clfEl('consentimiento');
+  if (caja) caja.disabled = true;     // la respuesta ya no cambia para esta foto
+  clfActualizarBoton();
+  const vista = clfEl('vista');
   clfEl('txt-cargando').textContent = clfModelo ? 'Analizando tu foto…' : 'Cargando el modelo por primera vez…';
   clfMostrarEstado('cargando');
   clfEl('zona-foto').classList.add('is-analizando');
@@ -307,7 +378,8 @@ async function clfProcesarArchivo(archivo) {
   try {
     await vista.decode();
     const r = await clasificarImagen(vista);
-    clfCtx = { pred: r.clase, conf: r.confianza, id: null };
+    if (turno !== clfTurno) return;    // la persona ya cambió o limpió la foto
+    clfCtx = { pred: r.clase, conf: r.confianza, id: null, acepta, archivo };
     if (r.confianza < CLF_UMBRAL) {
       pedirConfirmacion(r);
     } else {
@@ -320,6 +392,8 @@ async function clfProcesarArchivo(archivo) {
     clfMostrarError('El modelo aún no está disponible', 'No pudimos cargar el modelo de clasificación. Intenta de nuevo en un momento.');
   } finally {
     clfEl('zona-foto').classList.remove('is-analizando');
+    clfAnalizando = false;
+    clfActualizarBoton();
   }
 }
 
@@ -328,7 +402,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const zona = clfEl('zona-foto');
   if (!input || !zona) return;   // en /actividad solo se reutiliza clasificarImagen()
 
-  input.addEventListener('change', (e) => clfProcesarArchivo(e.target.files[0]));
+  input.addEventListener('change', (e) => clfElegirArchivo(e.target.files[0]));
+  document.querySelectorAll('input[name="consentimiento"]').forEach((r) => r.addEventListener('change', () => {
+    clfAcepta = r.value === 'si';
+    clfActualizarBoton();
+  }));
+  clfEl('btn-analizar')?.addEventListener('click', clfAnalizar);
   const al = (id, evento, fn) => { const el = clfEl(id); if (el) el.addEventListener(evento, fn); };
   al('btn-limpiar', 'click', clfLimpiar);
   al('btn-otra-foto', 'click', clfLimpiar);
@@ -343,5 +422,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Arrastrar y soltar
   ['dragenter', 'dragover'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add('is-arrastrando'); }));
   ['dragleave', 'drop'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.remove('is-arrastrando'); }));
-  zona.addEventListener('drop', (e) => clfProcesarArchivo(e.dataTransfer.files[0]));
+  zona.addEventListener('drop', (e) => clfElegirArchivo(e.dataTransfer.files[0]));
 });

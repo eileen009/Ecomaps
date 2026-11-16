@@ -98,8 +98,9 @@
 .ev-detalle summary::after { content: "Mostrar"; font-family: var(--f-texto); font-size: .85rem; font-weight: 600; color: var(--verde-oscuro); background: var(--fondo-alt); padding: 5px 14px; border-radius: 99px; }
 .ev-detalle[open] summary::after { content: "Ocultar"; }
 .ev-errores { margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-.ev-error-item { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; padding: 8px; border: 1px solid var(--borde); border-radius: 14px; }
+.ev-error-item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px; border: 1px solid var(--borde); border-radius: 14px; }
 .ev-error-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; background: var(--fondo-alt); }
+.ev-error-item > div { min-width: 0; }
 .ev-error-item strong { display: block; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ev-error-item span { display: block; font-size: .83rem; color: var(--texto-suave); line-height: 1.4; }
 

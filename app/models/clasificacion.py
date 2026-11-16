@@ -1,7 +1,8 @@
 """Registro de cada clasificación por foto y de la corrección del usuario (RF-07).
 
-Sirve para medir el modelo en uso real y reentrenarlo después. La foto NO se
-guarda: solo la clase, la confianza y lo que la persona confirmó.
+Sirve para medir el modelo en uso real y reentrenarlo después. La foto solo se
+guarda (imagen_url) si la persona respondió «Sí» a compartirla; si dijo «No»
+queda únicamente la clase, la confianza y lo que la persona confirmó.
 """
 from datetime import datetime, timezone
 

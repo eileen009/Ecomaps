@@ -45,17 +45,32 @@
         </label>
         <input type="file" id="foto" accept="image/*" capture="environment" class="visually-hidden">
 
+        <!-- Consentimiento: sin responder Sí o No no se puede analizar la foto -->
+        <fieldset class="clasif__consent" id="consentimiento">
+          <legend>¿Aceptas que usemos esta foto para mejorar el modelo?</legend>
+          <label class="clasif__opcion">
+            <input type="radio" name="consentimiento" value="si">
+            <span>Sí, acepto que se guarde para reentrenar el modelo</span>
+          </label>
+          <label class="clasif__opcion">
+            <input type="radio" name="consentimiento" value="no">
+            <span>No, solo quiero el resultado</span>
+          </label>
+        </fieldset>
+
         <div class="clasif__acciones">
           <label for="foto" class="btn btn--primary">
             <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg>
             <span id="txt-boton">Elegir foto</span>
           </label>
+          <button type="button" class="btn btn--primary" id="btn-analizar" disabled>Analizar foto</button>
           <button type="button" class="btn btn--ghost" id="btn-limpiar" hidden>Probar otra</button>
         </div>
+        <p class="clasif__ayuda" id="ayuda-analizar" aria-live="polite">Elige una foto para empezar.</p>
 
         <p class="clasif__privacidad">
           <svg width="16" height="16" aria-hidden="true"><use href="{{ icono }}#i-escudo"/></svg>
-          La foto se analiza en tu dispositivo: no se sube a ningún servidor.
+          La foto se analiza en tu dispositivo. Solo se envía a EcoMaps si respondes «Sí».
         </p>
       </section>
 

@@ -58,3 +58,12 @@ ml/dataset/
 
 # Paquetes comprimidos (por ejemplo el .zip que descarga Colab): no van al repositorio
 *.zip
+
+# Fotos para entrenar y evaluar el modelo, y modelos de prueba (pesados, no van al repositorio)
+ml/fotos_propias/
+ml/fotos_prueba_web/
+ml/evaluar/
+ml/modelo_nuevo_sin_usar/
+ml/trashnet_raw/
+ml/modelo_respaldo.h5
+ml/modelo_v1/
