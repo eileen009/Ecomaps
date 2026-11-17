@@ -9,6 +9,7 @@
 // Se usan dos modelos (v1 y v2) y se promedian sus probabilidades: lo que uno falla, el otro lo compensa.
 const CLF_BASES = ['/static/modelo/v1/', '/static/modelo/v2/'];
 const CLF_BASE = CLF_BASES[0]; // metadata (etiquetas) común a ambos
+const CLF_CACHE = 'ecomaps-modelo-2026-11'; // clave del modelo guardado en el navegador; cambiar si se reemplazan los modelos
 const CLF_UMBRAL = 0.7; // RF-04: por debajo se le pide elegir al usuario
 const CLF_VERSION = 'v1'; // versión del modelo; se guarda con cada clasificación (RF-07)
 const CLF_LEAFLET = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/';
@@ -59,6 +60,26 @@ function clfCargarScript(src) {
   });
 }
 
+// Reintenta con espera creciente: justo después de que Render "despierta" las primeras peticiones pueden fallar.
+async function clfConReintentos(fn, intentos = 3) {
+  for (let i = 1; ; i++) {
+    try { return await fn(); }
+    catch (e) {
+      if (i >= intentos) throw e;
+      await new Promise((r) => setTimeout(r, 2000 * i));
+    }
+  }
+}
+
+// Código verde: el modelo (~10 MB cada uno) se descarga una sola vez y queda guardado en el navegador (IndexedDB).
+async function clfCargarUnModelo(base, indice) {
+  const clave = `indexeddb://${CLF_CACHE}-${indice}`;
+  try { return await tf.loadLayersModel(clave); } catch (e) { /* aún no está guardado */ }
+  const modelo = await tf.loadLayersModel(`${base}model.json`);
+  try { await modelo.save(clave); } catch (e) { /* sin IndexedDB (modo privado): se descargará cada vez */ }
+  return modelo;
+}
+
 // Carga TensorFlow.js y el modelo una sola vez; las siguientes fotos reutilizan el mismo.
 function clfCargarModelo() {
   clfPromesaModelo ??= (async () => {
@@ -66,10 +87,10 @@ function clfCargarModelo() {
       try { await clfCargarScript('/static/vendor/tf-4.22.0.min.js'); } catch (e) { /* se usa el CDN */ }
     }
     if (!window.tf) await clfCargarScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
-    const [modelos, meta] = await Promise.all([
-      Promise.all(CLF_BASES.map((b) => tf.loadLayersModel(`${b}model.json`))),
+    const [modelos, meta] = await clfConReintentos(() => Promise.all([
+      Promise.all(CLF_BASES.map((b, i) => clfCargarUnModelo(b, i))),
       fetch(`${CLF_BASE}metadata.json`).then((r) => { if (!r.ok) throw new Error('sin metadata'); return r.json(); })
-    ]);
+    ]));
     clfEtiquetas = meta.labels;
     // "Modelo" combinado: promedia la salida softmax de los dos (mismo orden de clases).
     clfModelo = { predict: (x) => tf.tidy(() => tf.addN(modelos.map((m) => m.predict(x))).div(modelos.length)) };
@@ -368,6 +389,7 @@ function clfElegirArchivo(archivo) {
   clfEl('btn-limpiar').hidden = false;
   clfArchivo = archivo;
   clfOpcionesFoto(false);
+  clfCargarModelo().catch(() => {}); // empieza a cargar el modelo mientras la persona responde Sí/No
   clfReiniciarConsentimiento();      // cada foto necesita su propia respuesta
   clfMostrarEstado('inicio');
   clfActualizarBoton();
@@ -397,9 +419,9 @@ async function clfAnalizar() {
       clfGuardar({});                        // RF-07: queda registrada; si la persona corrige, se actualiza
     }
   } catch (e) {
-    // Lo más probable: aún no se han copiado los archivos del modelo a static/modelo/v1/.
+    // Lo más probable: el servidor acaba de despertar o la conexión es lenta.
     console.error('[clasificador]', e);
-    clfMostrarError('El modelo aún no está disponible', 'No pudimos cargar el modelo de clasificación. Intenta de nuevo en un momento.');
+    clfMostrarError('El modelo aún no está disponible', 'El servidor puede estar despertando. Espera unos segundos y vuelve a intentarlo.');
   } finally {
     clfEl('zona-foto').classList.remove('is-analizando');
     clfAnalizando = false;
