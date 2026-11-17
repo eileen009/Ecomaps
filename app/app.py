@@ -5,7 +5,7 @@ extensiones y blueprints. Sirve tanto la API (/api/...) como las
 vistas HTML en templates/ (blueprint "paginas"). Los siguientes
 módulos se agregan aquí mismo a medida que se construyen.
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 from config import Config
 from extensions import db, jwt, cors
@@ -50,6 +50,13 @@ def crear_app(config_class=Config):
     app.register_blueprint(estadisticas_bp)
     app.register_blueprint(clasificador_bp)
     app.register_blueprint(paginas_bp)  # vistas HTML (templates/)
+
+    # Código verde: los archivos del modelo no cambian; el navegador puede reutilizarlos una semana.
+    @app.after_request
+    def cachear_modelo(resp):
+        if request.path.startswith("/static/modelo/"):
+            resp.headers["Cache-Control"] = "public, max-age=604800"
+        return resp
 
     @app.get("/api/salud")
     def salud():
