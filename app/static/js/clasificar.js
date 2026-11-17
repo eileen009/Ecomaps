@@ -421,7 +421,12 @@ async function clfAnalizar() {
   } catch (e) {
     // Lo más probable: el servidor acaba de despertar o la conexión es lenta.
     console.error('[clasificador]', e);
-    clfMostrarError('El modelo aún no está disponible', 'El servidor puede estar despertando. Espera unos segundos y vuelve a intentarlo.');
+    if (turno === clfTurno) {          // se conserva la foto y la respuesta Sí/No para poder reintentar sin volver a elegirla
+      clfArchivo = archivo;
+      if (caja) caja.disabled = false;
+    }
+    const detalle = String((e && e.message) || e).slice(0, 120);
+    clfMostrarError('El modelo aún no está disponible', `El servidor puede estar despertando. Espera unos segundos y pulsa «Analizar foto» otra vez. (${detalle})`);
   } finally {
     clfEl('zona-foto').classList.remove('is-analizando');
     clfAnalizando = false;

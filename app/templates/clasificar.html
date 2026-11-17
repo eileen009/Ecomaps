@@ -144,6 +144,7 @@
             </a>
             <a class="btn btn--outline" href="{{ url_for('paginas.guia') }}#plastico" id="res-guia">Cómo prepararlo</a>
           </div>
+          <p class="clasif__corregir">¿No es lo que esperabas? <button type="button" class="clasif__enlace" id="btn-corregir">Elegir otro material</button></p>
 
           <!-- RF-05: los 3 puntos más cercanos que reciben el material -->
           <div class="clasif__puntos" id="res-puntos" hidden>
@@ -157,9 +158,31 @@
         <!-- Confianza baja: el usuario elige -->
         <div class="clasif__estado" id="estado-duda" hidden>
           <p class="clasif__etiqueta">No estamos seguros</p>
-          <h3 class="clasif__titulo-duda">¿Cuál se parece más?</h3>
+          <h3 class="clasif__titulo-duda" id="duda-titulo">¿Cuál se parece más?</h3>
           <p class="clasif__texto">La foto no es del todo clara. Elige la opción correcta y seguimos.</p>
           <div class="clasif__opciones" id="duda-opciones"></div>
+          <p class="clasif__corregir"><button type="button" class="clasif__enlace" id="btn-ninguna">Ninguna de estas</button></p>
+        </div>
+
+        <!-- «Ninguna de estas»: la persona escribe qué es (RF-07) -->
+        <div class="clasif__estado" id="estado-otro" hidden>
+          <p class="clasif__etiqueta">Cuéntanos</p>
+          <h3 class="clasif__titulo-duda">¿Qué material es?</h3>
+          <form class="clasif__form-otro" id="form-otro">
+            <label class="visually-hidden" for="txt-otro">Material</label>
+            <input type="text" id="txt-otro" maxlength="60" placeholder="Por ejemplo: baterías, ropa, aceite usado" autocomplete="off" required>
+            <button type="submit" class="btn btn--primary">Enviar</button>
+          </form>
+        </div>
+
+        <!-- Gracias por la corrección -->
+        <div class="clasif__estado" id="estado-gracias" hidden>
+          <p class="clasif__etiqueta">¡Gracias!</p>
+          <p class="clasif__texto" id="gracias-texto"></p>
+          <div class="clasif__ctas">
+            <a class="btn btn--outline" href="{{ url_for('paginas.guia') }}">Ir a la guía</a>
+            <button type="button" class="btn btn--primary" id="btn-otra-foto">Probar otra foto</button>
+          </div>
         </div>
 
         <!-- Error / modelo no disponible -->
