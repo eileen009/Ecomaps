@@ -358,11 +358,21 @@ function clfLimpiar() {
   vista.hidden = true; vista.removeAttribute('src');
   clfEl('zona-vacia').hidden = false;
   clfEl('btn-limpiar').hidden = true;
-  clfEl('txt-boton').textContent = 'Elegir foto';
   clfEl('foto').value = '';
+  const camara = clfEl('foto-camara');
+  if (camara) camara.value = '';
   clfReiniciarConsentimiento();
   clfMostrarEstado('inicio');
   clfActualizarBoton();
+}
+
+// Muestra u oculta las dos opciones (cámara / galería) que aparecen al tocar el recuadro.
+function clfOpcionesFoto(mostrar) {
+  const caja = clfEl('opciones-foto');
+  const zona = clfEl('zona-foto');
+  if (!caja) return;
+  caja.hidden = !mostrar;
+  if (zona) zona.setAttribute('aria-expanded', String(mostrar));
 }
 
 // Elegir la foto solo la muestra; no se analiza ni se envía nada hasta que respondan Sí o No.
@@ -377,8 +387,8 @@ function clfElegirArchivo(archivo) {
   vista.hidden = false;
   clfEl('zona-vacia').hidden = true;
   clfEl('btn-limpiar').hidden = false;
-  clfEl('txt-boton').textContent = 'Cambiar foto';
   clfArchivo = archivo;
+  clfOpcionesFoto(false);
   clfCargarModelo().catch(() => {}); // empieza a cargar el modelo mientras la persona responde Sí/No
   clfReiniciarConsentimiento();      // cada foto necesita su propia respuesta
   clfMostrarEstado('inicio');
@@ -425,6 +435,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!input || !zona) return;   // en /actividad solo se reutiliza clasificarImagen()
 
   input.addEventListener('change', (e) => clfElegirArchivo(e.target.files[0]));
+  // La cámara y la galería usan el mismo flujo; se vacía el otro input para que la misma foto pueda volver a elegirse.
+  clfEl('foto-camara')?.addEventListener('change', (e) => {
+    clfElegirArchivo(e.target.files[0]);
+    input.value = '';
+  });
   document.querySelectorAll('input[name="consentimiento"]').forEach((r) => r.addEventListener('change', () => {
     clfAcepta = r.value === 'si';
     clfActualizarBoton();
@@ -439,6 +454,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const t = clfEl('txt-otro').value.trim();
     if (t) clfEnviarOtro(t);
+  });
+
+  // Tocar el recuadro: muestra las opciones «Tomar foto» y «Elegir de galería» (no abre nada directamente)
+  zona.addEventListener('click', () => clfOpcionesFoto(clfEl('opciones-foto').hidden));
+  zona.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); clfOpcionesFoto(clfEl('opciones-foto').hidden); }
   });
 
   // Arrastrar y soltar

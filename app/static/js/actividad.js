@@ -117,8 +117,26 @@ function initFotoDropzone() {
       prevalidarFoto(null);
     });
     zona.appendChild(quitar);
+    verOpciones(false);
     prevalidarFoto(archivo);
   };
+
+  // Al tocar el recuadro no se abre la galería: se muestran «Tomar foto» y «Elegir de galería o archivos».
+  const opciones = document.getElementById('opciones-foto');
+  const camara = document.getElementById('foto-camara');
+  const verOpciones = (mostrar) => { if (opciones) opciones.style.display = mostrar ? 'flex' : 'none'; };
+  zona.addEventListener('click', (e) => {
+    // El clic que genera el propio <input> (al elegir una opción) y el botón de quitar siguen su curso normal.
+    if (!opciones || e.target === input || e.target.closest('.foto-dropzone__quitar')) return;
+    e.preventDefault();
+    verOpciones(opciones.style.display === 'none');
+  });
+  // Foto tomada con la cámara: se pasa a #foto para que el resto del formulario funcione igual.
+  camara?.addEventListener('change', () => {
+    if (!camara.files.length) return;
+    input.files = camara.files;
+    mostrarPreview(input.files[0]);
+  });
 
   input.addEventListener('change', () => mostrarPreview(input.files[0]));
 

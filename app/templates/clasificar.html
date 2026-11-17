@@ -34,7 +34,8 @@
       <section class="clasif__foto" aria-labelledby="t-foto">
         <h2 id="t-foto" class="visually-hidden">Foto del residuo</h2>
 
-        <label class="clasif__zona" for="foto" id="zona-foto">
+        <!-- Al tocar el recuadro no se abre la galería: primero se elige entre cámara y galería -->
+        <div class="clasif__zona" id="zona-foto" role="button" tabindex="0" aria-controls="opciones-foto" aria-expanded="false">
           <img id="vista" alt="Foto del residuo seleccionada" hidden>
           <span class="clasif__zona-vacia" id="zona-vacia">
             <span class="clasif__zona-icono"><svg width="34" height="34" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg></span>
@@ -42,8 +43,21 @@
             <small>Arrastra una imagen aquí o toca para elegirla</small>
           </span>
           <span class="clasif__escaner" aria-hidden="true" hidden></span>
-        </label>
-        <input type="file" id="foto" accept="image/*" capture="environment" class="visually-hidden">
+        </div>
+
+        <div class="clasif__acciones clasif__elegir" id="opciones-foto" hidden>
+          <label for="foto-camara" class="btn btn--primary">
+            <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg>
+            <span>Tomar foto</span>
+          </label>
+          <label for="foto" class="btn btn--outline">
+            <span>Elegir de galería o archivos</span>
+          </label>
+        </div>
+        <!-- Galería o archivos locales (sin capture, para poder elegir una foto ya guardada) -->
+        <input type="file" id="foto" accept="image/*" class="visually-hidden">
+        <!-- Cámara (en celular abre la cámara directamente; en computador abre el selector de archivos) -->
+        <input type="file" id="foto-camara" accept="image/*" capture="environment" class="visually-hidden">
 
         <!-- Consentimiento: sin responder Sí o No no se puede analizar la foto -->
         <fieldset class="clasif__consent" id="consentimiento">
@@ -59,9 +73,12 @@
         </fieldset>
 
         <div class="clasif__acciones">
-          <label for="foto" class="btn btn--primary">
+          <label for="foto-camara" class="btn btn--primary">
             <svg width="18" height="18" aria-hidden="true"><use href="{{ icono }}#i-camara"/></svg>
-            <span id="txt-boton">Elegir foto</span>
+            <span>Tomar foto</span>
+          </label>
+          <label for="foto" class="btn btn--outline">
+            <span id="txt-boton">Elegir de galería o archivos</span>
           </label>
           <button type="button" class="btn btn--primary" id="btn-analizar" disabled>Analizar foto</button>
           <button type="button" class="btn btn--ghost" id="btn-limpiar" hidden>Probar otra</button>
