@@ -61,6 +61,9 @@
 @keyframes clasif-escaneo { from { top: 4%; } to { top: 96%; } }
 
 .clasif__acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+.clasif__acciones[hidden] { display: none; }
+.clasif__elegir { margin: 12px 0; }
+.clasif__zona { cursor: pointer; }
 .clasif__acciones .btn { cursor: pointer; }
 .clasif__acciones .btn:disabled { opacity: .5; cursor: not-allowed; }
 .clasif__consent {
