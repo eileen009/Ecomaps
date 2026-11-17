@@ -21,8 +21,15 @@
       <label class="foto-dropzone" id="foto-dropzone" for="foto">
         <span class="foto-dropzone__icon"><svg width="34" height="34" aria-hidden="true"><use href="{{ url_for('static', filename='assets/img/iconos.svg') }}#i-camara"/></svg></span>
         <span class="foto-dropzone__texto"><strong>Toca para subir una foto</strong><br>o arrástrala aquí (JPG, PNG o WEBP)</span>
-        <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" capture="environment" required>
+        <input id="foto" type="file" accept="image/png, image/jpeg, image/webp" required>
       </label>
+      <!-- Cámara: el archivo que tome se copia a #foto (galería y cámara usan el mismo flujo) -->
+      <input id="foto-camara" type="file" accept="image/*" capture="environment" hidden>
+      <!-- Al tocar el recuadro se muestran estas dos opciones; no se abre la galería directamente -->
+      <div id="opciones-foto" style="display:none; gap:10px; flex-wrap:wrap; margin:10px 0;">
+        <label for="foto-camara" class="btn btn--primary">Tomar foto</label>
+        <label for="foto" class="btn btn--outline">Elegir de galería o archivos</label>
+      </div>
       <p class="form__foto-hint">Un administrador la revisa antes de confirmar tus puntos.</p>
       <div class="foto-analisis" id="foto-analisis" role="status" aria-live="polite" hidden></div>
       <label for="foto-recibo">Recibo o factura que te dieron en el punto</label>
