@@ -125,9 +125,14 @@ function initFotoDropzone() {
   const opciones = document.getElementById('opciones-foto');
   const camara = document.getElementById('foto-camara');
   const verOpciones = (mostrar) => { if (opciones) opciones.style.display = mostrar ? 'flex' : 'none'; };
+  // El <input> invisible cubre todo el recuadro (ver style.css): un toque directo llega a él y abriría la galería.
+  // Solo se deja pasar el clic que genera la opción «Elegir de galería» (su <label>); cualquier otro toque
+  // sobre el recuadro muestra las opciones.
+  let desdeOpcion = false;
+  opciones?.addEventListener('click', () => { desdeOpcion = true; setTimeout(() => { desdeOpcion = false; }, 100); });
   zona.addEventListener('click', (e) => {
-    // El clic que genera el propio <input> (al elegir una opción) y el botón de quitar siguen su curso normal.
-    if (!opciones || e.target === input || e.target.closest('.foto-dropzone__quitar')) return;
+    if (!opciones || e.target.closest('.foto-dropzone__quitar')) return;
+    if (e.target === input && desdeOpcion) return;
     e.preventDefault();
     verOpciones(opciones.style.display === 'none');
   });
