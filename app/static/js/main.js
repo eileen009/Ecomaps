@@ -131,16 +131,37 @@ function initEstadoSesion() {
   const sesion = obtenerSesion();
   if (!sesion) return;
 
+  // En las páginas públicas, con sesión iniciada, el header muestra la foto de perfil:
+  // al tocarla se vuelve al panel que corresponde al rol (perfil, empresa o administrador).
+  const destinos = { admin: 'Ir al panel de administración', empresa: 'Ir al panel de mi empresa' };
+  const titulo = destinos[sesion.usuario.rol] || 'Ir a mi perfil';
+  const fotos = [];
+
   document.querySelectorAll('.header__actions').forEach((contenedor) => {
-    const nombre = (sesion.usuario.nombre || 'Mi cuenta').split(' ')[0];
-    // El admin vuelve a su panel; el resto, a su perfil.
-    const etiquetas = { admin: '🛠 Panel admin', empresa: '🏢 Mi empresa' };
-    const etiqueta = etiquetas[sesion.usuario.rol] || `👤 ${escaparHTML(nombre)}`;
-    contenedor.innerHTML = `
-      <a href="${inicioPorRol(sesion.usuario.rol)}" class="btn btn--ghost">${etiqueta}</a>
-      <button type="button" class="btn btn--primary" data-cerrar-sesion>Cerrar sesión</button>
-    `;
+    const enlace = document.createElement('a');
+    enlace.href = inicioPorRol(sesion.usuario.rol);
+    enlace.className = 'header__avatar';
+    enlace.title = titulo;
+    enlace.setAttribute('aria-label', titulo);
+
+    const img = document.createElement('img');
+    img.alt = '';
+    img.width = 44;
+    img.height = 44;
+    img.onerror = () => { img.onerror = null; img.src = '/static/assets/img/avatar-default.svg'; };
+    img.src = urlFoto(sesion.usuario.foto_url);
+
+    enlace.appendChild(img);
+    contenedor.replaceChildren(enlace);
+    fotos.push(img);
   });
+
+  // La sesión guardada puede tener una foto vieja: se actualiza con la más reciente sin bloquear la página.
+  if (fotos.length) {
+    cargarUsuarioActual().then((usuario) => {
+      if (usuario) fotos.forEach((img) => { img.src = urlFoto(usuario.foto_url); });
+    }).catch(() => { /* se queda con la foto guardada */ });
+  }
 
   document.querySelectorAll('[data-cerrar-sesion]').forEach((boton) => {
     boton.addEventListener('click', cerrarSesion);
