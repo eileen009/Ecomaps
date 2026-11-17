@@ -337,8 +337,9 @@ function clfLimpiar() {
   vista.hidden = true; vista.removeAttribute('src');
   clfEl('zona-vacia').hidden = false;
   clfEl('btn-limpiar').hidden = true;
-  clfEl('txt-boton').textContent = 'Elegir foto';
   clfEl('foto').value = '';
+  const camara = clfEl('foto-camara');
+  if (camara) camara.value = '';
   clfReiniciarConsentimiento();
   clfMostrarEstado('inicio');
   clfActualizarBoton();
@@ -356,7 +357,6 @@ function clfElegirArchivo(archivo) {
   vista.hidden = false;
   clfEl('zona-vacia').hidden = true;
   clfEl('btn-limpiar').hidden = false;
-  clfEl('txt-boton').textContent = 'Cambiar foto';
   clfArchivo = archivo;
   clfReiniciarConsentimiento();      // cada foto necesita su propia respuesta
   clfMostrarEstado('inicio');
@@ -403,6 +403,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!input || !zona) return;   // en /actividad solo se reutiliza clasificarImagen()
 
   input.addEventListener('change', (e) => clfElegirArchivo(e.target.files[0]));
+  // La cámara y la galería usan el mismo flujo; se vacía el otro input para que la misma foto pueda volver a elegirse.
+  clfEl('foto-camara')?.addEventListener('change', (e) => {
+    clfElegirArchivo(e.target.files[0]);
+    input.value = '';
+  });
   document.querySelectorAll('input[name="consentimiento"]').forEach((r) => r.addEventListener('change', () => {
     clfAcepta = r.value === 'si';
     clfActualizarBoton();
